@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
           headers: {
-            Authorization: `Bearer ${claveApi}`,
+            Authorization: `Bearer 260cee54-6d54-48ba-92e8-bf641b5f4805`,
             "Content-Type": "application/json"
           }
         }
