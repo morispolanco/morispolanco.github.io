@@ -8,38 +8,46 @@
   <style>
     /* Estilos generales */
     body {
-      font-family: serif;
+      font-family: 'Times New Roman', serif;
     }
 
     .title,
     .description,
     .author {
-      font-family: serif;
+      font-family: 'Times New Roman', serif;
     }
 
     /* Estilos de la caja de entrada y botón */
     .input-container {
       background-color: #FBBF24;
-      border-radius: 999px;
+      border-radius: 10px;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       padding: 10px;
+      width: 300px; /* Ajusta el ancho según tu preferencia */
+      margin: 0 auto; /* Centra la caja en la página */
     }
 
     .input-container textarea,
     .input-container input[type="password"] {
       height: 40px;
-      border-radius: 999px;
+      border-radius: 5px;
       padding: 10px;
+      width: 100%;
+      margin-bottom: 10px;
+      border: none;
     }
 
     .input-container button {
       height: 40px;
       padding: 10px;
-      border-radius: 999px;
+      border-radius: 5px;
       background-color: #FBBF24;
       color: white;
       font-weight: bold;
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      border: none;
+      cursor: pointer;
+      width: 100%;
     }
 
     .input-container button:hover {
@@ -49,9 +57,9 @@
 </head>
 
 <body>
-  <h1 class="title">LeybotGt</h1>
-  <p class="description">Esta aplicación responde preguntas relacionadas con la legislación de Guatemala.</p>
-  <p class="author">Por Moris Polanco</p>
+  <h1 class="title" style="text-align: center">LeybotGt</h1>
+  <p class="description" style="text-align: center">Esta aplicación responde preguntas relacionadas con la legislación de Guatemala.</p>
+  <p class="author" style="text-align: center">Por Moris Polanco</p>
 
   <div class="input-container">
     <textarea id="pregunta-input" placeholder="Pregunta o caso"></textarea>
