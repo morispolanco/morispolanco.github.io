@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 <html lang="es">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LeybotGt</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -17,9 +17,13 @@
   <div class="input-container bg-yellow-400 rounded-full shadow px-4 py-2">
     <textarea id="pregunta-input" class="h-10 rounded-full px-4 py-2" placeholder="Pregunta o caso"></textarea>
     <input id="clave-api-input" type="password" class="h-10 rounded-full px-4 py-2" placeholder="Clave de API de Respell">
-    <button id="obtener-respuesta-button" class="h-10 rounded-full px-4 py-2 bg-yellow-400 text-white font-semibold shadow hover:bg-yellow-500">Obtener Respuesta</button>
+    <button id="obtener-respuesta-button" class="h-10 rounded-full px-4 py-2 bg-yellow-400 text-white font-semibold shadow hover:bg-yellow-500">
+      Obtener Respuesta
+      <span id="consulta-indicador" class="ml-2 animate-pulse hidden">...</span>
+    </button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="script.js"></script>
 </body>
 
