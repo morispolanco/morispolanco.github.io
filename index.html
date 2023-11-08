@@ -5,22 +5,58 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LeybotGt</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Estilos generales */
+    body {
+      font-family: serif;
+    }
+
+    .title,
+    .description,
+    .author {
+      font-family: serif;
+    }
+
+    /* Estilos de la caja de entrada y botón */
+    .input-container {
+      background-color: #FBBF24;
+      border-radius: 999px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+    }
+
+    .input-container textarea,
+    .input-container input[type="password"] {
+      height: 40px;
+      border-radius: 999px;
+      padding: 10px;
+    }
+
+    .input-container button {
+      height: 40px;
+      padding: 10px;
+      border-radius: 999px;
+      background-color: #FBBF24;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-container button:hover {
+      background-color: #F59E0B;
+    }
+  </style>
 </head>
 
 <body>
-  <h1 class="title font-serif">LeybotGt</h1>
-  <p class="description font-serif">Esta aplicación responde preguntas relacionadas con la legislación de Guatemala.</p>
-  <p class="author font-serif">Por Moris Polanco</p>
+  <h1 class="title">LeybotGt</h1>
+  <p class="description">Esta aplicación responde preguntas relacionadas con la legislación de Guatemala.</p>
+  <p class="author">Por Moris Polanco</p>
 
-  <div class="input-container bg-yellow-400 rounded-full shadow px-4 py-2">
-    <textarea id="pregunta-input" class="h-10 rounded-full px-4 py-2" placeholder="Pregunta o caso"></textarea>
-    <input id="clave-api-input" type="password" class="h-10 rounded-full px-4 py-2" placeholder="Clave de API de Respell">
-    <button id="obtener-respuesta-button" class="h-10 rounded-full px-4 py-2 bg-yellow-400 text-white font-semibold shadow hover:bg-yellow-500">
-      Obtener Respuesta
-      <span id="consulta-indicador" class="ml-2 animate-pulse hidden">...</span>
-    </button>
+  <div class="input-container">
+    <textarea id="pregunta-input" placeholder="Pregunta o caso"></textarea>
+    <input id="clave-api-input" type="password" placeholder="Clave de API de Respell">
+    <button id="obtener-respuesta-button">Obtener Respuesta</button>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
