@@ -35,8 +35,8 @@ window.handleSubmit = async function handleSubmit() {
 window.render = function render() {
   window.appElement.innerHTML = `
     <h1>Buscador</h1>
-    <p>Esta aplicación responde preguntas sobre la legislación de Guatemala, buscando en la Web. </p>
-    <p>La respuesta puede demorarse varios segundos.</p>
+    <p>Esta aplicación busca en la jurisprudencia de Guatemala disponible en la Web. </p>
+    <p>La respuesta puede demorar varios segundos.</p>
     <textarea oninput="window.state.pregunta = this.value" placeholder="Pregunta o caso"></textarea>
     <button onclick="handleSubmit()">Obtener Respuesta</button>
     ${window.state.respuesta ? `<div><strong>Respuesta:</strong> ${window.state.respuesta}</div>` : ''}
