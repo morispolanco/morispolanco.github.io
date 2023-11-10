@@ -12,7 +12,7 @@ function Buscador() {
         }
 
         try {
-            const api_key = 'YOUR_API_KEY'; // Reemplaza con tu API key
+            const api_key = '260cee54-6d54-48ba-92e8-bf641b5f4805'; // Reemplaza con tu API key
             const response = await axios.post(
                 'https://api.respell.ai/v1/run',
                 {
