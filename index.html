@@ -1,26 +1,71 @@
 <!DOCTYPE html>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-<html lang="es">
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LeybotGt</title>
-  <link rel="stylesheet" href="style.css">
-
+    <meta charset="UTF-8">
+    <title>Buscador</title>
+</head>
 <body>
-  <h1 class="title">LeybotGt</h1>
-  <p class="description">Esta aplicación responde preguntas relacionadas con la legislación de Guatemala.</p>
-  <p class="author">Por Moris Polanco</p>
+    <div id="app"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function Buscador() {
+            const appElement = document.getElementById('app');
+            const state = {
+                pregunta: '',
+                respuesta: ''
+            };
 
-  <div class="input-container">
-    <textarea id="pregunta-input" placeholder="Pregunta o caso"></textarea>
-    <input id="clave-api-input" type="password" placeholder="Clave de API de Respell">
-    <button id="obtener-respuesta-button">Obtener Respuesta</button>
-  </div>
+            const handleSubmit = async () => {
+                if (!state.pregunta) {
+                    alert('Por favor, escriba una pregunta o caso.');
+                    return;
+                }
 
-  <script src="script.js"></script>
+                try {
+                    const api_key = 'YOUR_API_KEY'; // Reemplaza con tu API key
+                    const response = await axios.post(
+                        'https://api.respell.ai/v1/run',
+                        {
+                            spellId: 'k0GhQkJOn7IKEY-BdghY6',
+                            inputs: {
+                                pregunta: state.pregunta
+                            }
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${api_key}`,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            }
+                        }
+                    );
+
+                    if (response.status === 200) {
+                        state.respuesta = response.data.outputs.respuesta;
+                        render();
+                    } else {
+                        alert('Error al enviar la solicitud a la API');
+                    }
+                } catch (error) {
+                    alert('Error en la solicitud');
+                }
+            };
+
+            const render = () => {
+                appElement.innerHTML = `
+                    <h1>Buscador</h1>
+                    <p>Esta aplicación responde preguntas sobre la legislación de Guatemala, buscando en la Web.</p>
+                    <p>Por Moris Polanco</p>
+                    <textarea oninput="state.pregunta = this.value" placeholder="Pregunta o caso"></textarea>
+                    <button onclick="handleSubmit()">Obtener Respuesta</button>
+                    ${state.respuesta ? `<div><strong>Respuesta:</strong> ${state.respuesta}</div>` : ''}
+                `;
+            };
+
+            render();
+        }
+
+        Buscador();
+    </script>
 </body>
-
 </html>
