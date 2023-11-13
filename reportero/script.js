@@ -50,9 +50,9 @@ async function handleSubmit() {
 
     state.respuesta = data.output.respuesta;
 
-    document.getElementById('result').innerHTML = `
+    document.getElementById('result').innerHTML = '
       <p>${state.respuesta}</p>
-    `;
+    ';
   } catch (error) {
     document.getElementById('result').innerHTML = 'Error al generar noticia';
   }
