@@ -1,6 +1,6 @@
 window.handleSubmit = async function handleSubmit() {
   if (!window.state.pregunta) {
-    alert('Por favor, escriba una pregunta o caso.');
+    alert('Por favor, escriba sus notas.');
     return;
   }
 
@@ -37,7 +37,7 @@ window.render = function render() {
     <h1>Secretario</h1>
     <p>Esta aplicación transcribe, ordena y amplía sus notas. </p>
     <p>La respuesta puede demorar varios segundos.</p>
-    <textarea oninput="window.state.pregunta = this.value" placeholder="Pregunta o caso"></textarea>
+    <textarea oninput="window.state.pregunta = this.value" placeholder="Notas"></textarea>
     <button onclick="handleSubmit()">Obtener Respuesta</button>
     ${window.state.respuesta ? `<div><strong>Respuesta:</strong> ${window.state.respuesta}</div>` : ''}
   `;
