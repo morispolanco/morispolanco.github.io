@@ -14,7 +14,7 @@ window.handleSubmit = async function handleSubmit() {
         }
       }, {
         headers: {
-          Authorization: `Bearer 260cee54-6d54-48ba-92e8-bf641b5f4805`,
+          'Authorization': 'Bearer 260cee54-6d54-48ba-92e8-bf641b5f4805',
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
