@@ -1,28 +1,20 @@
-// Usar una declaración de función normal
-function handleSubmit() {
-  // Usar una variable local para el estado
-  const state = {
-    pregunta: '',
-    respuesta: ''
-  };
-
-  if (!state.pregunta) {
+window.handleSubmit = async function handleSubmit() {
+  if (!window.state.pregunta) {
     alert('Por favor, escriba una pregunta o caso.');
     return;
   }
 
   try {
-    // Usar la variable api_key en el encabezado de autorización
     const api_key = 'YOUR_API_KEY'; // Reemplaza con tu API key
     const response = await axios.post(
       'https://api.respell.ai/v1/run', {
-        spellId:'qPnyGRPqmYt7xjSLRX8t_',
+        spellId: 'qPnyGRPqmYt7xjSLRX8t_',
         inputs: {
-          pregunta: state.pregunta
+          pregunta: window.state.pregunta
         }
       }, {
         headers: {
-          Authorization: `Bearer ${api_key}`,
+          Authorization: `Bearer 260cee54-6d54-48ba-92e8-bf641b5f4805`,
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
@@ -30,8 +22,8 @@ function handleSubmit() {
     );
 
     if (response.status === 200) {
-      state.respuesta = response.data.outputs.respuesta;
-      render();
+      window.state.respuesta = response.data.outputs.respuesta;
+      window.render();
     } else {
       alert('Error al enviar la solicitud a la API');
     }
@@ -40,19 +32,21 @@ function handleSubmit() {
   }
 };
 
-// Usar una declaración de función normal
-function render() {
-  // Usar una variable local para el elemento de la aplicación
-  const appElement = document.getElementById('app');
-
-  appElement.innerHTML = `
+window.render = function render() {
+  window.appElement.innerHTML = `
     <h1>Secretario</h1>
-    <p>Esta aplicación ordena y amplía sus notas.</p>
-    <p>Por Moris Polanco</p>
-    <textarea oninput="state.pregunta = this.value" placeholder="Notas"></textarea>
-    <button onclick="handleSubmit()">Generar texto</button>
-    ${state.respuesta ? `<div><strong>Respuesta:</strong> ${state.respuesta}</div>` : ''}
+    <p>Esta aplicación transcribe, ordena y amplía sus notas. </p>
+    <p>La respuesta puede demorar varios segundos.</p>
+    <textarea oninput="window.state.pregunta = this.value" placeholder="Pregunta o caso"></textarea>
+    <button onclick="handleSubmit()">Obtener Respuesta</button>
+    ${window.state.respuesta ? `<div><strong>Respuesta:</strong> ${window.state.respuesta}</div>` : ''}
   `;
 };
 
-render();
+window.appElement = document.getElementById('app');
+window.state = {
+  pregunta: '',
+  respuesta: ''
+};
+
+window.render();
