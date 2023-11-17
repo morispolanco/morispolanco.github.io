@@ -1,13 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Secretario</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Aplicación de Notas</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <header>
+    <h1>Aplicación de Notas</h1>
+  </header>
+  
+  <main>
+    <div class="notes">
+      <h2>Mis Notas</h2>
+      <ul id="note-list">
+        <!-- Aquí se agregarán las notas dinámicamente -->
+      </ul>
+      <form id="note-form">
+        <input type="text" id="note-input" placeholder="Escribe una nota...">
+        <button type="submit">Agregar Nota</button>
+      </form>
+    </div>
+  </main>
+  
   <script src="script.js"></script>
 </body>
 </html>
