@@ -1,30 +1,92 @@
+/* Reset default styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set a base font and line-height */
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* Responsiveness */
+
+@media only screen and (max-width: 768px) {
+  /* Styles for smaller screens */
+  
+  /* Example media queries for different screen sizes:
+  
+  @media only screen and (max-width: 480px) {
+    // Styles for very small screens
+  }
+  
+  @media only screen and (max-width: 320px) {
+    // Styles for even smaller screens
+  }
+  
+  */
+}
+
+/* General styles */
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 h1 {
-    color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
 }
 
-input[type="text"] {
-    padding: 10px;
-    font-size: 16px;
+p {
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
+/* Navigation styles */
+
+.navbar {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
 }
 
-#response {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #EEE;
-    border: 1px solid #CCC;
-    text-align: left;
+.navbar ul {
+  list-style-type: none;
+  display: flex;
+}
+
+.navbar li {
+  margin-right: 10px;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Button styles */
+
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #555;
 }
