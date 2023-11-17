@@ -1,52 +1,66 @@
-window.handleSubmit = async function handleSubmit() {
-  if (!window.state.pregunta) {
-    alert('Por favor, escriba sus notas.');
-    return;
-  }
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-  try {
-    const api_key = 'YOUR_API_KEY'; // Reemplaza con tu API key
-    const response = await axios.post(
-      'https://api.respell.ai/v1/run', {
-        spellId: 'qPnyGRPqmYt7xjSLRX8t_',
-        inputs: {
-          pregunta: window.state.pregunta
-        }
-      }, {
-        headers: {
-          'Authorization': 'Bearer 260cee54-6d54-48ba-92e8-bf641b5f4805',
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }
-    );
+public class SpellApiExample {
 
-    if (response.status === 200) {
-      window.state.respuesta = response.data.outputs.respuesta;
-      window.render();
-    } else {
-      alert('Error al enviar la solicitud a la API');
+    public static void main(String[] args) throws IOException {
+        // URL de la API
+        URL url = new URL("https://api.respell.ai/v1/run");
+    
+        // Crea una conexión
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    
+        // Establece el método POST
+        connection.setRequestMethod("POST");
+    
+        // Establece los encabezados de la solicitud
+        connection.setRequestProperty("Accept", "application/json");
+        connection.setRequestProperty("Authorization", "Bearer 260cee54-6d54-48ba-92e8-bf641b5f4805");
+        connection.setRequestProperty("Content-Type", "application/json");
+    
+        // Habilita el envío y recepción de datos
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+    
+        // Crea el cuerpo de la solicitud
+        String requestBody = "{\n" +
+                "  \"spellId\": \"qPnyGRPqmYt7xjSLRX8t_\",\n" +
+                "  \"spellVersionId\": \"ulAKJd58ZYWMorqDCBSy_\",\n" +
+                "  \"inputs\": {\n" +
+                "    \"input\": \"Example text\"\n" +
+                "  }\n" +
+                "}";
+    
+        // Envía la solicitud
+        OutputStream outputStream = connection.getOutputStream();
+        outputStream.write(requestBody.getBytes());
+        outputStream.flush();
+    
+        // Obtiene la respuesta
+        int responseCode = connection.getResponseCode();
+    
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+    
+            while ((inputLine = bufferedReader.readLine()) != null) {
+                response.append(inputLine);
+            }
+    
+            bufferedReader.close();
+    
+            // Procesa la respuesta JSON
+            System.out.println(response.toString());
+        } else {
+            System.out.println("Error en la solicitud. Código de respuesta: " + responseCode);
+        }
+    
+        // Cierra la conexión
+        connection.disconnect();
     }
-  } catch (error) {
-    alert('Error en la solicitud');
-  }
-};
-
-window.render = function render() {
-  window.appElement.innerHTML = `
-    <h1>Secretario</h1>
-    <p>Esta aplicación transcribe, ordena y amplía sus notas. </p>
-    <p>La respuesta puede demorar varios segundos.</p>
-    <textarea oninput="window.state.pregunta = this.value" placeholder="Notas"></textarea>
-    <button onclick="handleSubmit()">Obtener Respuesta</button>
-    ${window.state.respuesta ? `<div><strong>Respuesta:</strong> ${window.state.respuesta}</div>` : ''}
-  `;
-};
-
-window.appElement = document.getElementById('app');
-window.state = {
-  pregunta: '',
-  respuesta: ''
-};
-
-window.render();
+}
