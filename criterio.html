@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Hegemonía del Criterio - Moris Polanco</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a', // Slate 900
+                            primary: '#1e293b', // Slate 800
+                            accent: '#d4af37', // Metallic Gold
+                            light: '#f8fafc', // Slate 50
+                            text: '#94a3b8' // Slate 400
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        display: ['Cinzel', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient-text {
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero-bg {
+            background-image: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Clase para ocultar barra de desplazamiento en modal pero permitir scroll */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-brand-light font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 transition-all duration-300 glass-panel" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 font-display text-xl tracking-widest text-brand-accent">
+                    M. POLANCO
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#sinopsis" class="hover:text-brand-accent transition-colors px-3 py-2 text-sm font-medium">La Tesis</a>
+                        <a href="#conceptos" class="hover:text-brand-accent transition-colors px-3 py-2 text-sm font-medium">Conceptos</a>
+                        <a href="#capitulos" class="hover:text-brand-accent transition-colors px-3 py-2 text-sm font-medium">Índice</a>
+                        <a href="#autor" class="hover:text-brand-accent transition-colors px-3 py-2 text-sm font-medium">Autor</a>
+                        <a href="#comprar" class="bg-brand-accent text-brand-dark px-4 py-2 rounded-full text-sm font-bold hover:bg-white transition-colors">Adquirir Libro</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" class="inline-flex items-center justify-center p-2 rounded-md text-brand-text hover:text-white focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="hidden md:hidden bg-brand-primary" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-700">
+                <a href="#sinopsis" class="block px-3 py-2 text-base font-medium hover:text-brand-accent">La Tesis</a>
+                <a href="#conceptos" class="block px-3 py-2 text-base font-medium hover:text-brand-accent">Conceptos</a>
+                <a href="#capitulos" class="block px-3 py-2 text-base font-medium hover:text-brand-accent">Índice</a>
+                <a href="#autor" class="block px-3 py-2 text-base font-medium hover:text-brand-accent">Autor</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center hero-bg overflow-hidden pt-20">
+        <!-- Abstract decorative elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-accent rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style="animation-delay: 2s"></div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-left z-10 mb-10 md:mb-0">
+                <div class="inline-block px-3 py-1 mb-4 border border-brand-accent rounded-full text-brand-accent text-xs tracking-widest uppercase font-semibold">
+                    Serie Pensamiento Crítico e IA • Vol. 1
+                </div>
+                <h1 class="text-5xl md:text-7xl font-display font-bold leading-tight mb-6">
+                    La Hegemonía del <span class="gold-gradient-text">Criterio</span>
+                </h1>
+                <p class="text-2xl font-serif italic text-gray-300 mb-8 border-l-4 border-brand-accent pl-4">
+                    "La inteligencia artificial predice.<br>El ser humano decide."
+                </p>
+                <p class="text-brand-text text-lg mb-10 leading-relaxed max-w-xl">
+                    Un manifiesto filosófico para líderes que se niegan a ser reemplazados. Descubre cómo recuperar la soberanía humana en la era del algoritmo de la mano de Giambattista Vico.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <button onclick="openModal()" class="px-8 py-4 bg-transparent border border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-brand-dark transition-all duration-300 rounded font-semibold tracking-wide">
+                        LEER EL PRÓLOGO
+                    </button>
+                    <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" class="px-8 py-4 bg-white text-brand-dark hover:bg-gray-200 transition-all duration-300 rounded font-semibold tracking-wide text-center">
+                        ADQUIRIR EN AMAZON
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Book 3D Mockup Representation -->
+            <div class="md:w-1/2 flex justify-center perspective-1000 z-10">
+                <div class="relative w-64 md:w-80 shadow-2xl transform rotate-y-12 hover:rotate-y-0 transition-transform duration-700 cursor-pointer group">
+                    <!-- Actual Cover Image -->
+                    <img src="https://m.media-amazon.com/images/I/81Tgsptd7UL._SL1500_.jpg" alt="Portada del libro La Hegemonía del Criterio" class="w-full h-auto rounded-r-sm shadow-lg border-l-4 border-gray-800">
+                    
+                    <!-- Book Spine Shadow Effect -->
+                    <div class="absolute top-0 left-0 w-full h-full pointer-events-none rounded-r-sm shadow-inner bg-gradient-to-r from-black/40 via-transparent to-transparent"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Thesis Section -->
+    <section id="sinopsis" class="py-24 bg-brand-primary relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="font-display text-3xl md:text-4xl text-white mb-8">El Retorno del Humanismo</h2>
+            <p class="text-lg text-brand-text leading-relaxed mb-12">
+                Vivimos la culminación del sueño cartesiano: mentes lógicas capaces de procesar la sintaxis del mundo a velocidad luz. Pero nos falta humanidad. 
+                <span class="text-brand-accent font-semibold">"La hegemonía del criterio"</span> no es un manual técnico, es una defensa del <em>Ingenium</em>.
+                Basándose en la filosofía de Giambattista Vico, Moris Polanco argumenta que mientras la máquina opera en el dominio del cálculo (<em>Certum</em>), el ser humano reina en el dominio del sentido (<em>Verum</em>).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+                <div class="p-6 border border-white/5 rounded-lg hover:border-brand-accent/30 transition-colors">
+                    <i class="fas fa-gavel text-4xl text-brand-accent mb-4"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">Criterio vs. Cálculo</h3>
+                    <p class="text-sm text-gray-400">La máquina estima precios; el humano valora significados. Recupera la soberanía de la decisión.</p>
+                </div>
+                <div class="p-6 border border-white/5 rounded-lg hover:border-brand-accent/30 transition-colors">
+                    <i class="fas fa-history text-4xl text-brand-accent mb-4"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">Vico vs. Descartes</h3>
+                    <p class="text-sm text-gray-400">Un retorno a la sabiduría poética y al sentido común frente a la frialdad de la razón pura.</p>
+                </div>
+                <div class="p-6 border border-white/5 rounded-lg hover:border-brand-accent/30 transition-colors">
+                    <i class="fas fa-users text-4xl text-brand-accent mb-4"></i>
+                    <h3 class="font-serif text-xl text-white mb-2">Auditoría Social</h3>
+                    <p class="text-sm text-gray-400">Uso de la IA no para vigilar al empleado, sino para auditar la salud ética de la institución.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Concepts (Dark/Light Contrast) -->
+    <section id="conceptos" class="py-24 bg-brand-dark">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <span class="text-brand-accent text-sm tracking-widest uppercase font-bold">Arquitectura Conceptual</span>
+                <h2 class="font-display text-3xl md:text-4xl text-white mt-2">La Caja de Herramientas del Líder</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Concept 1 -->
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-brand-accent to-yellow-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative bg-brand-primary p-8 rounded-lg">
+                        <h3 class="font-display text-2xl text-white mb-4">El Centauro</h3>
+                        <p class="text-gray-400 mb-4">
+                            Superando el dualismo. Una unidad operativa donde la bestia computacional (fuerza bruta de datos) se subordina a la cabeza humana (dirección ética y estratégica).
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Intuición informada</li>
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Fricción cognitiva deliberada</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Concept 2 -->
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative bg-brand-primary p-8 rounded-lg">
+                        <h3 class="font-display text-2xl text-white mb-4">Escepticismo Activo</h3>
+                        <p class="text-gray-400 mb-4">
+                            Gestión de la alucinación creativa. Protocolos para evitar el "eco artificial" y la adulación algorítmica. La verdad no se encuentra en el output, se verifica en el proceso.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Regla del Dato Cero</li>
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Protocolos de validación</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Concept 3 -->
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative bg-brand-primary p-8 rounded-lg">
+                        <h3 class="font-display text-2xl text-white mb-4">Ética Amplificada</h3>
+                        <p class="text-gray-400 mb-4">
+                            Pasar de la ética como restricción a la ética como expansión. Utilizar la escala de la IA para ejercer la virtud (Pietas) de una manera humanamente imposible.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Ingeniería de la bondad</li>
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Visibilidad de los invisibles</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Concept 4 -->
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative bg-brand-primary p-8 rounded-lg">
+                        <h3 class="font-display text-2xl text-white mb-4">Tecnología Humanizante</h3>
+                        <p class="text-gray-400 mb-4">
+                            Automatizar lo ordinario para liberar lo extraordinario. El fin último de la IA es devolvernos el tiempo para la política, la retórica y la empatía.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-500">
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Recuperación del tiempo</li>
+                            <li class="flex items-center"><i class="fas fa-check text-brand-accent mr-2"></i> Eliminación de la burocracia</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Table of Contents -->
+    <section id="capitulos" class="py-24 bg-brand-primary border-t border-white/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="font-display text-3xl text-white mb-12 text-center">Índice de Contenidos</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 font-serif">
+                <!-- Col 1 -->
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">01</span>
+                        <p class="text-gray-300">Sinergia cognitiva: cuando el cálculo potencia la comprensión</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">02</span>
+                        <p class="text-gray-300">Ingenio contra la complacencia: evitando el eco artificial</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">03</span>
+                        <p class="text-gray-300">Espejos correctivos: superando sesgos con inteligencia híbrida</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">04</span>
+                        <p class="text-gray-300">El axioma humano: la filosofía precede al cálculo</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">05</span>
+                        <p class="text-gray-300">Cartografiar lo desconocido: simulaciones para la prudencia humana</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">06</span>
+                        <p class="text-gray-300">Escepticismo activo: gestionando la alucinación creativa</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">07</span>
+                        <p class="text-gray-300">Expansión mental: algoritmos que desafían nuestra visión</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">08</span>
+                        <p class="text-gray-300">Ética amplificada: la tecnología para el bien común</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">09</span>
+                        <p class="text-gray-300">Diseñando la diversidad: algoritmos contra el pensamiento único</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">10</span>
+                        <p class="text-gray-300">Del precio al valor: la síntesis entre cálculo y apreciación</p>
+                    </div>
+                </div>
+
+                <!-- Col 2 -->
+                <div class="space-y-4 mt-4 md:mt-0">
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">11</span>
+                        <p class="text-gray-300">Confianza lúcida: transparencia para una colaboración efectiva</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">12</span>
+                        <p class="text-gray-300">Auditoría social: la IA como espejo de nuestras imperfecciones</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">13</span>
+                        <p class="text-gray-300">Prospectiva colaborativa: preparación ante futuros posibles</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">14</span>
+                        <p class="text-gray-300">Automatizar lo ordinario para liberar lo extraordinario</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">15</span>
+                        <p class="text-gray-300">El Centauro: la intuición informada en la toma de decisiones</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">16</span>
+                        <p class="text-gray-300">Tecnología humanizante: liberar tiempo para la empatía</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">17</span>
+                        <p class="text-gray-300">Simbiosis evolutiva: cocreando la organización del futuro</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">18</span>
+                        <p class="text-gray-300">Responsabilidad compartida: el piloto y el copiloto digital</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">19</span>
+                        <p class="text-gray-300">Narrativas expandidas: la IA como musa y el líder como autor</p>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-brand-accent font-bold w-8">20</span>
+                        <p class="text-gray-300 text-brand-accent">Manifiesto del ingenio humano: Tecnología para la elevación moral</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Author & Series Section -->
+    <section id="autor" class="py-24 bg-white text-brand-dark">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/3 mb-10 md:mb-0 text-center">
+                <div class="w-48 h-48 mx-auto bg-gray-200 rounded-full overflow-hidden mb-6 shadow-xl relative group">
+                    <!-- Author Image -->
+                    <img src="https://morispolanco.github.io/mpbn.jpg" alt="Moris Polanco" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Moris Polanco</h3>
+                <p class="text-sm font-serif italic text-gray-600">Filósofo, Catedrático y Autor</p>
+            </div>
+            <div class="md:w-2/3 md:pl-16">
+                <h2 class="font-display text-3xl mb-6">Sobre el Autor y la Serie</h2>
+                <p class="text-lg leading-relaxed text-gray-700 mb-6">
+                    Durante más de veinticinco años, Moris Polanco ha dedicado su vida a la enseñanza de la filosofía y el pensamiento crítico. Ante el vértigo de la inteligencia artificial, Polanco regresa a los clásicos para encontrar respuestas de vanguardia.
+                </p>
+                <div class="p-6 bg-brand-light border-l-4 border-brand-accent rounded">
+                    <h4 class="font-bold text-brand-primary mb-2">Serie: Pensamiento Crítico e Inteligencia Artificial</h4>
+                    <p class="text-gray-600">
+                        <em>La Hegemonía del Criterio</em> es el volumen inaugural de una ambiciosa colección. Esta serie explorará cómo el pensamiento crítico debe guiar a la IA en disciplinas específicas como el derecho, la educación, la ética y la estrategia empresarial. Un itinerario para asegurar que el criterio siempre domine al cálculo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Footer -->
+    <footer id="comprar" class="bg-brand-dark py-16 border-t border-white/10">
+        <div class="max-w-4xl mx-auto text-center px-4">
+            <h2 class="font-display text-3xl md:text-4xl text-white mb-8">Recupera la soberanía de tu criterio</h2>
+            <p class="text-brand-text mb-10 max-w-xl mx-auto">
+                No permitas que la barbarie de la reflexión técnica sustituya tu sabiduría. Únete a la resistencia humanista.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-12">
+                <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" class="bg-brand-accent text-brand-dark px-8 py-4 rounded font-bold text-lg hover:bg-white transition-colors inline-block">
+                    Adquirir en Amazon
+                </a>
+                <button class="border border-gray-600 text-white px-8 py-4 rounded font-bold text-lg hover:border-white transition-colors">
+                    Suscribirse a la Serie
+                </button>
+            </div>
+            <div class="text-sm text-gray-600">
+                <p>&copy; 2025 Moris Polanco. Editorial Arjé. Todos los derechos reservados.</p>
+                <div class="mt-4 space-x-4">
+                    <a href="#" class="hover:text-brand-accent"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-brand-accent"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="hover:text-brand-accent"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prologue Modal -->
+    <div id="prologueModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-900 bg-opacity-95 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 relative">
+                    <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900">
+                        <i class="fas fa-times text-2xl"></i>
+                    </button>
+                    <div class="mt-3 sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-3xl leading-6 font-display font-bold text-gray-900 mb-8 text-center" id="modal-title">
+                            El retorno del humanismo en la era del algoritmo
+                        </h3>
+                        <div class="mt-2 text-gray-600 space-y-4 font-serif text-lg leading-relaxed max-h-[60vh] overflow-y-auto pr-2">
+                            <p>Durante más de veinticinco años he dedicado mi vida a la enseñanza de la filosofía y el pensamiento crítico. En este cuarto de siglo, he visto pasar modas pedagógicas y revoluciones tecnológicas, pero ninguna me provocó el vértigo intelectual que sentí al enfrentarme por primera vez a la inteligencia artificial generativa.</p>
+                            <p>Debo confesar, con la humildad del académico que sigue aprendiendo, que al principio caí bajo su hechizo. Me dejé fascinar por su capacidad casi mágica de tejer historias y construir lenguaje con una coherencia gramatical impecable. Sin embargo, esa fascinación inicial pronto dio paso a una inquietud profunda, una sospecha antigua que sacudió los cimientos de mi disciplina.</p>
+                            <p>Me di cuenta de que estábamos presenciando la culminación del sueño cartesiano: la creación de una mente puramente lógica, clara y distinta, capaz de procesar la sintaxis del mundo a una velocidad sobrehumana. Pero al mirar ese abismo de perfección algorítmica, comprendí que lo que nos faltaba no era más cálculo, sino más <em>humanidad</em>.</p>
+                            <p class="font-bold text-gray-800 border-l-4 border-brand-accent pl-4">Fue entonces cuando regresé a Giambattista Vico.</p>
+                            <p>Hace tres siglos, este filósofo napolitano lanzó una advertencia profética contra la obsesión de su época —y de la nuestra— por reducir la vida a matemáticas. Vico entendió que la inteligencia humana no es un algoritmo aislado; es un producto histórico, social y poético. A esa facultad superior la llamó <em>ingenium</em>: la capacidad de conectar lo dispar, de entender la metáfora y de actuar con prudencia en un mundo incierto.</p>
+                            <p>La tesis central de este libro es que la inteligencia artificial, por formidable que sea, opera en el dominio del cálculo, mientras que el ser humano reina en el dominio del criterio. Y el criterio no es una operación lógica; es un acto vital.</p>
+                            <p>Mientras que la máquina ejecuta operaciones sobre una base de datos inerte, el ser humano ejerce el juicio desde la urgencia de la vida. A la máquina no se le va la vida en sus cálculos; no conoce el miedo a la extinción ni el anhelo de trascendencia. Nosotros, en cambio, operamos bajo el imperativo de la supervivencia, y es esa fragilidad la que nos permite valorar, no solo estimar.</p>
+                            <p>La IA puede estimar con precisión el valor comercial de un objeto basándose en millones de datos, pero es ontológicamente incapaz de comprender por qué una joya sin valor monetario es incalculable porque perteneció a una abuela. Esos valores invisibles para el algoritmo son la sustancia misma de nuestra realidad.</p>
+                            <p>Escribo este libro con un objetivo claro: invitar a líderes, administradores y emprendedores a recuperar la soberanía intelectual. La inteligencia artificial es una herramienta formidable que debemos aprovechar para ahorrarnos tiempo y esfuerzo, pero jamás debemos permitir que la "barbarie de la reflexión" técnica sustituya a la sabiduría humana.</p>
+                            <p>Este volumen no es un esfuerzo aislado; constituye el primer libro de una serie que me propongo escribir sobre pensamiento crítico e inteligencia artificial, aplicado a las diferentes disciplinas. Es el inicio de un itinerario para explorar cómo el criterio debe prevalecer sobre el cálculo en cada campo del saber humano.</p>
+                            <p class="italic text-center font-bold mt-8">El criterio debe dominar al cálculo, nunca al revés.</p>
+                            <p>En las páginas siguientes, de la mano de Vico y de la teoría de gestión moderna, exploraremos cómo construir una "Hegemonía del Criterio". No se trata de rechazar la tecnología, sino de elevar nuestra humanidad para estar a la altura de ella. La tarea del líder hoy es cultivar ese criterio superior para que la tecnología sirva a la vida, y no la vida a la tecnología.</p>
+                            <p class="text-right mt-8 font-bold">- Moris Polanco</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-brand-primary text-base font-medium text-white hover:bg-brand-dark focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        Cerrar
+                    </button>
+                    <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Comprar el Libro
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+                navbar.classList.replace('bg-transparent', 'bg-brand-primary/95');
+            } else {
+                navbar.classList.remove('shadow-lg');
+                navbar.classList.replace('bg-brand-primary/95', 'bg-transparent');
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Modal Logic
+        function openModal() {
+            document.getElementById('prologueModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeModal() {
+            document.getElementById('prologueModal').classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Re-enable scrolling
+        }
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
