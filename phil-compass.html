@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brújula Filosófica</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel para compilar JSX en el navegador -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Estilos de impresión y ajustes -->
+    <style>
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .print-break-inside-avoid { break-inside: avoid; }
+            .print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+            .print-container { max-width: 100%; width: 100%; padding: 0; }
+        }
+        /* Animaciones suaves */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        // --- ICONOS SVG (Para no depender de librerías externas) ---
+        const IconBook = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        );
+        const IconCheck = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        );
+        const IconChevronRight = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"/></svg>
+        );
+        const IconRefresh = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        );
+        const IconPrinter = ({ size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        );
+
+        // --- DATOS Y CONFIGURACIÓN ---
+        const CATEGORIES = [
+          {
+            id: 'epistemology',
+            name: '1. Epistemología',
+            yAxis: { label: 'Fuente del Conocimiento', min: 'Empirismo', max: 'Racionalismo' },
+            xAxis: { label: 'Justificación', min: 'Externalismo', max: 'Internalismo' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Racionalismo – Internalismo', desc: 'Acceso reflexivo a las razones (Descartes)' },
+              { x: -1, y: 1, label: 'Racionalismo – Externalismo', desc: 'Confiabilismo racionalista' },
+              { x: -1, y: -1, label: 'Empirismo – Externalismo', desc: 'Naturalización epistemológica (Quine)' },
+              { x: 1, y: -1, label: 'Empirismo – Internalismo', desc: 'Primacía de la introspección (Locke)' }
+            ]
+          },
+          {
+            id: 'science',
+            name: '2. Filosofía de la Ciencia',
+            yAxis: { label: 'Estatus de Teorías', min: 'Antirrealismo', max: 'Realismo Científico' },
+            xAxis: { label: 'Tipo de Explicación', min: 'Mecanicista', max: 'Nomológico' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Realismo – Nomológico', desc: 'Modelos de leyes universales (Hempel)' },
+              { x: -1, y: 1, label: 'Realismo – Mecanicista', desc: 'Mecanismos subyacentes (Craver)' },
+              { x: -1, y: -1, label: 'Antirrealismo – Mecanicista', desc: 'Instrumentalismo práctico' },
+              { x: 1, y: -1, label: 'Antirrealismo – Nomológico', desc: 'Convencionalismo estructural' }
+            ]
+          },
+          {
+            id: 'political',
+            name: '3. Filosofía Política',
+            yAxis: { label: 'Base Social', min: 'Comunitarismo', max: 'Liberalismo' },
+            xAxis: { label: 'Justicia Distributiva', min: 'Libertarismo', max: 'Igualitarismo' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Liberal – Igualitario', desc: 'Justicia como equidad (Rawls)' },
+              { x: -1, y: 1, label: 'Liberal – Libertario', desc: 'Estado mínimo (Nozick)' },
+              { x: -1, y: -1, label: 'Comunitario – Libertario', desc: 'Autonomía localista' },
+              { x: 1, y: -1, label: 'Comunitario – Igualitario', desc: 'Bien común y solidaridad (Sandel)' }
+            ]
+          },
+          {
+            id: 'ethics',
+            name: '4. Ética',
+            yAxis: { label: 'Fundamento de Acción', min: 'Consecuencialismo', max: 'Deontologismo' },
+            xAxis: { label: 'Naturaleza Moral', min: 'Relativismo/Const.', max: 'Objetivismo' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Deontológico – Objetivista', desc: 'Imperativo categórico (Kant)' },
+              { x: -1, y: 1, label: 'Deontológico – Constructivista', desc: 'Normatividad construida (Korsgaard)' },
+              { x: -1, y: -1, label: 'Consecuencialista – Const.', desc: 'Pragmatismo ético' },
+              { x: 1, y: -1, label: 'Consecuencialista – Objetivista', desc: 'Utilitarismo clásico (Mill)' }
+            ]
+          },
+          {
+            id: 'metaphysics',
+            name: '5. Metafísica',
+            yAxis: { label: 'Existencia', min: 'Antirrealismo', max: 'Realismo Ontológico' },
+            xAxis: { label: 'Naturaleza', min: 'Anti-esencialismo', max: 'Esencialismo' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Realismo – Esencialista', desc: 'Sustancias y esencias (Aristóteles)' },
+              { x: -1, y: 1, label: 'Realismo – Procesual', desc: 'Procesos sin esencia fija' },
+              { x: -1, y: -1, label: 'Antirrealismo – Procesual', desc: 'Constructivismo ontológico' },
+              { x: 1, y: -1, label: 'Antirrealismo – Esencialista', desc: 'Esencialismo fenomenológico' }
+            ]
+          },
+          {
+            id: 'language',
+            name: '6. Filosofía del Lenguaje',
+            yAxis: { label: 'Semántica', min: 'Pragmatista', max: 'Cognitivista' },
+            xAxis: { label: 'Tradición', min: 'Continental', max: 'Analítica' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Cognitivista – Analítica', desc: 'Verdad y referencia (Frege/Russell)' },
+              { x: -1, y: 1, label: 'Cognitivista – Continental', desc: 'Hermenéutica temprana' },
+              { x: -1, y: -1, label: 'Pragmatista – Continental', desc: 'Diálogo e interpretación (Gadamer)' },
+              { x: 1, y: -1, label: 'Pragmatista – Analítica', desc: 'Juegos de lenguaje (Wittgenstein)' }
+            ]
+          },
+          {
+            id: 'mind',
+            name: '7. Filosofía de la Mente',
+            yAxis: { label: 'Sustancia', min: 'Dualismo/No-físico', max: 'Fisicalismo' },
+            xAxis: { label: 'Cognición', min: 'Enactivismo', max: 'Representacionismo' },
+            quadrants: [
+              { x: 1, y: 1, label: 'Fisicalismo – Representacionista', desc: 'Computacionalismo (Fodor)' },
+              { x: -1, y: 1, label: 'Fisicalismo – Enactivista', desc: 'Mente encarnada (Varela)' },
+              { x: -1, y: -1, label: 'No-fisicalismo – Enactivista', desc: 'Fenomenología encarnada' },
+              { x: 1, y: -1, label: 'No-fisicalismo – Repres.', desc: 'Cualia irreductible' }
+            ]
+          }
+        ];
+
+        const QUESTIONS = [
+            // Epistemología
+            { id: 1, cat: 'epistemology', text: 'El conocimiento genuino proviene principalmente de la razón pura y la deducción lógica, más que de los sentidos.', weights: [0, 1] },
+            { id: 2, cat: 'epistemology', text: 'Toda idea o concepto en nuestra mente tiene su origen último en la experiencia sensorial.', weights: [0, -1] },
+            { id: 3, cat: 'epistemology', text: 'Para que una creencia esté justificada, el sujeto debe tener acceso consciente a las razones que la sustentan.', weights: [1, 0] },
+            { id: 4, cat: 'epistemology', text: 'El conocimiento depende de factores externos confiables (como un sistema visual sano), incluso si el sujeto no es consciente de ellos.', weights: [-1, 0] },
+            { id: 5, cat: 'epistemology', text: 'Prefiero una explicación que garantice la certeza interna (Descartes) sobre una que solo funcione en la práctica (Quine).', weights: [0.5, 0.5] },
+            // Ciencia
+            { id: 6, cat: 'science', text: 'Las teorías científicas describen una realidad objetiva e independiente, no son solo herramientas útiles de predicción.', weights: [0, 1] },
+            { id: 7, cat: 'science', text: 'La ciencia no nos dice qué es el mundo realmente, solo nos da modelos para navegar en él.', weights: [0, -1] },
+            { id: 8, cat: 'science', text: 'Una buena explicación científica debe subsumir el evento bajo una ley universal general.', weights: [1, 0] },
+            { id: 9, cat: 'science', text: 'Explicar algo científicamente significa detallar los mecanismos causales y las partes que lo producen.', weights: [-1, 0] },
+            { id: 10, cat: 'science', text: 'Creo que los electrones existen realmente (Realismo) y se comportan según leyes matemáticas universales (Nomológico).', weights: [0.5, 0.5] },
+            // Política
+            { id: 11, cat: 'political', text: 'El individuo y sus derechos son anteriores y superiores a cualquier comunidad o cultura.', weights: [0, 1] },
+            { id: 12, cat: 'political', text: 'Nuestra identidad moral se forja en comunidad; el "yo" desenraizado es una ficción.', weights: [0, -1] },
+            { id: 13, cat: 'political', text: 'El Estado debe intervenir activamente para redistribuir la riqueza y asegurar la igualdad de oportunidades.', weights: [1, 0] },
+            { id: 14, cat: 'political', text: 'La única función legítima del Estado es proteger la propiedad privada y la libertad individual; los impuestos son robo.', weights: [-1, 0] },
+            { id: 15, cat: 'political', text: 'Valoro más la libertad individual absoluta que la igualdad económica impuesta.', weights: [-0.5, 0.5] },
+            // Ética
+            { id: 16, cat: 'ethics', text: 'Ciertos actos (como mentir o torturar) son intrínsecamente incorrectos, sin importar cuán buenas sean sus consecuencias.', weights: [0, 1] },
+            { id: 17, cat: 'ethics', text: 'La moralidad de una acción se juzga exclusivamente por el resultado que produce (ej. mayor felicidad para el mayor número).', weights: [0, -1] },
+            { id: 18, cat: 'ethics', text: 'Los hechos morales son hechos objetivos del universo, independientes de lo que los humanos piensen o acuerden.', weights: [1, 0] },
+            { id: 19, cat: 'ethics', text: 'Los valores morales son construcciones sociales o acuerdos racionales, no verdades descubiertas en la naturaleza.', weights: [-1, 0] },
+            { id: 20, cat: 'ethics', text: 'Es preferible seguir reglas universales estrictas (Kant) que calcular beneficios caso por caso.', weights: [0, 0.5] },
+            // Metafísica
+            { id: 21, cat: 'metaphysics', text: 'Existe un mundo independiente de nuestra mente, estructurado con objetos y propiedades reales.', weights: [0, 1] },
+            { id: 22, cat: 'metaphysics', text: 'Lo que llamamos "realidad" depende enteramente de nuestros esquemas conceptuales o lenguaje.', weights: [0, -1] },
+            { id: 23, cat: 'metaphysics', text: 'Las cosas tienen una esencia o naturaleza fija que las hace ser lo que son.', weights: [1, 0] },
+            { id: 24, cat: 'metaphysics', text: 'El mundo es un flujo constante de procesos y cambios; no hay esencias fijas ni categorías inmutables.', weights: [-1, 0] },
+            { id: 25, cat: 'metaphysics', text: 'La estructura de la realidad es objetiva y consiste en sustancias con identidades fijas.', weights: [0.5, 0.5] },
+            // Lenguaje
+            { id: 26, cat: 'language', text: 'El significado de una palabra es el objeto o concepto al que refiere en el mundo.', weights: [0, 1] },
+            { id: 27, cat: 'language', text: 'El significado es el uso; entender una palabra es saber usarla en un contexto social (juegos de lenguaje).', weights: [0, -1] },
+            { id: 28, cat: 'language', text: 'La filosofía debe usar el análisis lógico riguroso para clarificar el lenguaje y resolver problemas.', weights: [1, 0] },
+            { id: 29, cat: 'language', text: 'El lenguaje es una fuerza histórica y cultural que debe interpretarse hermenéuticamente, no diseccionarse lógicamente.', weights: [-1, 0] },
+            { id: 30, cat: 'language', text: 'Prefiero la claridad lógica de la tradición anglosajona a la profundidad literaria de la tradición europea.', weights: [1, 0.5] },
+            // Mente
+            { id: 31, cat: 'mind', text: 'La mente es idéntica al cerebro; todo estado mental es un estado físico.', weights: [0, 1] },
+            { id: 32, cat: 'mind', text: 'La conciencia tiene cualidades subjetivas (qualia) que no pueden explicarse puramente por la física.', weights: [0, -1] },
+            { id: 33, cat: 'mind', text: 'Pensar es procesar símbolos y representaciones internas del mundo (como una computadora).', weights: [1, 0] },
+            { id: 34, cat: 'mind', text: 'La mente no está solo en la cabeza; emerge de la interacción dinámica del cuerpo vivo con el entorno.', weights: [-1, 0] },
+            { id: 35, cat: 'mind', text: 'Creo que somos máquinas biológicas (Fisicalismo) que procesan información (Representacionismo).', weights: [0.5, 0.5] }
+        ];
+
+        // --- COMPONENTE: GRÁFICO SVG PERSONALIZADO ---
+        const CustomScatterChart = ({ data, category }) => {
+            const size = 300;
+            const padding = 40;
+            const domainMax = 6; // Rango de -6 a 6
+            const center = size / 2;
+            const scale = (size - padding * 2) / (domainMax * 2);
+
+            // Convertir coordenadas cartesianas a SVG
+            const toSvgX = (val) => center + (val * scale);
+            const toSvgY = (val) => center - (val * scale);
+
+            return (
+                <div className="w-full h-full flex justify-center items-center">
+                <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="overflow-visible font-sans text-xs">
+                    {/* Fondo y Bordes */}
+                    <rect x={padding} y={padding} width={size - padding*2} height={size - padding*2} fill="#fafafa" rx="4" />
+                    
+                    {/* Rejilla */}
+                    <g stroke="#e5e7eb" strokeDasharray="3,3">
+                        <line x1={toSvgX(-3)} y1={padding} x2={toSvgX(-3)} y2={size-padding} />
+                        <line x1={toSvgX(3)} y1={padding} x2={toSvgX(3)} y2={size-padding} />
+                        <line x1={padding} y1={toSvgY(3)} x2={size-padding} y2={toSvgY(3)} />
+                        <line x1={padding} y1={toSvgY(-3)} x2={size-padding} y2={toSvgY(-3)} />
+                    </g>
+
+                    {/* Ejes Principales */}
+                    <line x1={center} y1={padding} x2={center} y2={size - padding} stroke="#374151" strokeWidth="1.5" />
+                    <line x1={padding} y1={center} x2={size - padding} y2={center} stroke="#374151" strokeWidth="1.5" />
+
+                    {/* Etiquetas de Ejes (Extremos) */}
+                    <text x={center} y={padding - 15} textAnchor="middle" fill="#4b5563" fontWeight="bold" fontSize="10">{category.yAxis.max}</text>
+                    <text x={center} y={size - padding + 20} textAnchor="middle" fill="#4b5563" fontWeight="bold" fontSize="10">{category.yAxis.min}</text>
+                    
+                    <text x={size - padding + 5} y={center} textAnchor="start" dominantBaseline="middle" fill="#4b5563" fontWeight="bold" fontSize="10" transform={`rotate(90, ${size-padding+10}, ${center})`}>{category.xAxis.max}</text>
+                    <text x={padding - 15} y={center} textAnchor="end" dominantBaseline="middle" fill="#4b5563" fontWeight="bold" fontSize="10" transform={`rotate(-90, ${padding-15}, ${center})`}>{category.xAxis.min}</text>
+
+                    {/* Títulos de Ejes */}
+                    <text x={center} y={padding - 5} textAnchor="middle" fill="#9ca3af" fontSize="9" fontStyle="italic">{category.yAxis.label}</text>
+                    <text x={size - padding} y={size - 10} textAnchor="end" fill="#9ca3af" fontSize="9" fontStyle="italic">{category.xAxis.label}</text>
+
+                    {/* Nombres de Cuadrantes (Marca de agua) */}
+                    <text x={toSvgX(-3)} y={toSvgY(3)} textAnchor="middle" fill="#e5e7eb" fontSize="14" fontWeight="bold" opacity="0.8">{category.quadrants[1].label.split('–')[0]}</text>
+                    <text x={toSvgX(3)} y={toSvgY(3)} textAnchor="middle" fill="#e5e7eb" fontSize="14" fontWeight="bold" opacity="0.8">{category.quadrants[0].label.split('–')[0]}</text>
+                    
+                    {/* Punto del Usuario */}
+                    <circle 
+                        cx={toSvgX(data.x)} 
+                        cy={toSvgY(data.y)} 
+                        r="6" 
+                        fill="#2563eb" 
+                        stroke="white" 
+                        strokeWidth="2" 
+                        className="drop-shadow-md transition-all duration-500 ease-out"
+                    />
+                    
+                    {/* Coordenadas (Tooltip estático) */}
+                    <g transform={`translate(${toSvgX(data.x)}, ${toSvgY(data.y) - 15})`}>
+                        <rect x="-18" y="-14" width="36" height="14" rx="4" fill="#1e293b" opacity="0.8" />
+                        <text x="0" y="-4" textAnchor="middle" fill="white" fontSize="8">{Math.round(data.x*10)/10}, {Math.round(data.y*10)/10}</text>
+                    </g>
+                </svg>
+                </div>
+            );
+        };
+
+        // --- COMPONENTES UI GENÉRICOS ---
+        const Button = ({ children, onClick, variant = 'primary', className = '' }) => {
+            const baseStyle = "px-6 py-2 rounded-lg font-medium transition-all duration-200 flex items-center gap-2 cursor-pointer";
+            const variants = {
+                primary: "bg-blue-600 text-white hover:bg-blue-700 shadow-md active:transform active:scale-95",
+                secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200",
+                outline: "border-2 border-blue-600 text-blue-600 hover:bg-blue-50",
+                ghost: "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+            };
+            return (
+                <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
+                    {children}
+                </button>
+            );
+        };
+
+        const Card = ({ children, className = '' }) => (
+            <div className={`bg-white rounded-xl shadow-sm border border-gray-100 p-6 ${className}`}>
+                {children}
+            </div>
+        );
+
+        // --- APP PRINCIPAL ---
+        function App() {
+            const [currentStep, setCurrentStep] = useState('intro'); // intro, quiz, results
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [answers, setAnswers] = useState({});
+
+            // Calcular resultados
+            const results = useMemo(() => {
+                if (Object.keys(answers).length === 0) return {};
+
+                const scores = {};
+                CATEGORIES.forEach(cat => {
+                    scores[cat.id] = { x: 0, y: 0 };
+                });
+
+                Object.entries(answers).forEach(([qId, score]) => {
+                    const question = QUESTIONS.find(q => q.id === parseInt(qId));
+                    if (!question) return;
+                    
+                    // Score 1-5 maps to -2 to +2
+                    const normalizedScore = score - 3; 
+                    
+                    scores[question.cat].x += normalizedScore * question.weights[0];
+                    scores[question.cat].y += normalizedScore * question.weights[1];
+                });
+
+                return scores;
+            }, [answers]);
+
+            const handleAnswer = (score) => {
+                setAnswers(prev => ({ ...prev, [QUESTIONS[currentQuestionIndex].id]: score }));
+                
+                if (currentQuestionIndex < QUESTIONS.length - 1) {
+                    setTimeout(() => setCurrentQuestionIndex(prev => prev + 1), 150);
+                } else {
+                    setTimeout(() => setCurrentStep('results'), 150);
+                }
+            };
+
+            const handlePrint = () => window.print();
+
+            const restart = () => {
+                setAnswers({});
+                setCurrentQuestionIndex(0);
+                setCurrentStep('intro');
+            };
+
+            // VISTA: INTRO
+            if (currentStep === 'intro') {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4 fade-in">
+                        <div className="max-w-2xl w-full">
+                            <Card className="text-center py-12">
+                                <div className="flex justify-center mb-6">
+                                    <IconBook size={64} className="text-blue-600" />
+                                </div>
+                                <h1 className="text-4xl font-bold text-gray-900 mb-4">Brújula Filosófica</h1>
+                                <p className="text-xl text-gray-600 mb-8">
+                                    Descubre tu posición en 7 áreas fundamentales de la filosofía a través de 35 preguntas estratégicas.
+                                </p>
+                                
+                                <div className="grid grid-cols-2 gap-4 text-left max-w-lg mx-auto mb-10 text-sm text-gray-500">
+                                    {CATEGORIES.map(c => (
+                                        <div key={c.id} className="flex items-center gap-2"><IconCheck size={16} /> {c.name.split('. ')[1]}</div>
+                                    ))}
+                                </div>
+
+                                <div className="flex justify-center">
+                                    <Button onClick={() => setCurrentStep('quiz')} className="text-lg px-8 py-3">
+                                        Comenzar Evaluación <IconChevronRight />
+                                    </Button>
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
+                );
+            }
+
+            // VISTA: CUESTIONARIO
+            if (currentStep === 'quiz') {
+                const question = QUESTIONS[currentQuestionIndex];
+                const progress = ((currentQuestionIndex) / QUESTIONS.length) * 100;
+
+                return (
+                    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 fade-in">
+                        <div className="w-full max-w-3xl">
+                            {/* Barra de Progreso */}
+                            <div className="mb-8">
+                                <div className="flex justify-between text-sm text-gray-500 mb-2">
+                                    <span>Pregunta {currentQuestionIndex + 1} de {QUESTIONS.length}</span>
+                                    <span>{Math.round(progress)}%</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-blue-600 transition-all duration-300" 
+                                        style={{ width: `${progress}%` }}
+                                    />
+                                </div>
+                            </div>
+
+                            <Card className="py-10 px-8 min-h-[400px] flex flex-col justify-between">
+                                <div>
+                                    <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold tracking-wider mb-4 uppercase">
+                                        {CATEGORIES.find(c => c.id === question.cat).name}
+                                    </span>
+                                    <h2 className="text-2xl md:text-3xl font-medium text-gray-800 leading-snug">
+                                        "{question.text}"
+                                    </h2>
+                                </div>
+
+                                <div className="mt-10">
+                                    <div className="flex justify-between text-sm text-gray-500 mb-4 px-2">
+                                        <span>Totalmente en desacuerdo</span>
+                                        <span>Totalmente de acuerdo</span>
+                                    </div>
+                                    <div className="grid grid-cols-5 gap-3">
+                                        {[1, 2, 3, 4, 5].map((val) => (
+                                            <button
+                                                key={val}
+                                                onClick={() => handleAnswer(val)}
+                                                className={`
+                                                    h-14 rounded-lg border-2 font-bold text-lg transition-all cursor-pointer
+                                                    ${val === 1 ? 'border-red-200 hover:bg-red-50 text-red-700' : ''}
+                                                    ${val === 2 ? 'border-red-100 hover:bg-red-50 text-red-600' : ''}
+                                                    ${val === 3 ? 'border-gray-200 hover:bg-gray-50 text-gray-600' : ''}
+                                                    ${val === 4 ? 'border-blue-100 hover:bg-blue-50 text-blue-600' : ''}
+                                                    ${val === 5 ? 'border-blue-200 hover:bg-blue-50 text-blue-700' : ''}
+                                                `}
+                                            >
+                                                {val}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </Card>
+                        </div>
+                    </div>
+                );
+            }
+
+            // VISTA: RESULTADOS
+            return (
+                <div className="min-h-screen bg-gray-50 p-6 print:p-0 print:bg-white fade-in">
+                    <div className="max-w-6xl mx-auto print-container">
+                        
+                        {/* Header Pantalla */}
+                        <div className="flex justify-between items-center mb-8 no-print">
+                            <h1 className="text-3xl font-bold text-gray-900">Resultados Filosóficos</h1>
+                            <div className="flex gap-3">
+                                <Button variant="outline" onClick={restart}>
+                                    <IconRefresh size={18} /> Reiniciar
+                                </Button>
+                                <Button onClick={handlePrint}>
+                                    <IconPrinter size={18} /> Guardar PDF
+                                </Button>
+                            </div>
+                        </div>
+
+                        {/* Header Impresión */}
+                        <div className="hidden print:block mb-8 text-center border-b pb-4">
+                            <h1 className="text-3xl font-bold">Perfil Filosófico Completo</h1>
+                            <p className="text-gray-500">Generado el {new Date().toLocaleDateString()}</p>
+                        </div>
+
+                        {/* Grid de Gráficos */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 print-grid">
+                            {CATEGORIES.map(cat => {
+                                const score = results[cat.id];
+                                // Encontrar cuadrante activo
+                                const activeQuad = cat.quadrants.find(q => 
+                                    q.x === (score.x >= 0 ? 1 : -1) && 
+                                    q.y === (score.y >= 0 ? 1 : -1)
+                                );
+
+                                return (
+                                    <div key={cat.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 print-break-inside-avoid print:shadow-none print:border-gray-300">
+                                        <div className="mb-2 pb-2 border-b border-gray-100 flex justify-between items-end">
+                                            <h3 className="font-bold text-lg text-gray-800">{cat.name}</h3>
+                                            <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                                {activeQuad ? activeQuad.label : 'Indefinido'}
+                                            </span>
+                                        </div>
+                                        
+                                        <div className="h-64 w-full">
+                                            <CustomScatterChart data={score} category={cat} />
+                                        </div>
+
+                                        <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                                            <strong>Tu resultado:</strong> {activeQuad ? activeQuad.desc : ''}.
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        
+                        {/* Explicación Final */}
+                        <div className="mt-12 mb-12 p-6 bg-blue-50 rounded-xl border border-blue-100 print-break-inside-avoid">
+                            <h2 className="text-xl font-bold text-blue-900 mb-2">Interpretación General</h2>
+                            <p className="text-blue-800">
+                                Este mapa conceptual te sitúa en debates contemporáneos clave. Si tus puntos están dispersos, puedes tener una filosofía ecléctica o pragmática. Si se alinean en un lado (ej. todo "Realismo" o "Fisicalismo"), muestras una fuerte coherencia sistemática. 
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
