@@ -25,8 +25,8 @@
             .print-container { max-width: 100%; width: 100%; padding: 0; }
         }
         /* Animaciones suaves */
-        .fade-in { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased">
@@ -35,7 +35,52 @@
     <script type="text/babel">
         const { useState, useMemo } = React;
 
-        // --- ICONOS SVG (Para no depender de librerías externas) ---
+        // --- DEFINICIONES DE CONCEPTOS CLAVE ---
+        const DEFINITIONS = {
+            // Epistemología
+            "Racionalismo": "Creencia en que la razón es la fuente principal y prueba del conocimiento.",
+            "Empirismo": "Teoría que afirma que todo conocimiento procede de la experiencia sensorial.",
+            "Internalismo": "La justificación de las creencias depende de estados mentales internos al sujeto.",
+            "Externalismo": "La justificación depende de factores externos (como la fiabilidad del proceso), no solo de la mente.",
+            
+            // Ciencia
+            "Realismo Científico": "Las teorías científicas describen la realidad tal cual es (incluyendo entidades inobservables).",
+            "Antirrealismo": "Las teorías son herramientas útiles de predicción, no necesariamente descripciones verdaderas de la realidad.",
+            "Nomológico": "Explicación basada en leyes universales generales (ej. leyes de la física).",
+            "Mecanicista": "Explicación basada en describir las partes y mecanismos causales que producen un fenómeno.",
+
+            // Política
+            "Liberalismo": "Prioridad a la libertad individual, los derechos civiles y la igualdad ante la ley.",
+            "Comunitarismo": "El individuo se define por su pertenencia a la comunidad; la identidad es social y compartida.",
+            "Igualitarismo": "Defiende la igualdad de resultados o condiciones materiales para todos los ciudadanos.",
+            "Libertarismo": "Defiende la máxima libertad individual, la propiedad privada y la mínima intervención estatal.",
+
+            // Ética
+            "Deontologismo": "Juzga la moralidad de las acciones por el cumplimiento de deberes y reglas, no por sus consecuencias.",
+            "Consecuencialismo": "Juzga la moralidad de las acciones exclusivamente por sus resultados (ej. el mayor bien para el mayor número).",
+            "Objetivismo": "Los valores morales son hechos reales e independientes de la opinión humana.",
+            "Relativismo/Const.": "Los valores morales son construcciones sociales, acuerdos o dependen del contexto cultural.",
+
+            // Metafísica
+            "Realismo Ontológico": "Existe una realidad objetiva e independiente de nuestros esquemas conceptuales.",
+            // Nota: Antirrealismo ya está definido en Ciencia, pero aplica similarmente aquí.
+            "Esencialismo": "Las cosas tienen una naturaleza o esencia intrínseca fija que las define.",
+            "Anti-esencialismo": "Niega las esencias fijas; la realidad es un flujo de procesos o construcciones.",
+
+            // Lenguaje
+            "Cognitivista": "El lenguaje refiere a hechos y puede ser verdadero o falso (función descriptiva).",
+            "Pragmatista": "El significado de los conceptos reside en sus consecuencias prácticas, uso y contexto.",
+            "Analítica": "Tradición filosófica enfocada en el análisis lógico, la claridad argumentativa y la ciencia.",
+            "Continental": "Tradición filosófica europea enfocada en la historia, la cultura, la literatura y la experiencia subjetiva.",
+
+            // Mente
+            "Fisicalismo": "Todo lo que existe es físico; los estados mentales son idénticos a estados cerebrales.",
+            "Dualismo/No-físico": "La mente o conciencia es distinta de la materia física; no puede reducirse solo al cerebro.",
+            "Representacionismo": "La mente funciona manipulando representaciones internas simbólicas del mundo.",
+            "Enactivismo": "La mente no está solo en el cerebro, sino que surge de la interacción dinámica del cuerpo con el entorno."
+        };
+
+        // --- ICONOS SVG ---
         const IconBook = ({ size = 24, className = "" }) => (
             <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         );
@@ -50,6 +95,9 @@
         );
         const IconPrinter = ({ size = 24, className = "" }) => (
             <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        );
+        const IconInfo = ({ size = 16, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         );
 
         // --- DATOS Y CONFIGURACIÓN ---
@@ -185,22 +233,70 @@
             { id: 35, cat: 'mind', text: 'Creo que somos máquinas biológicas (Fisicalismo) que procesan información (Representacionismo).', weights: [0.5, 0.5] }
         ];
 
+        // --- COMPONENTE: TOOLTIP GLOBAL ---
+        const Tooltip = ({ x, y, title, content, visible }) => {
+            if (!visible) return null;
+            return (
+                <div 
+                    style={{ 
+                        position: 'fixed', 
+                        left: Math.min(x + 15, window.innerWidth - 270), // Evitar desborde derecho
+                        top: y + 15, 
+                        zIndex: 50,
+                        maxWidth: '250px'
+                    }} 
+                    className="bg-gray-800 text-white p-3 rounded-lg shadow-xl text-sm pointer-events-none fade-in border border-gray-700"
+                >
+                    <div className="font-bold mb-1 border-b border-gray-600 pb-1 text-blue-300">{title}</div>
+                    <div className="leading-snug text-gray-200">{content}</div>
+                </div>
+            );
+        };
+
+        // --- COMPONENTE: ETIQUETA INTERACTIVA SVG ---
+        const InteractiveLabel = ({ x, y, text, anchor, baseline, transform, onShow, onHide }) => {
+            const def = DEFINITIONS[text];
+            const isInteractive = !!def;
+            
+            return (
+                <text
+                    x={x} y={y}
+                    textAnchor={anchor}
+                    dominantBaseline={baseline}
+                    transform={transform}
+                    className={isInteractive ? "cursor-help font-bold transition-colors duration-200" : "font-bold"}
+                    fill={isInteractive ? "#2563eb" : "#4b5563"}
+                    fontSize="10"
+                    onMouseEnter={(e) => isInteractive && onShow(e, text, def)}
+                    onMouseLeave={onHide}
+                    onClick={(e) => {
+                        if (isInteractive) {
+                            e.stopPropagation();
+                            onShow(e, text, def);
+                        }
+                    }}
+                    style={isInteractive ? { textDecoration: 'underline', textDecorationStyle: 'dotted' } : {}}
+                >
+                    {text}
+                </text>
+            );
+        };
+
         // --- COMPONENTE: GRÁFICO SVG PERSONALIZADO ---
-        const CustomScatterChart = ({ data, category }) => {
+        const CustomScatterChart = ({ data, category, onShowTooltip, onHideTooltip }) => {
             const size = 300;
-            const padding = 40;
-            const domainMax = 6; // Rango de -6 a 6
+            const padding = 45; // Aumentado ligeramente para etiquetas
+            const domainMax = 6;
             const center = size / 2;
             const scale = (size - padding * 2) / (domainMax * 2);
 
-            // Convertir coordenadas cartesianas a SVG
             const toSvgX = (val) => center + (val * scale);
             const toSvgY = (val) => center - (val * scale);
 
             return (
                 <div className="w-full h-full flex justify-center items-center">
                 <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="overflow-visible font-sans text-xs">
-                    {/* Fondo y Bordes */}
+                    {/* Fondo */}
                     <rect x={padding} y={padding} width={size - padding*2} height={size - padding*2} fill="#fafafa" rx="4" />
                     
                     {/* Rejilla */}
@@ -215,14 +311,31 @@
                     <line x1={center} y1={padding} x2={center} y2={size - padding} stroke="#374151" strokeWidth="1.5" />
                     <line x1={padding} y1={center} x2={size - padding} y2={center} stroke="#374151" strokeWidth="1.5" />
 
-                    {/* Etiquetas de Ejes (Extremos) */}
-                    <text x={center} y={padding - 15} textAnchor="middle" fill="#4b5563" fontWeight="bold" fontSize="10">{category.yAxis.max}</text>
-                    <text x={center} y={size - padding + 20} textAnchor="middle" fill="#4b5563" fontWeight="bold" fontSize="10">{category.yAxis.min}</text>
-                    
-                    <text x={size - padding + 5} y={center} textAnchor="start" dominantBaseline="middle" fill="#4b5563" fontWeight="bold" fontSize="10" transform={`rotate(90, ${size-padding+10}, ${center})`}>{category.xAxis.max}</text>
-                    <text x={padding - 15} y={center} textAnchor="end" dominantBaseline="middle" fill="#4b5563" fontWeight="bold" fontSize="10" transform={`rotate(-90, ${padding-15}, ${center})`}>{category.xAxis.min}</text>
+                    {/* Etiquetas de Ejes (Extremos Interactivos) */}
+                    {/* Y Max */}
+                    <InteractiveLabel 
+                        x={center} y={padding - 15} anchor="middle" 
+                        text={category.yAxis.max} onShow={onShowTooltip} onHide={onHideTooltip} 
+                    />
+                    {/* Y Min */}
+                    <InteractiveLabel 
+                        x={center} y={size - padding + 20} anchor="middle" 
+                        text={category.yAxis.min} onShow={onShowTooltip} onHide={onHideTooltip} 
+                    />
+                    {/* X Max */}
+                    <InteractiveLabel 
+                        x={size - padding + 5} y={center} anchor="start" baseline="middle" 
+                        transform={`rotate(90, ${size-padding+10}, ${center})`}
+                        text={category.xAxis.max} onShow={onShowTooltip} onHide={onHideTooltip} 
+                    />
+                    {/* X Min */}
+                    <InteractiveLabel 
+                        x={padding - 15} y={center} anchor="end" baseline="middle" 
+                        transform={`rotate(-90, ${padding-15}, ${center})`}
+                        text={category.xAxis.min} onShow={onShowTooltip} onHide={onHideTooltip} 
+                    />
 
-                    {/* Títulos de Ejes */}
+                    {/* Títulos de Ejes (No interactivos) */}
                     <text x={center} y={padding - 5} textAnchor="middle" fill="#9ca3af" fontSize="9" fontStyle="italic">{category.yAxis.label}</text>
                     <text x={size - padding} y={size - 10} textAnchor="end" fill="#9ca3af" fontSize="9" fontStyle="italic">{category.xAxis.label}</text>
 
@@ -278,6 +391,24 @@
             const [currentStep, setCurrentStep] = useState('intro'); // intro, quiz, results
             const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
             const [answers, setAnswers] = useState({});
+            
+            // Estado para el Tooltip
+            const [tooltip, setTooltip] = useState({ visible: false, x: 0, y: 0, title: '', content: '' });
+
+            // Manejadores de Tooltip
+            const handleShowTooltip = (e, title, content) => {
+                setTooltip({
+                    visible: true,
+                    x: e.clientX || e.pageX,
+                    y: e.clientY || e.pageY,
+                    title,
+                    content
+                });
+            };
+
+            const handleHideTooltip = () => {
+                setTooltip(prev => ({ ...prev, visible: false }));
+            };
 
             // Calcular resultados
             const results = useMemo(() => {
@@ -292,7 +423,6 @@
                     const question = QUESTIONS.find(q => q.id === parseInt(qId));
                     if (!question) return;
                     
-                    // Score 1-5 maps to -2 to +2
                     const normalizedScore = score - 3; 
                     
                     scores[question.cat].x += normalizedScore * question.weights[0];
@@ -318,6 +448,7 @@
                 setAnswers({});
                 setCurrentQuestionIndex(0);
                 setCurrentStep('intro');
+                setTooltip({ visible: false, x: 0, y: 0, title: '', content: '' });
             };
 
             // VISTA: INTRO
@@ -359,7 +490,6 @@
                 return (
                     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4 fade-in">
                         <div className="w-full max-w-3xl">
-                            {/* Barra de Progreso */}
                             <div className="mb-8">
                                 <div className="flex justify-between text-sm text-gray-500 mb-2">
                                     <span>Pregunta {currentQuestionIndex + 1} de {QUESTIONS.length}</span>
@@ -415,7 +545,9 @@
 
             // VISTA: RESULTADOS
             return (
-                <div className="min-h-screen bg-gray-50 p-6 print:p-0 print:bg-white fade-in">
+                <div className="min-h-screen bg-gray-50 p-6 print:p-0 print:bg-white fade-in" onClick={handleHideTooltip}>
+                    <Tooltip {...tooltip} />
+
                     <div className="max-w-6xl mx-auto print-container">
                         
                         {/* Header Pantalla */}
@@ -436,12 +568,18 @@
                             <h1 className="text-3xl font-bold">Perfil Filosófico Completo</h1>
                             <p className="text-gray-500">Generado el {new Date().toLocaleDateString()}</p>
                         </div>
+                        
+                        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3 text-sm text-blue-800 no-print">
+                            <IconInfo size={20} className="mt-0.5 shrink-0" />
+                            <p>
+                                <strong>Tip interactivo:</strong> Pasa el mouse o haz clic sobre los términos de los ejes (ej: "Racionalismo", "Empirismo") para ver sus definiciones.
+                            </p>
+                        </div>
 
                         {/* Grid de Gráficos */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 print-grid">
                             {CATEGORIES.map(cat => {
                                 const score = results[cat.id];
-                                // Encontrar cuadrante activo
                                 const activeQuad = cat.quadrants.find(q => 
                                     q.x === (score.x >= 0 ? 1 : -1) && 
                                     q.y === (score.y >= 0 ? 1 : -1)
@@ -457,7 +595,12 @@
                                         </div>
                                         
                                         <div className="h-64 w-full">
-                                            <CustomScatterChart data={score} category={cat} />
+                                            <CustomScatterChart 
+                                                data={score} 
+                                                category={cat} 
+                                                onShowTooltip={handleShowTooltip}
+                                                onHideTooltip={handleHideTooltip}
+                                            />
                                         </div>
 
                                         <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
