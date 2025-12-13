@@ -3,690 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criterio & IA - Serie Editorial</title>
-    
-    <!-- React & ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    
-    <!-- Babel para JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
-    <!-- Tailwind CSS -->
+    <title>Criterio & IA | Serie Editorial</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Merriweather', 'serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.95)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        /* Custom scrollbar for webkit */
-        ::-webkit-scrollbar {
-            width: 8px;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0; /* Slate 200 */
         }
-        ::-webkit-scrollbar-track {
-            background: #0f172a; 
+        h1, h2, h3, .serif-font {
+            font-family: 'Merriweather', serif;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #334155; 
-            border-radius: 4px;
+        .display-font {
+            font-family: 'Cinzel', serif;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569; 
+        .gradient-text {
+            background: linear-gradient(to right, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Modal Animation */
+        .modal-open {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .book-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-300">
-    <div id="root"></div>
+<body class="antialiased selection:bg-amber-500 selection:text-white relative">
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-
-        // --- ICON COMPONENTS (Inline for single file portability) ---
-        const IconWrapper = ({ children, size = 24, className = "" }) => (
-            <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width={size} 
-                height={size} 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={className}
-            >
-                {children}
-            </svg>
-        );
-
-        const BookOpen = (props) => (
-            <IconWrapper {...props}>
-                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </IconWrapper>
-        );
-        const Cpu = (props) => (
-            <IconWrapper {...props}>
-                <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3"/><path d="M15 1v3"/><path d="M9 20v3"/><path d="M15 20v3"/><path d="M20 9h3"/><path d="M20 14h3"/><path d="M1 9h3"/><path d="M1 14h3"/>
-            </IconWrapper>
-        );
-        const ChevronRight = (props) => (
-            <IconWrapper {...props}>
-                <path d="m9 18 6-6-6-6"/>
-            </IconWrapper>
-        );
-        const Menu = (props) => (
-            <IconWrapper {...props}>
-                <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
-            </IconWrapper>
-        );
-        const X = (props) => (
-            <IconWrapper {...props}>
-                <path d="M18 6 6 18"/><path d="m6 6 18 12"/>
-            </IconWrapper>
-        );
-        const Star = (props) => (
-            <IconWrapper {...props}>
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-            </IconWrapper>
-        );
-        const ShieldCheck = (props) => (
-            <IconWrapper {...props}>
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/>
-            </IconWrapper>
-        );
-        const XCircle = (props) => (
-            <IconWrapper {...props}>
-                <circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>
-            </IconWrapper>
-        );
-        const Brain = (props) => (
-            <IconWrapper {...props}>
-                <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
-            </IconWrapper>
-        );
-
-
-        // --- MAIN COMPONENTS ---
-
-        const Navbar = () => {
-          const [isOpen, setIsOpen] = useState(false);
-
-          return (
-            <nav className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between h-16">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 text-white font-bold text-xl tracking-wider cursor-pointer" onClick={() => window.scrollTo(0,0)}>
-                      <span className="text-cyan-400">CRITERIO</span> <span className="text-slate-400">&</span> <span className="text-amber-400">IA</span>
-                    </div>
-                  </div>
-                  <div className="hidden md:block">
-                    <div className="ml-10 flex items-baseline space-x-8">
-                      <a href="#libros" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">La Colección</a>
-                      <a href="#filosofia" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Filosofía</a>
-                      <a href="#autor" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Autor</a>
-                      <a href="#contacto" className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg hover:shadow-cyan-500/25">
-                        Comprar en Amazon
-                      </a>
-                    </div>
-                  </div>
-                  <div className="-mr-2 flex md:hidden">
-                    <button onClick={() => setIsOpen(!isOpen)} className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-slate-800 focus:outline-none">
-                      {isOpen ? <X size={24} /> : <Menu size={24} />}
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <i data-lucide="brain-circuit" class="h-6 w-6 text-amber-500"></i>
+                    <span class="display-font font-bold text-xl tracking-wider text-white">CRITERIO & IA</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#manifiesto" class="text-sm font-medium text-slate-300 hover:text-amber-500 transition-colors">Manifiesto</a>
+                    <a href="#libros" class="text-sm font-medium text-slate-300 hover:text-amber-500 transition-colors">La Colección</a>
+                    <a href="#autor" class="text-sm font-medium text-slate-300 hover:text-amber-500 transition-colors">Autor</a>
+                </div>
+                <div>
+                    <button onclick="openModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-sm text-sm font-semibold transition-all shadow-lg hover:shadow-amber-500/20">
+                        Leer Gratis
                     </button>
-                  </div>
                 </div>
-              </div>
-
-              {isOpen && (
-                <div className="md:hidden bg-slate-900 border-b border-slate-800">
-                  <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                    <a href="#libros" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">La Colección</a>
-                    <a href="#filosofia" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Filosofía</a>
-                    <a href="#autor" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Autor</a>
-                    <a href="#contacto" className="text-cyan-400 font-bold block px-3 py-2 rounded-md text-base">Comprar Serie</a>
-                  </div>
-                </div>
-              )}
-            </nav>
-          );
-        };
-
-        const ManifestoModal = ({ isOpen, onClose }) => {
-          if (!isOpen) return null;
-
-          return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
-              <div className="relative bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl animate-[fadeIn_0.3s_ease-out]">
-                
-                {/* Header */}
-                <div className="sticky top-0 bg-slate-900/95 backdrop-blur border-b border-slate-800 p-6 flex justify-between items-center z-10">
-                  <h2 className="text-2xl font-bold text-white tracking-tight">Manifiesto del Criterio Humano</h2>
-                  <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
-                    <XCircle size={28} />
-                  </button>
-                </div>
-
-                {/* Content */}
-                <div className="p-8 text-slate-300 space-y-8 font-serif leading-relaxed text-lg">
-                  <p className="text-xl text-white font-medium">
-                    Vivimos bajo la tiranía del algoritmo. En un mundo donde la respuesta es instantánea y barata, declaramos que la pregunta es el único activo de lujo que nos queda.
-                  </p>
-
-                  <div className="space-y-6">
-                    <div className="border-l-4 border-cyan-500 pl-6">
-                      <h3 className="text-white font-sans font-bold text-lg uppercase tracking-wide mb-2">1. No somos esponjas, somos cribas</h3>
-                      <p>La IA es la esponja definitiva: absorbe todo sin criterio. Nosotros rechazamos la acumulación pasiva de datos. Nuestro poder reside en filtrar, en separar el oro de la grava, en decidir qué ignorar.</p>
-                    </div>
-
-                    <div className="border-l-4 border-amber-500 pl-6">
-                      <h3 className="text-white font-sans font-bold text-lg uppercase tracking-wide mb-2">2. La ética es incomputable</h3>
-                      <p>Un algoritmo puede optimizar la eficiencia de un despido masivo, pero no puede sentir el peso moral de esa decisión. Reclamamos el juicio ético como un territorio exclusivamente humano que ninguna red neuronal puede colonizar.</p>
-                    </div>
-
-                    <div className="border-l-4 border-emerald-500 pl-6">
-                      <h3 className="text-white font-sans font-bold text-lg uppercase tracking-wide mb-2">3. La velocidad no es sabiduría</h3>
-                      <p>La máquina opera en milisegundos; el estratega opera en tiempos de maduración. Como enseñó Gracián, la prisa es enemiga de la perfección y la prudencia. Reivindicamos la pausa estratégica frente a la reacción automatizada.</p>
-                    </div>
-
-                    <div className="border-l-4 border-purple-500 pl-6">
-                      <h3 className="text-white font-sans font-bold text-lg uppercase tracking-wide mb-2">4. El carácter es el algoritmo final</h3>
-                      <p>Cuando la competencia técnica se democratiza y cualquiera puede generar código o texto, la única ventaja competitiva sostenible es quién eres. Tu integridad, tu gusto y tu voluntad son irreplicables.</p>
-                    </div>
-                  </div>
-
-                  <div className="pt-8 text-center">
-                    <p className="text-slate-400 italic mb-6">
-                      "No compitas con la máquina en procesamiento. Supérala en humanidad."
-                    </p>
-                    <button 
-                      onClick={onClose}
-                      className="bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition-colors shadow-lg shadow-white/10"
-                    >
-                      Entendido. Quiero dominar esto.
-                    </button>
-                  </div>
-                </div>
-              </div>
             </div>
-          );
-        };
+        </div>
+    </nav>
 
-        const ChapterModal = ({ isOpen, onClose }) => {
-          if (!isOpen) return null;
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <!-- Background decorative elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-20">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full blur-[128px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600 rounded-full blur-[128px]"></div>
+        </div>
 
-          return (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
-              <div className="relative bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl animate-[fadeIn_0.3s_ease-out]">
-                
-                {/* Header */}
-                <div className="sticky top-0 bg-slate-900/95 backdrop-blur border-b border-slate-800 p-6 flex justify-between items-center z-10">
-                  <div>
-                     <span className="text-emerald-400 font-bold text-xs uppercase tracking-widest">Capítulo 1 • Volumen 1</span>
-                     <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight mt-1">Sinergia cognitiva: cuando el cálculo potencia la comprensión</h2>
-                  </div>
-                  <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors ml-4">
-                    <XCircle size={28} />
-                  </button>
-                </div>
-
-                {/* Content */}
-                <div className="p-8 md:p-12 text-slate-300 font-serif leading-relaxed text-lg selection:bg-emerald-500/30 selection:text-white">
-                    
-                    <blockquote className="border-l-4 border-emerald-500 pl-6 my-8 italic text-slate-400 text-xl">
-                      "La claridad es el vicio de la razón humana más que su virtud, porque una idea clara es a menudo una idea finita."
-                      <footer className="text-sm font-sans font-bold text-slate-500 mt-2 not-italic">— Giambattista Vico, adaptado de <em>De nostri temporis studiorum ratione</em> (1709).</footer>
-                    </blockquote>
-
-                    <div className="space-y-6">
-                      <p>Durante la última década, la narrativa dominante sobre la inteligencia artificial (IA) en el ecosistema corporativo ha estado gobernada por una angustia darwinista: la historia de la sustitución. Informes de consultoría y titulares sensacionalistas han perpetuado una visión de suma cero: silicio contra carbono, procesamiento contra intuición. Se nos vendió la idea de que la llegada de los algoritmos avanzados marcaba el inicio de una obsolescencia humana programada.</p>
-                      
-                      <p>Esta visión, aunque dramática y comercialmente rentable, es fundamentalmente errónea. Al entrar en una fase de madurez tecnológica, es imperativo redefinir la relación. No nos enfrentamos a un duelo, sino a la posibilidad de un dúo sin precedentes. La verdadera ventaja competitiva en el siglo XXI no pertenecerá a quien automatice más rápido, sino a quien entienda mejor la <strong>sinergia cognitiva</strong>: la capacidad de orquestar la potencia de cálculo bruta de la máquina con la capacidad de comprensión semántica y teleológica del ser humano.</p>
-                      
-                      <p>Este capítulo establece la tesis central de la obra: la IA es la herramienta suprema de predicción cartesiana, mientras que el ser humano es el portador insustituible del <em>ingenium</em> viquiano. Entender esta distinción no es un ejercicio de diletantismo filosófico, sino un imperativo estratégico.</p>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">La crítica de Vico a la razón algorítmica</h3>
-                      <p>Para comprender los límites y la potencia de la IA, debemos retroceder tres siglos, hasta el pensamiento del filósofo napolitano Giambattista Vico (1668-1744). Vico fue uno de los primeros y más feroces críticos del racionalismo moderno encarnado por René Descartes. Mientras Descartes y sus seguidores buscaban reducir el conocimiento a "ideas claras y distintas" —precursoras de nuestro actual código binario y lógica algorítmica—, Vico advertía que este enfoque conllevaba un peligro mortal: la desecación de la realidad.</p>
-                      
-                      <p>La crítica de Vico es de una actualidad pasmosa para el directivo moderno. Él sostenía que el método matemático-racional, al buscar la claridad perfecta, ignora la complejidad turbia de la vida real. La vida civil, la política y los negocios no se rigen por la geometría, sino por la prudencia y la oportunidad en contextos inciertos.</p>
-                      
-                      <p>La inteligencia artificial es, en esencia, la culminación del sueño cartesiano. Es una máquina de generar "claridad". Ante un conjunto de datos caóticos, el algoritmo ordena, clasifica y predice con una precisión matemática asombrosa. Sin embargo, como advertía Vico, esta claridad es a menudo un "vicio", pues para lograrla, el modelo debe eliminar el contexto, la historia y la singularidad del momento. La máquina nos ofrece un mapa perfecto (sintaxis), pero desconoce el territorio (semántica).</p>
-                      
-                      <p className="bg-slate-800/50 p-6 rounded-lg border border-slate-700">
-                        Aquí radica la primera premisa de la sinergia cognitiva: necesitamos la claridad de la máquina para procesar la información, pero necesitamos la oscuridad fértil del ingenio humano para comprenderla.
-                      </p>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">Predicción versus Creación: El abismo ontológico</h3>
-                      <p>Para gestionar eficazmente en la era digital, debemos desmitificar la terminología antropomórfica. Decimos que la IA "aprende" o "decide", pero técnicamente, como señalan economistas como Ajay Agrawal, la IA actual es una tecnología de predicción. Reduce el coste de inferir información faltante basándose en datos históricos.</p>
-                      <p>Sin embargo, predecir no es crear. Y aquí recuperamos el concepto central de la antropología de Vico: el <em>ingenium</em> (ingenio).</p>
-                      <p>Para Vico, la civilización no comienza con el cálculo o la lógica formal, sino con la capacidad poética y metafórica del ser humano. El <em>ingenium</em> es la facultad de ver relaciones entre cosas dispares, de conectar realidades que la lógica deductiva mantendría separadas. Es la capacidad de "dar" sentido donde no lo hay.</p>
-                      
-                      <ul className="list-disc pl-6 space-y-4 marker:text-emerald-400">
-                        <li><strong>La máquina (Cálculo y Sintaxis):</strong> Opera bajo reglas de probabilidad. Es insuperable en la gestión del <em>certum</em> (lo cierto, el dato fáctico). Puede procesar millones de transacciones para detectar un fraude o predecir una rotura de stock basándose en patrones pasados.</li>
-                        <li><strong>El humano (Ingenio y Semántica):</strong> Opera con significados y propósitos. Es el dominio del <em>verum</em> (lo verdadero, lo que es hecho y comprendido). Un líder empresarial utiliza el lenguaje no solo para transmitir información, sino para fundar nuevas realidades, para inspirar una visión que no se deduce de los datos históricos.</li>
-                      </ul>
-                      
-                      <p>La IA puede redactar un soneto analizando la métrica de mil poemas del Siglo de Oro, pero no puede experimentar la angustia ni el amor que motivan el verso. Del mismo modo, puede generar un plan de negocio optimizado, pero no puede fundar una empresa, porque una organización no es solo un flujo de caja; es una narrativa compartida y una voluntad de ser.</p>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">El director financiero y el poeta</h3>
-                      <p>Imaginemos un director financiero (CFO) presentando resultados trimestrales.</p>
-                      <ul className="list-disc pl-6 space-y-2 marker:text-emerald-400">
-                        <li><strong>Aporte de la IA:</strong> Genera proyecciones de flujo de caja, analiza la varianza y predice riesgos de liquidez con una precisión que ningún equipo de analistas humanos podría igualar en tiempo real. Esto es la "claridad cartesiana".</li>
-                        <li><strong>Aporte Humano (Ingenio):</strong> El CFO no se limita a leer los datos. Ejerce su facultad retórica para dotar de sentido a los números. Explica que la caída en el margen no es un fracaso operativo, sino una "inversión en el foso defensivo de la empresa" (una metáfora). Transforma el dato frío en una narrativa de resiliencia.</li>
-                      </ul>
-                      <p>Sin la IA, el CFO estaría ciego ante los detalles microfinancieros. Sin el ingenio del CFO, la IA ofrecería una verdad matemática que podría destruir la confianza de los inversores. La sinergia ocurre cuando el cálculo sustenta la retórica, y la retórica da propósito al cálculo.</p>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">El ingenio como orquestación de capacidades</h3>
-                      <p>En el pensamiento viquiano, el ser humano no es una "mente" aislada (como el <em>cogito</em> de Descartes), sino un ser histórico y social. Por tanto, la inteligencia no es solo procesamiento de información, sino adaptación creativa al entorno.</p>
-                      <p>El "ingenio" en el siglo XXI no se define por la capacidad de retener información (memoria externalizada a la nube) ni por la velocidad de cálculo (externalizada a los procesadores). El ingenio reside hoy en la capacidad de orquestación. El directivo moderno actúa como un director de orquesta que no necesita saber tocar el violín mejor que el solista (el algoritmo), pero debe poseer la visión de conjunto para integrar los sonidos en una armonía.</p>
-                      
-                      <div className="bg-slate-800 p-6 rounded-lg my-6">
-                        <h4 className="text-white font-bold mb-4">La orquestación requiere gestionar dos flujos ontológicos:</h4>
-                        <ol className="list-decimal pl-6 space-y-2 marker:text-white">
-                          <li><strong>Flujo Convergente (Algorítmico):</strong> La IA busca la respuesta más probable basándose en el pasado. Tiende a la estandarización, la eficiencia y la reducción de la incertidumbre.</li>
-                          <li><strong>Flujo Divergente (Humano):</strong> El profesional busca la excepción, el contexto novedoso y el valor ético. Tiende a la innovación, la eficacia y la gestión de la ambigüedad.</li>
-                        </ol>
-                      </div>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">Estudio de caso: medicina diagnóstica y la sanación integral</h3>
-                      <p>Para ilustrar la potencia de la sinergia cognitiva, el mejor ejemplo proviene de la medicina de alta complejidad, un campo donde convergen datos masivos (scientia) y la urgencia vital de la persona (sapientia).</p>
-                      
-                      <p><strong>El Escenario:</strong> En un hospital oncológico de vanguardia, se utiliza un sistema de IA de reconocimiento de imágenes para analizar radiografías. El sistema, entrenado con millones de casos, supera al ojo humano en la detección de patrones sutiles.</p>
-                      
-                      <p><strong>La Intervención de la Máquina (El reino de la predicción):</strong> El algoritmo analiza el escáner del paciente "Roberto". Identifica una sombra de 3 milímetros y, cruzando datos con el historial genético, predice una probabilidad del 89% de malignidad. La IA ha cumplido su función cartesiana: ha ofrecido un dato claro, distinto y probabilístico.</p>
-                      
-                      <p><strong>La Intervención del Médico (El reino del Ingenium):</strong> Aquí entra la Dra. Aris. Si la medicina fuera solo ingeniería biológica, el sistema enviaría automáticamente una orden de cirugía. Pero la Dra. Aris aporta la "inteligencia tópica".</p>
-                      <ul className="list-disc pl-6 mb-4 marker:text-emerald-400">
-                        <li><em>Integración de la Historia:</em> A través del lenguaje, sabe que Roberto es un violinista de 70 años para quien la calidad de vida y la motricidad fina son más valiosas que la mera extensión biológica de la existencia.</li>
-                        <li><em>Validación Semántica:</em> La IA ve un tumor (objeto). La doctora ve una amenaza a la identidad del paciente (sujeto).</li>
-                      </ul>
-                      
-                      <p><strong>La Decisión Sinérgica:</strong> La doctora no ignora a la IA; agradece la detección temprana que su ojo podría haber pasado por alto. Pero, ejerciendo su soberanía humana, decide no aplicar el protocolo estándar agresivo. Diseña junto a Roberto un tratamiento focalizado que preserva su capacidad de tocar el violín. La IA permitió curar (tratar la patología biológica). El humano, mediante el ingenio y la empatía, permitió sanar (tratar a la persona en su totalidad).</p>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">Hacia una colaboración fluida: interrogar a la máquina</h3>
-                      <p>La sinergia cognitiva requiere una nueva humildad epistémica. Requiere que el humano admita que su intuición estadística es pobre y que su cerebro no puede procesar terabytes de información. Pero también requiere reconocer que los modelos de IA son "sabios idiotas": brillantes en la sintaxis, ciegos al significado.</p>
-                      <p>Para lograr esta colaboración, los profesionales deben desarrollar la competencia de interrogar a la máquina. Ante un reporte generado por IA, el líder con ingenio no pregunta pasivamente "¿Es esto verdad?", sino que aplica un cuestionamiento activo:</p>
-                      <ul className="list-disc pl-6 mb-4 marker:text-emerald-400">
-                        <li><strong>Contexto:</strong> "¿Qué variables del mundo real ignora este modelo matemático?" (Ej. una huelga de transportes, un cambio cultural sutil).</li>
-                        <li><strong>Propósito:</strong> "¿La optimización que propone este algoritmo se alinea con nuestros valores fundacionales o solo con la métrica financiera?"</li>
-                        <li><strong>Humanidad:</strong> "¿Cómo traducimos esta predicción de datos en un lenguaje que movilice a las personas?"</li>
-                      </ul>
-
-                      <h3 className="text-2xl font-sans font-bold text-white mt-12 mb-4">Conclusión: recuperar la soberanía del criterio</h3>
-                      <p>Vico nos enseñó que "la verdad es hija del tiempo", no solo de la lógica. La realidad empresarial es histórica y cambiante, y por eso no puede ser completamente encapsulada por un algoritmo entrenado con datos del pasado.</p>
-                      <p>La "Sinergia Cognitiva" es el reconocimiento de que el cálculo potencia la comprensión, pero jamás la sustituye. La tecnología nos da respuestas, pero corresponde al ingenio humano, a través de su capacidad creativa y lingüística, asegurar que estamos haciendo las preguntas correctas.</p>
-                      <p>Al rechazar la visión de la inteligencia como mera sintaxis y abrazar nuestra capacidad para la metáfora, la ética y el propósito, no solo aseguramos nuestra relevancia laboral, sino que elevamos la calidad de nuestras decisiones. Pasamos de ser administradores de procesos a ser arquitectos de valor.</p>
-                      <p>Sin embargo, esta colaboración tiene enemigos silenciosos. La comodidad es uno de ellos. En el próximo capítulo, "Ingenio contra la complacencia", exploraremos qué sucede cuando esta relación se desequilibra y el humano, por pereza intelectual, comienza a aceptar la primera respuesta de la máquina, cayendo en la peligrosa trampa del "eco artificial".</p>
-                    </div>
-
-                    <div className="mt-16 pt-8 border-t border-slate-800 text-sm text-slate-500">
-                      <p className="font-bold mb-2">Notas para el lector:</p>
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>Para profundizar en cómo evitar que la IA simplemente valide nuestros sesgos o nos dé la razón por diseño, véase el Capítulo 2.</li>
-                        <li>La discusión sobre cómo diferenciar la “verdad sintáctica” de la máquina de la “verdad factual” necesaria para la gestión se aborda técnicamente en el Capítulo 6.</li>
-                        <li>El fundamento ético de por qué el humano debe mantener la soberanía sobre el propósito se expande en el Capítulo 8.</li>
-                      </ul>
-                    </div>
-
-                    <div className="mt-12 text-center">
-                       <button onClick={onClose} className="text-emerald-400 hover:text-emerald-300 font-bold border border-emerald-500/50 hover:border-emerald-400 px-6 py-3 rounded-full transition-all">
-                         Cerrar Capítulo
-                       </button>
-                    </div>
-                </div>
-              </div>
-            </div>
-          );
-        };
-
-        const Hero = ({ onOpenManifesto }) => {
-          return (
-            <div className="relative bg-slate-950 overflow-hidden">
-              {/* Background decoration */}
-              <div className="absolute top-0 left-1/2 w-full -translate-x-1/2 h-full z-0">
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl"></div>
-              </div>
-
-              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col items-center text-center">
-                <div className="inline-flex items-center px-3 py-1 rounded-full border border-slate-700 bg-slate-900/50 backdrop-blur-sm mb-6">
-                  <span className="flex h-2 w-2 rounded-full bg-cyan-400 mr-2"></span>
-                  <span className="text-xs font-semibold text-slate-300 uppercase tracking-wide">Nueva Serie Editorial</span>
-                </div>
-                
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-                  Cuando todo es artificial,<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">
-                    la humanidad es el nuevo lujo.
-                  </span>
-                </h1>
-                
-                <p className="mt-4 max-w-2xl text-xl text-slate-400 mb-10">
-                  La serie definitiva para líderes que se niegan a ser reemplazados. 
-                  Fusionamos el pensamiento crítico clásico con la estrategia de negocios moderna 
-                  para gobernar la Inteligencia Artificial.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <a href="#libros" className="px-8 py-4 bg-white text-slate-900 rounded-lg font-bold text-lg hover:bg-slate-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)] flex items-center justify-center">
-                    Explorar los Libros <ChevronRight className="ml-2" size={20} />
-                  </a>
-                  <button 
-                    onClick={onOpenManifesto}
-                    className="px-8 py-4 bg-transparent border border-slate-700 text-slate-300 rounded-lg font-bold text-lg hover:border-slate-500 hover:text-white transition-all hover:bg-slate-800/50"
-                  >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-slate-800 border border-slate-700 text-amber-500 text-xs font-bold tracking-widest uppercase mb-6">Nueva Serie Editorial</span>
+            
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                Cuando todo es <span class="italic text-slate-400">artificial</span>,<br>
+                la humanidad es el nuevo <span class="gradient-text display-font">lujo</span>.
+            </h1>
+            
+            <p class="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-slate-400 font-light leading-relaxed">
+                La serie definitiva para líderes que se niegan a ser reemplazados. Fusionamos el pensamiento crítico clásico con la estrategia de negocios moderna para gobernar la Inteligencia Artificial.
+            </p>
+            
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#libros" class="px-8 py-4 bg-white text-slate-900 font-bold rounded-sm hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
+                    Explorar los Libros
+                    <i data-lucide="arrow-down" class="h-4 w-4"></i>
+                </a>
+                <a href="#manifiesto" class="px-8 py-4 bg-transparent border border-slate-600 text-white font-medium rounded-sm hover:border-amber-500 hover:text-amber-500 transition-all">
                     Leer Manifiesto
-                  </button>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Value Proposition -->
+    <section class="py-16 bg-slate-800/50 border-y border-slate-700/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Card 1 -->
+                <div class="group">
+                    <div class="h-12 w-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-600 transition-colors">
+                        <i data-lucide="zap" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Más allá del Hype</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        No es otro libro técnico sobre cómo usar ChatGPT. Es sobre cómo <strong>superar</strong> a ChatGPT usando el criterio humano que la máquina no puede replicar.
+                    </p>
                 </div>
-              </div>
+                <!-- Card 2 -->
+                <div class="group">
+                    <div class="h-12 w-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-600 transition-colors">
+                        <i data-lucide="scale" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Sabiduría Atemporal</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Conectamos la filosofía clásica (Aristóteles, Vico, Gracián) con los problemas modernos. Porque la naturaleza humana no cambia con el software.
+                    </p>
+                </div>
+                <!-- Card 3 -->
+                <div class="group">
+                    <div class="h-12 w-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-600 transition-colors">
+                        <i data-lucide="shield-check" class="h-6 w-6 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Defensa Intelectual</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        Protégete de las alucinaciones de la IA, los sesgos de los datos y la manipulación algorítmica. Recupera tu soberanía mental.
+                    </p>
+                </div>
             </div>
-          );
-        };
+        </div>
+    </section>
 
-        const BookCard = ({ vol, title, subtitle, description, accentColor, features, image, amazonLink }) => (
-          <div className="flex flex-col md:flex-row gap-8 items-start bg-slate-900/50 border border-slate-800 rounded-2xl p-8 hover:border-slate-700 transition-all duration-300 group">
-            {/* Book Cover Image */}
-            <div className="w-48 flex-shrink-0 relative transform group-hover:-translate-y-2 transition-transform duration-500 mx-auto md:mx-0 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)]">
-              {/* Glow effect behind the book */}
-              <div className={`absolute inset-0 ${accentColor} blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500`}></div>
-              
-              <img 
-                src={image} 
-                alt={`Portada del libro ${title}`} 
-                className="w-full h-auto rounded-md shadow-2xl relative z-10 border border-white/10"
-              />
+    <!-- Manifiesto Section -->
+    <section id="manifiesto" class="py-24 relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-amber-500 font-bold tracking-wider text-sm uppercase">El Manifiesto</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white mt-2 serif-font">¿Por qué esta serie ahora?</h2>
+            </div>
+            
+            <div class="prose prose-lg prose-invert mx-auto border-l-4 border-amber-500 pl-6 italic bg-slate-800/30 p-8 rounded-r-lg">
+                <p>
+                    La serie <strong>Pensamiento Crítico e Inteligencia Artificial</strong> nace de una convicción respaldada por investigaciones contemporáneas: la inteligencia artificial está transformando de raíz el mundo del trabajo, la toma de decisiones y nuestras prácticas cotidianas, tal como argumentan Erik Brynjolfsson y Andrew McAfee en <em>The Second Machine Age</em> (2014).
+                </p>
+                <p>
+                    Este cambio no es opcional ni distante; nos involucra a todos, y comprenderlo resulta tan ventajoso como necesario, una idea desarrollada con lucidez por Stuart Russell en <em>Human Compatible</em> (2019).
+                </p>
+                <p>
+                    Estos libros buscan ofrecerle orientación para distinguir qué oportunidades conviene aprovechar, qué riesgos deben considerarse y qué actitudes permiten integrar la tecnología de manera provechosa. Aquí encontrará tesis claras, argumentos sustentados y, sobre todo, las implicaciones prácticas —el auténtico <em>so what?</em>— que pueden guiar sus decisiones personales y profesionales.
+                </p>
+                <p class="font-bold text-white not-italic mt-6">
+                    Bienvenido a este recorrido. Cada volumen abre una puerta distinta hacia el mismo objetivo: pensar mejor en una era que exige pensamiento crítico.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Books Section -->
+    <section id="libros" class="py-24 bg-slate-900 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold text-white serif-font mb-4">La Colección Completa</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">Una progresión lógica desde los fundamentos del pensamiento hasta la maestría estratégica.</p>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 text-left">
-              <div className="flex items-center gap-2 mb-3">
-                <span className={`px-2 py-1 rounded text-xs font-bold ${accentColor} text-slate-900 bg-opacity-90`}>
-                  VOLUMEN {vol}
-                </span>
-                {vol === 3 && <span className="text-xs text-cyan-400 font-medium animate-pulse border border-cyan-400/30 px-2 py-0.5 rounded-full">NOVEDAD</span>}
-              </div>
-              
-              <h3 className="text-2xl font-bold text-white mb-2 font-serif tracking-tight">{title}</h3>
-              <p className="text-lg text-slate-400 mb-6 italic">{subtitle}</p>
-              
-              <p className="text-slate-300 mb-6 leading-relaxed border-l-2 border-slate-700 pl-4">
-                {description}
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-                {features.map((feature, idx) => (
-                  <div key={idx} className="flex items-center text-sm text-slate-400">
-                    <Star size={14} className="text-amber-400 mr-2 flex-shrink-0" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
+            <div class="space-y-32">
+                
+                <!-- Volume 1 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    <div class="order-2 lg:order-1 relative group flex justify-center">
+                        <!-- Portada Real -->
+                        <div class="relative w-64 md:w-72 transition-transform duration-500 book-hover">
+                            <div class="absolute inset-0 bg-emerald-400 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                            <img src="https://m.media-amazon.com/images/I/41VEaA-p9eL._SY445_SX342_ControlCacheEqualizer_.jpg" 
+                                 alt="Portada La Hegemonía del Criterio" 
+                                 class="relative z-10 rounded-lg shadow-2xl border border-slate-700 w-full">
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <span class="text-amber-500 font-bold tracking-widest text-sm uppercase mb-2 block">Volumen 1</span>
+                        <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">La Hegemonía del Criterio</h3>
+                        <p class="text-xl text-slate-300 font-light mb-6">Fundamentos para pensar en la era de la máquina.</p>
+                        
+                        <div class="bg-slate-800/50 p-6 rounded-lg mb-8 border-l-2 border-emerald-400">
+                            <h4 class="text-white font-bold mb-2 text-sm uppercase">Tesis Central</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Este libro parte de una idea que encuentra fundamento en la advertencia de Giambattista Vico en <em>Principi di Scienza Nuova</em> (1744): el cálculo, por brillante que sea, no agota la comprensión humana. La tesis del volumen sostiene que la inteligencia artificial opera en el dominio de la predicción —el <em>certum</em>— mientras que el ser humano conserva la soberanía del criterio, esa facultad creativa y prudencial que Vico llamó <em>ingenium</em>. <strong class="text-emerald-400">La IA calcula; el ser humano decide.</strong>
+                            </p>
+                        </div>
 
-              <a 
-                href={amazonLink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-cyan-400 font-semibold hover:text-cyan-300 inline-flex items-center transition-colors group/btn"
-              >
-                Ver en Amazon <ChevronRight size={16} className="ml-1 transform group-hover/btn:translate-x-1 transition-transform" />
-              </a>
+                        <ul class="grid grid-cols-2 gap-4 mb-8">
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <span>Lógica fundamental</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <span>Detectar Falacias</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <span>Pensamiento de Primer Principio</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <span>Autonomía Intelectual</span>
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-3 rounded-sm font-semibold transition-colors flex items-center gap-2">
+                                <i data-lucide="shopping-cart" class="h-4 w-4"></i> Ver en Amazon
+                            </a>
+                            <button onclick="openModal()" class="text-slate-400 hover:text-white underline underline-offset-4 text-sm px-4 py-3">Leer Muestra</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume 2 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    <div class="order-2 lg:order-2 relative group flex justify-center">
+                        <!-- Portada Real -->
+                        <div class="relative w-64 md:w-72 transition-transform duration-500 book-hover">
+                            <div class="absolute inset-0 bg-cyan-400 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                            <img src="https://m.media-amazon.com/images/I/411W64gMLyL._SY445_SX342_ControlCacheEqualizer_.jpg" 
+                                 alt="Portada El Arquitecto de Decisiones" 
+                                 class="relative z-10 rounded-lg shadow-2xl border border-slate-700 w-full">
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-1">
+                        <span class="text-amber-500 font-bold tracking-widest text-sm uppercase mb-2 block">Volumen 2</span>
+                        <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">El Arquitecto de Decisiones</h3>
+                        <p class="text-xl text-slate-300 font-light mb-6">Cómo filtrar el ruido algorítmico y validar la estrategia empresarial.</p>
+                        
+                        <div class="bg-slate-800/50 p-6 rounded-lg mb-8 border-l-2 border-cyan-400">
+                            <h4 class="text-white font-bold mb-2 text-sm uppercase">Tesis Central</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                En entornos saturados de datos, la ventaja estratégica no es procesar más información, sino filtrar mejor (Kahneman, Sibony, Sunstein). El libro sostiene que el directivo del siglo XXI debe convertirse en un <strong>arquitecto de decisiones</strong>, capaz de cribar razones, detectar supuestos invisibles y someter a escrutinio crítico cualquier conclusión —humana o algorítmica— antes de actuar.
+                            </p>
+                        </div>
+
+                        <ul class="grid grid-cols-2 gap-4 mb-8">
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <span>Gestión de Riesgos</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <span>Validación de Datos</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <span>Sesgos Algorítmicos</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <span>Estrategia vs. Táctica</span>
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://www.amazon.com/dp/B0G5Q5JFDT" target="_blank" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-3 rounded-sm font-semibold transition-colors flex items-center gap-2">
+                                <i data-lucide="shopping-cart" class="h-4 w-4"></i> Ver en Amazon
+                            </a>
+                            <button onclick="openModal()" class="text-slate-400 hover:text-white underline underline-offset-4 text-sm px-4 py-3">Leer Muestra</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume 3 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+                    <div class="order-2 lg:order-1 relative group flex justify-center">
+                        <!-- Portada Real -->
+                        <div class="relative w-64 md:w-72 transition-transform duration-500 book-hover">
+                            <div class="absolute inset-0 bg-amber-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                            <img src="https://m.media-amazon.com/images/I/41XHURHYRyL._SY445_SX342_ControlCacheEqualizer_.jpg" 
+                                 alt="Portada El Algoritmo de la Prudencia" 
+                                 class="relative z-10 rounded-lg shadow-2xl border border-slate-700 w-full">
+                        </div>
+                    </div>
+                    <div class="order-1 lg:order-2">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-amber-500 font-bold tracking-widest text-sm uppercase block">Volumen 3</span>
+                            <span class="bg-amber-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded-sm">NOVEDAD</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">El Algoritmo de la Prudencia</h3>
+                        <p class="text-xl text-slate-300 font-light mb-6">Estrategia y liderazgo según Baltasar Gracián para la era de la IA.</p>
+                        
+                        <div class="bg-slate-800/50 p-6 rounded-lg mb-8 border-l-2 border-amber-500">
+                            <h4 class="text-white font-bold mb-2 text-sm uppercase">Tesis Central</h4>
+                            <p class="text-slate-400 text-sm leading-relaxed">
+                                Este libro defiende que la mayor limitación de la IA no es técnica, sino moral: ningún sistema puede reemplazar la virtud práctica que Aristóteles llamó <em>phronesis</em>. Integrando las ideas de <strong>Baltasar Gracián</strong> en <em>El oráculo manual</em>, el volumen enseña a navegar la ambigüedad moral. Gracián se revela como un aliado moderno: su defensa del juicio propio es el antídoto contra la "moral crumple zone" de la automatización.
+                            </p>
+                        </div>
+
+                        <ul class="grid grid-cols-2 gap-4 mb-8">
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <span>Gestión de Reputación</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <span>Estrategia Graciana</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <span>Carácter vs. Algoritmo</span>
+                            </li>
+                            <li class="flex items-center space-x-2 text-slate-300 text-sm">
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <span>Antifragilidad</span>
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="https://www.amazon.com/dp/B0G641LCJF" target="_blank" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-sm font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-amber-900/50">
+                                <i data-lucide="shopping-cart" class="h-4 w-4"></i> Comprar Ahora
+                            </a>
+                            <button onclick="openModal()" class="text-slate-400 hover:text-white underline underline-offset-4 text-sm px-4 py-3">Leer Muestra</button>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-        );
+        </div>
+    </section>
 
-        const BooksSection = () => {
-          const books = [
-            {
-              vol: 1,
-              title: "La Hegemonía del Criterio",
-              subtitle: "Fundamentos para pensar en la era de la máquina.",
-              description: "El punto de partida. Antes de aprender a usar la herramienta, debemos aprender a pensar. Este volumen establece las bases del pensamiento crítico aplicadas a un entorno saturado de información artificial.",
-              accentColor: "bg-emerald-400",
-              image: "https://m.media-amazon.com/images/I/41VEaA-p9eL._SY445_SX342_ControlCacheEqualizer_.jpg",
-              amazonLink: "https://www.amazon.com/dp/B0G5NJ2THL",
-              features: ["Lógica fundamental", "Detectar Falacias", "Pensamiento de Primer Principio", "Autonomía Intelectual"]
-            },
-            {
-              vol: 2,
-              title: "El Arquitecto de Decisiones",
-              subtitle: "Cómo filtrar el ruido algorítmico y validar la estrategia empresarial.",
-              description: "Un manual táctico para gerentes y ejecutivos. Aprende a distinguir entre un dato correlacional y una causa real, y evita que los sesgos de la IA contaminen tu estrategia corporativa.",
-              accentColor: "bg-cyan-400",
-              image: "https://m.media-amazon.com/images/I/411W64gMLyL._SY445_SX342_ControlCacheEqualizer_.jpg",
-              amazonLink: "https://www.amazon.com/dp/B0G5Q5JFDT",
-              features: ["Gestión de Riesgos", "Validación de Datos", "Sesgos Algorítmicos", "Estrategia vs. Táctica"]
-            },
-            {
-              vol: 3,
-              title: "El Algoritmo de la Prudencia",
-              subtitle: "Estrategia y liderazgo según Baltasar Gracián para la era de la IA.",
-              description: "La joya de la corona. Rescatamos al maestro de la estrategia del Siglo de Oro para enseñarnos a navegar la política, la reputación y la incertidumbre en el siglo XXI. La prudencia como ventaja competitiva.",
-              accentColor: "bg-amber-400",
-              image: "https://m.media-amazon.com/images/I/41XHURHYRyL._SY445_SX342_ControlCacheEqualizer_.jpg",
-              amazonLink: "https://www.amazon.com/dp/B0G641LCJF",
-              features: ["Gestión de Reputación", "Estrategia Graciana", "Carácter vs. Algoritmo", "Antifragilidad"]
+    <!-- Quote Section -->
+    <section class="py-20 bg-amber-600 text-white text-center px-4">
+        <div class="max-w-4xl mx-auto">
+            <i data-lucide="quote" class="h-12 w-12 mx-auto text-amber-200 opacity-50 mb-6"></i>
+            <h2 class="text-2xl md:text-4xl font-serif font-bold leading-tight mb-8">
+                "La inteligencia artificial debe preparar el campo para ejercer el criterio, no para sustituirlo."
+            </h2>
+            <div class="w-24 h-1 bg-amber-200 opacity-50 mx-auto"></div>
+        </div>
+    </section>
+
+    <!-- Author Section -->
+    <section id="autor" class="py-24 bg-slate-900">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-slate-700">
+                <div class="md:w-2/5 relative min-h-[400px]">
+                    <!-- Foto real del autor -->
+                    <img src="https://morispolanco.github.io/mpbn.jpg" alt="Moris Polanco" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-slate-900/40"></div>
+                </div>
+                <div class="md:w-3/5 p-8 md:p-12 flex flex-col justify-center">
+                    <h2 class="text-2xl font-bold text-white serif-font mb-4">Sobre el autor</h2>
+                    <h3 class="text-xl text-amber-500 font-bold mb-6">Moris Polanco</h3>
+                    
+                    <div class="space-y-4 text-slate-300 leading-relaxed text-sm">
+                        <p>
+                            <strong class="text-white">Formación:</strong> Doctor en Filosofía por la Universidad de Navarra, España. Licenciado en Letras y Filosofía por la Universidad Rafael Landívar (Guatemala).
+                        </p>
+                        <p>
+                            <strong class="text-white">Trayectoria:</strong> Profesor de Filosofía y Pensamiento Crítico durante más de 25 años en la Facultad de Ciencias Económicas de la Universidad Francisco Marroquín, donde dirigió el Área de Humanidades por dos décadas.
+                        </p>
+                        <p>
+                            <strong class="text-white">Reconocimiento:</strong> Miembro de número de la Academia Guatemalteca de la Lengua. Autor prolífico de tratados sobre filosofía, lógica y lingüística.
+                        </p>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-700">
+                        <a href="https://morispolanco.github.io/etica/" target="_blank" class="text-amber-500 hover:text-amber-400 font-semibold flex items-center gap-2">
+                            Ver sitio web del autor <i data-lucide="arrow-right" class="h-4 w-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section id="capitulo-gratis" class="py-24 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto text-center px-4 relative z-10">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 serif-font">No seas un administrador de algoritmos.</h2>
+            <p class="text-xl text-slate-400 mb-10">Sé el arquitecto de tu propio destino. Empieza a leer el Volumen 1 hoy mismo.</p>
+            
+            <div class="bg-slate-800/80 p-8 rounded-lg border border-slate-700 max-w-lg mx-auto backdrop-blur-sm">
+                <h3 class="text-white font-bold text-lg mb-2">Leer Cap. 1 Gratis</h3>
+                <p class="text-slate-400 text-sm mb-6">Lee el primer capítulo de "La Hegemonía del Criterio" ahora mismo. Sin registro.</p>
+                <button onclick="openModal()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-sm transition-colors flex justify-center items-center gap-2">
+                    <i data-lucide="book-open" class="h-5 w-5"></i> Leer Ahora
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 py-12 border-t border-slate-900 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <i data-lucide="brain-circuit" class="h-5 w-5 text-slate-600"></i>
+                <span class="display-font font-bold text-slate-500 tracking-wider">CRITERIO & IA</span>
+            </div>
+            
+            <div class="text-slate-600">
+                © 2025 Serie Editorial. Todos los derechos reservados.
+            </div>
+
+            <div class="flex space-x-6">
+                <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" class="text-slate-500 hover:text-amber-500 transition-colors">Amazon</a>
+                <a href="#" class="text-slate-500 hover:text-amber-500 transition-colors">Goodreads</a>
+                <a href="#" class="text-slate-500 hover:text-amber-500 transition-colors">LinkedIn</a>
+                <a href="#" class="text-slate-500 hover:text-amber-500 transition-colors">Contacto</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chapter Modal -->
+    <div id="chapterModal" class="fixed inset-0 z-[100] hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Background backdrop -->
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-lg bg-slate-900 border border-slate-700 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl modal-open">
+                    
+                    <!-- Modal Header -->
+                    <div class="sticky top-0 bg-slate-900/95 backdrop-blur border-b border-slate-800 p-6 flex justify-between items-center z-20">
+                        <div>
+                            <span class="text-emerald-400 font-bold text-xs uppercase tracking-widest">Capítulo 1 • Volumen 1</span>
+                            <h2 class="text-xl md:text-2xl font-bold text-white tracking-tight mt-1 serif-font">Sinergia cognitiva: cuando el cálculo potencia la comprensión</h2>
+                        </div>
+                        <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-white transition-colors ml-4">
+                            <i data-lucide="x-circle" class="h-8 w-8"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal Content -->
+                    <div class="p-8 md:p-12 text-slate-300 font-serif leading-relaxed text-lg selection:bg-emerald-500/30 selection:text-white">
+                        
+                        <blockquote class="border-l-4 border-emerald-500 pl-6 my-8 italic text-slate-400 text-xl">
+                            "La claridad es el vicio de la razón humana más que su virtud, porque una idea clara es a menudo una idea finita."
+                            <footer class="text-sm font-sans font-bold text-slate-500 mt-2 not-italic">— Giambattista Vico, adaptado de <em>De nostri temporis studiorum ratione</em> (1709).</footer>
+                        </blockquote>
+
+                        <div class="space-y-6">
+                            <p>Durante la última década, la narrativa dominante sobre la inteligencia artificial (IA) en el ecosistema corporativo ha estado gobernada por una angustia darwinista: la historia de la sustitución. Informes de consultoría y titulares sensacionalistas han perpetuado una visión de suma cero: silicio contra carbono, procesamiento contra intuición. Se nos vendió la idea de que la llegada de los algoritmos avanzados marcaba el inicio de una obsolescencia humana programada.</p>
+                            
+                            <p>Esta visión, aunque dramática y comercialmente rentable, es fundamentalmente errónea. Al entrar en una fase de madurez tecnológica, es imperativo redefinir la relación. No nos enfrentamos a un duelo, sino a la posibilidad de un dúo sin precedentes. La verdadera ventaja competitiva en el siglo XXI no pertenecerá a quien automatice más rápido, sino a quien entienda mejor la <strong>sinergia cognitiva</strong>: la capacidad de orquestar la potencia de cálculo bruta de la máquina con la capacidad de comprensión semántica y teleológica del ser humano.</p>
+                            
+                            <p>Este capítulo establece la tesis central de la obra: la IA es la herramienta suprema de predicción cartesiana, mientras que el ser humano es el portador insustituible del <em>ingenium</em> viquiano. Entender esta distinción no es un ejercicio de diletantismo filosófico, sino un imperativo estratégico.</p>
+
+                            <h3 class="text-2xl font-sans font-bold text-white mt-12 mb-4">La crítica de Vico a la razón algorítmica</h3>
+                            <p>Para comprender los límites y la potencia de la IA, debemos retroceder tres siglos, hasta el pensamiento del filósofo napolitano Giambattista Vico (1668-1744). Vico fue uno de los primeros y más feroces críticos del racionalismo moderno encarnado por René Descartes. Mientras Descartes y sus seguidores buscaban reducir el conocimiento a "ideas claras y distintas" —precursoras de nuestro actual código binario y lógica algorítmica—, Vico advertía que este enfoque conllevaba un peligro mortal: la desecación de la realidad.</p>
+                            
+                            <p>La crítica de Vico es de una actualidad pasmosa para el directivo moderno. Él sostenía que el método matemático-racional, al buscar la claridad perfecta, ignora la complejidad turbia de la vida real. La vida civil, la política y los negocios no se rigen por la geometría, sino por la prudencia y la oportunidad en contextos inciertos.</p>
+                            
+                            <p>La inteligencia artificial es, en esencia, la culminación del sueño cartesiano. Es una máquina de generar "claridad". Ante un conjunto de datos caóticos, el algoritmo ordena, clasifica y predice con una precisión matemática asombrosa. Sin embargo, como advertía Vico, esta claridad es a menudo un "vicio", pues para lograrla, el modelo debe eliminar el contexto, la historia y la singularidad del momento. La máquina nos ofrece un mapa perfecto (sintaxis), pero desconoce el territorio (semántica).</p>
+                            
+                            <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700 my-6">
+                                <p class="font-bold text-white">Aquí radica la primera premisa de la sinergia cognitiva: necesitamos la claridad de la máquina para procesar la información, pero necesitamos la oscuridad fértil del ingenio humano para comprenderla.</p>
+                            </div>
+
+                            <h3 class="text-2xl font-sans font-bold text-white mt-12 mb-4">Predicción versus Creación: El abismo ontológico</h3>
+                            <p>Para gestionar eficazmente en la era digital, debemos desmitificar la terminología antropomórfica. Decimos que la IA "aprende" o "decide", pero técnicamente, como señalan economistas como Ajay Agrawal, la IA actual es una tecnología de predicción. Reduce el coste de inferir información faltante basándose en datos históricos.</p>
+                            <p>Sin embargo, predecir no es crear. Y aquí recuperamos el concepto central de la antropología de Vico: el <em>ingenium</em> (ingenio).</p>
+                            <p>Para Vico, la civilización no comienza con el cálculo o la lógica formal, sino con la capacidad poética y metafórica del ser humano. El <em>ingenium</em> es la facultad de ver relaciones entre cosas dispares, de conectar realidades que la lógica deductiva mantendría separadas. Es la capacidad de "dar" sentido donde no lo hay.</p>
+                            
+                            <ul class="list-disc pl-6 space-y-4 marker:text-emerald-400">
+                                <li><strong>La máquina (Cálculo y Sintaxis):</strong> Opera bajo reglas de probabilidad. Es insuperable en la gestión del <em>certum</em> (lo cierto, el dato fáctico). Puede procesar millones de transacciones para detectar un fraude o predecir una rotura de stock basándose en patrones pasados.</li>
+                                <li><strong>El humano (Ingenio y Semántica):</strong> Opera con significados y propósitos. Es el dominio del <em>verum</em> (lo verdadero, lo que es hecho y comprendido). Un líder empresarial utiliza el lenguaje no solo para transmitir información, sino para fundar nuevas realidades, para inspirar una visión que no se deduce de los datos históricos.</li>
+                            </ul>
+                            
+                            <p>La IA puede redactar un soneto analizando la métrica de mil poemas del Siglo de Oro, pero no puede experimentar la angustia ni el amor que motivan el verso. Del mismo modo, puede generar un plan de negocio optimizado, pero no puede fundar una empresa, porque una organización no es solo un flujo de caja; es una narrativa compartida y una voluntad de ser.</p>
+
+                            <h3 class="text-2xl font-sans font-bold text-white mt-12 mb-4">El director financiero y el poeta</h3>
+                            <p>Imaginemos un director financiero (CFO) presentando resultados trimestrales.</p>
+                            <ul class="list-disc pl-6 space-y-2 marker:text-emerald-400">
+                                <li><strong>Aporte de la IA:</strong> Genera proyecciones de flujo de caja, analiza la varianza y predice riesgos de liquidez con una precisión que ningún equipo de analistas humanos podría igualar en tiempo real. Esto es la "claridad cartesiana".</li>
+                                <li><strong>Aporte Humano (Ingenio):</strong> El CFO no se limita a leer los datos. Ejerce su facultad retórica para dotar de sentido a los números. Explica que la caída en el margen no es un fracaso operativo, sino una "inversión en el foso defensivo de la empresa" (una metáfora). Transforma el dato frío en una narrativa de resiliencia.</li>
+                            </ul>
+                            <p>Sin la IA, el CFO estaría ciego ante los detalles microfinancieros. Sin el ingenio del CFO, la IA ofrecería una verdad matemática que podría destruir la confianza de los inversores. La sinergia ocurre cuando el cálculo sustenta la retórica, y la retórica da propósito al cálculo.</p>
+
+                            <h3 class="text-2xl font-sans font-bold text-white mt-12 mb-4">Conclusión: recuperar la soberanía del criterio</h3>
+                            <p>Vico nos enseñó que "la verdad es hija del tiempo", no solo de la lógica. La realidad empresarial es histórica y cambiante, y por eso no puede ser completamente encapsulada por un algoritmo entrenado con datos del pasado.</p>
+                            <p>La "Sinergia Cognitiva" es el reconocimiento de que el cálculo potencia la comprensión, pero jamás la sustituye. La tecnología nos da respuestas, pero corresponde al ingenio humano, a través de su capacidad creativa y lingüística, asegurar que estamos haciendo las preguntas correctas.</p>
+                        </div>
+
+                        <div class="mt-12 text-center">
+                             <button onclick="closeModal()" class="text-emerald-400 hover:text-emerald-300 font-bold border border-emerald-500/50 hover:border-emerald-400 px-6 py-3 rounded-full transition-all">
+                               Cerrar Capítulo
+                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Modal Logic
+        const modal = document.getElementById('chapterModal');
+        
+        function openModal() {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto'; // Restore background scrolling
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
             }
-          ];
-
-          return (
-            <section id="libros" className="py-24 bg-slate-950 px-4 sm:px-6 lg:px-8">
-              <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-20">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">La Colección Completa</h2>
-                  <div className="h-1 w-24 bg-gradient-to-r from-cyan-500 to-amber-500 mx-auto rounded-full mb-6"></div>
-                  <p className="text-slate-400 max-w-2xl mx-auto text-lg">
-                    Una progresión lógica desde los fundamentos del pensamiento hasta la maestría estratégica.
-                  </p>
-                </div>
-                
-                <div className="space-y-16">
-                  {books.map((book) => (
-                    <BookCard key={book.vol} {...book} />
-                  ))}
-                </div>
-              </div>
-            </section>
-          );
-        };
-
-        const ValueProposition = () => {
-          return (
-            <section id="filosofia" className="py-24 bg-slate-900 border-y border-slate-800">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                  <div className="p-6 group hover:bg-slate-800/50 rounded-2xl transition-colors duration-300">
-                    <div className="w-16 h-16 bg-cyan-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-cyan-500/20">
-                      <Cpu className="text-cyan-400" size={32} />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-3">Más allá del Hype</h3>
-                    <p className="text-slate-400 leading-relaxed">
-                      No es otro libro técnico sobre cómo usar ChatGPT. Es sobre cómo <strong>superar</strong> a ChatGPT usando el criterio humano que la máquina no puede replicar.
-                    </p>
-                  </div>
-                  <div className="p-6 group hover:bg-slate-800/50 rounded-2xl transition-colors duration-300">
-                    <div className="w-16 h-16 bg-amber-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-amber-500/20">
-                      <BookOpen className="text-amber-400" size={32} />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-3">Sabiduría Atemporal</h3>
-                    <p className="text-slate-400 leading-relaxed">
-                      Conectamos la filosofía clásica (Aristóteles, Gracián) con los problemas modernos. Porque la naturaleza humana no cambia con el software.
-                    </p>
-                  </div>
-                  <div className="p-6 group hover:bg-slate-800/50 rounded-2xl transition-colors duration-300">
-                    <div className="w-16 h-16 bg-emerald-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300 border border-emerald-500/20">
-                      <ShieldCheck className="text-emerald-400" size={32} />
-                    </div>
-                    <h3 className="text-xl font-bold text-white mb-3">Defensa Intelectual</h3>
-                    <p className="text-slate-400 leading-relaxed">
-                      Protégete de las alucinaciones de la IA, los sesgos de los datos y la manipulación algorítmica. Recupera tu soberanía mental.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
-          );
-        };
-
-        const AuthorSection = () => {
-          return (
-            <section id="autor" className="py-24 bg-slate-950 px-4">
-              <div className="max-w-5xl mx-auto bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-800">
-                <div className="flex flex-col md:flex-row md:min-h-[500px]">
-                  {/* Sección de Imagen de Fondo */}
-                  <div className="md:w-2/5 relative min-h-[300px] md:min-h-full overflow-hidden bg-slate-800">
-                     
-                     {/* Imagen de fondo reemplazando al video */}
-                     <img 
-                        src="https://morispolanco.github.io/mpbn.jpg" 
-                        alt="Moris Polanco" 
-                        className="absolute inset-0 w-full h-full object-cover opacity-80"
-                     />
-
-                    {/* Overlay Darkening */}
-                    <div className="absolute inset-0 bg-slate-900/50 mix-blend-multiply"></div>
-
-                    {/* Quote Overlay */}
-                    <div className="absolute inset-0 p-8 flex items-end justify-center z-20 pointer-events-none bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent">
-                       <p className="text-white font-serif italic text-xl text-center leading-relaxed drop-shadow-lg">
-                         "La inteligencia artificial debe preparar el campo para ejercer el criterio."
-                       </p>
-                    </div>
-                  </div>
-
-                  <div className="md:w-3/5 p-8 md:p-12 flex flex-col justify-center relative z-10 bg-slate-900">
-                    <h4 className="text-cyan-400 font-bold tracking-widest text-sm mb-2 uppercase">Sobre el autor</h4>
-                    <h2 className="text-3xl font-bold text-white mb-6">Moris Polanco</h2>
-                    <div className="space-y-4 text-slate-300 leading-relaxed text-sm">
-                      <p>
-                        <strong className="text-white">Formación:</strong> Doctor en Filosofía por la Universidad de Navarra, España. Licenciado en Letras y Filosofía por la Universidad Rafael Landívar (Guatemala).
-                      </p>
-                      <p>
-                        <strong className="text-white">Trayectoria:</strong> Profesor de Filosofía y Pensamiento Crítico durante más de 25 años en la Facultad de Ciencias Económicas de la Universidad Francisco Marroquín, donde dirigió el Área de Humanidades por dos décadas.
-                      </p>
-                      <p>
-                        <strong className="text-white">Reconocimiento:</strong> Miembro de número de la Academia Guatemalteca de la Lengua. Autor prolífico de tratados sobre filosofía, lógica y lingüística.
-                      </p>
-                    </div>
-                    <div className="mt-6">
-                      <a href="https://morispolanco.github.io/etica/" target="_blank" rel="noopener noreferrer" className="text-white border-b border-amber-400 pb-1 hover:text-amber-400 transition-colors">
-                        Ver sitio web del autor &rarr;
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-          );
-        };
-
-        const CTA = ({ onOpenChapter }) => {
-          return (
-            <section id="contacto" className="py-20 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-900 to-slate-900"></div>
-              <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-              
-              <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">No seas un administrador de algoritmos.</h2>
-                <p className="text-xl text-blue-100 mb-10">
-                  Sé el arquitecto de tu propio destino. Empieza a leer el Volumen 1 hoy mismo.
-                </p>
-                
-                <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-lg mx-auto">
-                  <button 
-                    onClick={onOpenChapter}
-                    className="px-8 py-4 bg-amber-400 text-slate-900 font-bold rounded-lg hover:bg-amber-300 transition-colors whitespace-nowrap flex items-center justify-center shadow-lg shadow-amber-900/20"
-                  >
-                    <BookOpen size={20} className="mr-2 fill-current" /> Leer Cap. 1 Gratis
-                  </button>
-                </div>
-                <p className="text-xs text-blue-200 mt-4 opacity-70">
-                  Lee el primer capítulo de "La Hegemonía del Criterio" ahora mismo. Sin registro.
-                </p>
-              </div>
-            </section>
-          );
-        };
-
-        const Footer = () => {
-          return (
-            <footer className="bg-slate-950 border-t border-slate-900 py-12 px-4">
-              <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-                <div className="mb-4 md:mb-0">
-                  <span className="text-xl font-bold text-white">CRITERIO <span className="text-slate-600">&</span> IA</span>
-                  <p className="text-slate-500 text-sm mt-2">© 2025 Serie Editorial. Todos los derechos reservados.</p>
-                </div>
-                <div className="flex space-x-6">
-                  <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Amazon</a>
-                  <a href="#" className="text-slate-400 hover:text-white transition-colors">Goodreads</a>
-                  <a href="#" className="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
-                  <a href="#" className="text-slate-400 hover:text-white transition-colors">Contacto</a>
-                </div>
-              </div>
-            </footer>
-          );
-        };
-
-        const App = () => {
-          const [showManifesto, setShowManifesto] = useState(false);
-          const [showChapter, setShowChapter] = useState(false);
-
-          // Close modal on escape key
-          useEffect(() => {
-            const handleEsc = (e) => {
-              if (e.key === 'Escape') {
-                setShowManifesto(false);
-                setShowChapter(false);
-              }
-            };
-            window.addEventListener('keydown', handleEsc);
-            return () => window.removeEventListener('keydown', handleEsc);
-          }, []);
-
-          return (
-            <div className="min-h-screen bg-slate-950 font-sans selection:bg-cyan-500 selection:text-white">
-              <Navbar />
-              <Hero onOpenManifesto={() => setShowManifesto(true)} />
-              
-              {/* Modals */}
-              <ManifestoModal isOpen={showManifesto} onClose={() => setShowManifesto(false)} />
-              <ChapterModal isOpen={showChapter} onClose={() => setShowChapter(false)} />
-              
-              <ValueProposition />
-              <BooksSection />
-              <AuthorSection />
-              <CTA onOpenChapter={() => setShowChapter(true)} />
-              <Footer />
-            </div>
-          );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        });
     </script>
 </body>
 </html>
