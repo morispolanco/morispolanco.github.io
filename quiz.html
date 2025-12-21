@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Mando - Estrategia Híbrida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
+
+    <div id="app" class="max-w-2xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 relative">
+        <!-- El contenido se genera dinámicamente con JS -->
+    </div>
+
+    <script>
+        const DILEMMAS = [
+            {
+                id: 1,
+                title: "El Dilema del Recorte 'Optimizado'",
+                question: "Tu software de análisis de rendimiento sugiere despedir al 10% de la plantilla menos productiva según KPIs métricos. Sin embargo, sabes que dos de ellos son los que mantienen la moral alta en el equipo. ¿Qué haces?",
+                options: [
+                    { text: "Ejecuto el despido. Los datos son objetivos y la eficiencia es la prioridad para sobrevivir.", isCorrect: false },
+                    { text: "Mantengo a los empleados. El dato mide la tarea, pero mi criterio evalúa el tejido social y la lealtad.", isCorrect: true },
+                    { text: "Busco un punto medio: les reduzco el sueldo basándome en sus bajos indicadores.", isCorrect: false }
+                ],
+                feedback: "El juicio humano es el único capaz de ver el 'pegamento social'. Un algoritmo optimiza funciones de pérdida, pero el estratega soberano protege la cultura, que es un activo invisible pero vital.",
+                icon: `<svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>`
+            },
+            {
+                id: 2,
+                title: "La Trampa de la Tendencia Predictiva",
+                question: "Un modelo de IA predice que el mercado demandará productos 'low-cost' y sugiere pivotar toda tu producción hacia allí. Tu intuición te dice que el mercado está saturado de lo genérico y busca algo auténtico. ¿Cómo actúas?",
+                options: [
+                    { text: "Sigo a la IA. Ignorar una predicción con un 90% de confianza estadística es una irresponsabilidad.", isCorrect: false },
+                    { text: "Apuesto por la diferenciación y la calidad, aunque contradiga la tendencia mayoritaria del algoritmo.", isCorrect: true },
+                    { text: "Hago productos low-cost pero con una campaña de marketing que aparente exclusividad.", isCorrect: false }
+                ],
+                feedback: "La IA es mimética; siempre te llevará hacia el promedio estadístico (la 'jaula dorada'). La ventaja competitiva real nace de la poiesis (creación) y no de la mimesis (imitación).",
+                icon: `<svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>`
+            },
+            {
+                id: 3,
+                title: "El Tiempo del Reloj vs. El Momento Justo",
+                question: "Tienes una crisis de reputación. El sistema de alertas te exige responder en redes sociales en menos de 5 minutos para 'contener el daño'. Sientes que el ambiente está demasiado caldeado y es mejor esperar a mañana. ¿Qué decides?",
+                options: [
+                    { text: "Respondo de inmediato con un comunicado generado por IA para cumplir con la latencia cero.", isCorrect: false },
+                    { text: "Practico la pausa estratégica. Prefiero dominar el 'Kairos' (momento justo) que ser esclavo del tiempo digital.", isCorrect: true },
+                    { text: "Dejo que el chatbot de atención al cliente maneje todas las respuestas automáticamente.", isCorrect: false }
+                ],
+                feedback: "La máquina vive en el tiempo cronológico (velocidad pura). El líder soberano vive en el tiempo cualitativo. Saber esperar a que el contexto madure es una facultad que la IA no puede computar.",
+                icon: `<svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+            }
+        ];
+
+        let state = {
+            step: 'welcome',
+            currentDilemma: 0,
+            score: 0,
+            selectedOption: null,
+            showFeedback: false
+        };
+
+        const app = document.getElementById('app');
+
+        function render() {
+            if (state.step === 'welcome') {
+                app.innerHTML = `
+                    <div class="bg-slate-900 p-6 text-white flex items-center gap-3">
+                        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                        <div>
+                            <h1 class="font-bold text-lg uppercase tracking-wider leading-tight">Simulador de Mando</h1>
+                            <p class="text-[10px] text-slate-400 font-mono">EJECUCIÓN ESTRATÉGICA V.1.0</p>
+                        </div>
+                    </div>
+                    <div class="p-8 text-center space-y-6 fade-in">
+                        <div class="bg-indigo-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100">
+                            <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                        </div>
+                        <h2 class="text-3xl font-black text-slate-900 leading-tight">¿Gobiernas tú o gobierna el algoritmo?</h2>
+                        <p class="text-slate-600 leading-relaxed text-lg">Enfréntate a los dilemas que el empresario moderno debe resolver para no perder su criterio frente a la automatización.</p>
+                        <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-5 rounded-2xl transition-all shadow-lg hover:shadow-indigo-200 flex items-center justify-center gap-3 text-lg">
+                            Entrar en el Círculo de Decisión
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                    <div class="bg-slate-50 p-4 border-t border-slate-100 text-center text-[9px] text-slate-400 uppercase tracking-widest font-mono">© 2025 • Arquitectura de Decisiones • Estrategia Híbrida</div>
+                `;
+            } else if (state.step === 'quiz') {
+                const dilemma = DILEMMAS[state.currentDilemma];
+                app.innerHTML = `
+                    <div class="bg-slate-900 p-6 text-white flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                            <div>
+                                <h1 class="font-bold text-lg uppercase tracking-wider leading-tight">Simulador de Mando</h1>
+                                <p class="text-[10px] text-slate-400 font-mono">ESCENARIO ${state.currentDilemma + 1} / ${DILEMMAS.length}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-8 space-y-6 fade-in">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2 text-indigo-600 font-bold text-xs uppercase tracking-widest">
+                                ${dilemma.icon}
+                                ${dilemma.title}
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 leading-snug">${dilemma.question}</h3>
+                        </div>
+                        <div class="space-y-3">
+                            ${dilemma.options.map((opt, idx) => `
+                                <button onclick="selectOption(${idx})" ${state.showFeedback ? 'disabled' : ''} class="w-full p-5 rounded-2xl border-2 text-left transition-all flex items-center justify-between text-lg
+                                    ${state.selectedOption === null ? 'border-slate-100 bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50/50' : ''}
+                                    ${state.selectedOption === idx && opt.isCorrect ? 'border-emerald-500 bg-emerald-50 text-emerald-900' : ''}
+                                    ${state.selectedOption === idx && !opt.isCorrect ? 'border-rose-500 bg-rose-50 text-rose-900' : ''}
+                                    ${state.showFeedback && opt.isCorrect && state.selectedOption !== idx ? 'border-emerald-500/30 bg-emerald-50/30' : ''}
+                                ">
+                                    <span class="font-medium">${opt.text}</span>
+                                    ${state.showFeedback && opt.isCorrect ? '<svg class="w-6 h-6 text-emerald-600 shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                                    ${state.showFeedback && state.selectedOption === idx && !opt.isCorrect ? '<svg class="w-6 h-6 text-rose-600 shrink-0 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>' : ''}
+                                </button>
+                            `).join('')}
+                        </div>
+                        ${state.showFeedback ? `
+                            <div class="bg-slate-900 text-slate-100 p-6 rounded-2xl space-y-4 fade-in">
+                                <div class="flex items-center gap-2 font-bold text-xs text-indigo-400 uppercase tracking-widest">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    Análisis de Decisión
+                                </div>
+                                <p class="text-slate-300 text-sm leading-relaxed italic">${dilemma.feedback}</p>
+                                <button onclick="nextStep()" class="w-full bg-white text-slate-900 font-black py-4 rounded-xl hover:bg-indigo-50 transition-colors uppercase text-sm tracking-widest">
+                                    ${state.currentDilemma < DILEMMAS.length - 1 ? 'Siguiente Desafío' : 'Finalizar Evaluación'}
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            } else if (state.step === 'results') {
+                const percentage = Math.round((state.score / DILEMMAS.length) * 100);
+                let title = percentage === 100 ? "Liderazgo Soberano" : percentage > 0 ? "Mando en Transición" : "Abdicación Tecnocrática";
+                app.innerHTML = `
+                    <div class="bg-slate-900 p-6 text-white text-center">
+                        <h1 class="font-bold text-lg uppercase tracking-wider">Resultado del Simulador</h1>
+                    </div>
+                    <div class="p-8 text-center space-y-8 fade-in">
+                        <div class="relative inline-block">
+                            <div class="absolute inset-0 bg-indigo-500 blur-2xl opacity-20"></div>
+                            <div class="relative bg-slate-900 text-white px-8 py-4 rounded-3xl border border-slate-700">
+                                <span class="text-4xl font-black">${percentage}%</span>
+                                <p class="text-[10px] text-slate-400 uppercase font-mono tracking-widest">Índice de Soberanía</p>
+                            </div>
+                        </div>
+                        <div class="space-y-3">
+                            <h2 class="text-3xl font-black text-slate-900">${title}</h2>
+                            <p class="text-slate-600 max-w-sm mx-auto">Has enfrentado los dilemas de la era del algoritmo. Para profundizar en las herramientas que protegen tu criterio, explora la serie de pensamiento crítico.</p>
+                        </div>
+                        <div class="pt-6">
+                            <a href="https://www.amazon.com/dp/B0G63VKMCR" target="_blank" class="block bg-orange-600 hover:bg-orange-700 text-white font-black p-6 rounded-2xl shadow-xl transition-all transform hover:-translate-y-1">
+                                <div class="flex items-center justify-center gap-3 text-lg uppercase tracking-tight">
+                                    Serie "Pensamiento Crítico e IA"
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                </div>
+                                <div class="text-xs font-normal opacity-80 mt-1">Navega la incertidumbre con sabiduría práctica</div>
+                            </a>
+                        </div>
+                        <button onclick="reset()" class="text-slate-400 hover:text-indigo-600 text-xs font-bold uppercase tracking-widest transition-colors">Reiniciar simulación</button>
+                    </div>
+                    <div class="bg-slate-50 p-4 border-t border-slate-100 text-center text-[9px] text-slate-400 uppercase tracking-widest font-mono">© 2025 • Arquitectura de Decisiones • Estrategia Híbrida</div>
+                `;
+            }
+        }
+
+        function startQuiz() {
+            state.step = 'quiz';
+            render();
+        }
+
+        function selectOption(idx) {
+            if (state.showFeedback) return;
+            state.selectedOption = idx;
+            state.showFeedback = true;
+            if (DILEMMAS[state.currentDilemma].options[idx].isCorrect) {
+                state.score++;
+            }
+            render();
+        }
+
+        function nextStep() {
+            state.showFeedback = false;
+            state.selectedOption = null;
+            if (state.currentDilemma < DILEMMAS.length - 1) {
+                state.currentDilemma++;
+            } else {
+                state.step = 'results';
+            }
+            render();
+        }
+
+        function reset() {
+            state = {
+                step: 'welcome',
+                currentDilemma: 0,
+                score: 0,
+                selectedOption: null,
+                showFeedback: false
+            };
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
