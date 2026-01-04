@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor - Libro Promoción 30</title>
+    <style>
+        :root {
+            --color-primary: #1a3a52;
+            --color-secondary: #d4af37;
+            --color-accent: #2d5f7f;
+            --color-bg: #f5f3f0;
+            --color-surface: #ffffff;
+            --color-text: #2c3e50;
+            --color-text-light: #7f8c8d;
+            --color-border: #e0dbd5;
+            --color-success: #27ae60;
+            --color-danger: #e74c3c;
+            --color-warning: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+            color: white;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .panel h2 {
+            color: var(--color-primary);
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+            background-color: var(--color-bg);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(26, 58, 82, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            color: var(--color-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e5c158;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--color-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .anecdote-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .anecdote-item {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .anecdote-item:hover {
+            border-color: var(--color-primary);
+            background: #fafaf8;
+        }
+
+        .anecdote-item.selected {
+            background: rgba(26, 58, 82, 0.1);
+            border-color: var(--color-primary);
+        }
+
+        .anecdote-author {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 13px;
+        }
+
+        .anecdote-text {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-top: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .anecdote-category {
+            display: inline-block;
+            background: var(--color-secondary);
+            color: var(--color-primary);
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .editor-section {
+            grid-column: 1 / -1;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--color-text-light);
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .success-message {
+            background-color: rgba(39, 174, 96, 0.1);
+            border-left: 4px solid var(--color-success);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            color: var(--color-success);
+            font-size: 13px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-surface);
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            color: var(--color-text-light);
+            font-size: 24px;
+            float: right;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--color-text);
+        }
+
+        .pdf-preview {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 5px;
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.8;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .pdf-preview h3 {
+            color: var(--color-primary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .pdf-preview .author {
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--color-border);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📖 Libro de Anécdotas - Promoción 30</h1>
+            <p>Colegio Salesiano Don Bosco | 1979-2026 | Editor Profesional</p>
+        </header>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalAnecdotes">0</div>
+                <div class="stat-label">Anécdotas Recopiladas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalAuthors">0</div>
+                <div class="stat-label">Miembros de la Promo</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalWords">0</div>
+                <div class="stat-label">Palabras Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPages">0</div>
+                <div class="stat-label">Páginas Estimadas</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <h2>Agregar Nueva Anécdota</h2>
+                <div class="form-group">
+                    <label for="authorName">Nombre del Autor</label>
+                    <input type="text" id="authorName" placeholder="ej: Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="anecdoteText">Anécdota</label>
+                    <textarea id="anecdoteText" placeholder="Pega aquí la anécdota desde WhatsApp..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="category">Categoría</label>
+                    <select id="category">
+                        <option value="">Seleccionar categoría...</option>
+                        <option value="escuela">Momentos en la Escuela</option>
+                        <option value="paseos">Paseos y Viajes</option>
+                        <option value="amigos">Entre Amigos</option>
+                        <option value="maestros">Con los Maestros</option>
+                        <option value="deportes">Deportes y Actividades</option>
+                        <option value="risas">Situaciones Cómicas</option>
+                        <option value="reflexion">Momentos Reflexivos</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="addAnecdote()">➕ Agregar Anécdota</button>
+            </div>
+
+            <div class="panel">
+                <h2>Anécdotas Recopiladas</h2>
+                <div class="anecdote-list" id="anecdoteList">
+                    <p style="color: var(--color-text-light); text-align: center; padding: 20px;">
+                        Aún no hay anécdotas. ¡Comienza a agregar!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel editor-section">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('editor')">Editar Anécdota</button>
+                <button class="tab-btn" onclick="switchTab('preview')">Vista Previa del PDF</button>
+                <button class="tab-btn" onclick="switchTab('organizar')">Organizar Orden</button>
+            </div>
+
+            <div id="editor" class="tab-content active">
+                <div id="editorContent" style="display: none;">
+                    <div class="form-group">
+                        <label>Autor</label>
+                        <input type="text" id="editAuthor" readonly style="background: var(--color-bg);">
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategory">Categoría</label>
+                        <select id="editCategory">
+                            <option value="escuela">Momentos en la Escuela</option>
+                            <option value="paseos">Paseos y Viajes</option>
+                            <option value="amigos">Entre Amigos</option>
+                            <option value="maestros">Con los Maestros</option>
+                            <option value="deportes">Deportes y Actividades</option>
+                            <option value="risas">Situaciones Cómicas</option>
+                            <option value="reflexion">Momentos Reflexivos</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editText">Texto de la Anécdota</label>
+                        <textarea id="editText"></textarea>
+                    </div>
+                    <div class="editor-actions">
+                        <button class="btn btn-primary" onclick="saveEdit()">💾 Guardar Cambios</button>
+                        <button class="btn btn-danger" onclick="deleteAnecdote()">🗑️ Eliminar</button>
+                    </div>
+                </div>
+                <p id="editorPlaceholder" style="color: var(--color-text-light); text-align: center; padding: 40px;">
+                    Selecciona una anécdota de la lista para editarla
+                </p>
+            </div>
+
+            <div id="preview" class="tab-content">
+                <button class="btn btn-secondary" onclick="generatePDF()" style="margin-bottom: 15px;">📄 Descargar PDF Completo</button>
+                <div class="pdf-preview" id="pdfPreview">
+                    <p style="text-align: center; color: var(--color-text-light);">
+                        La vista previa aparecerá aquí
+                    </p>
+                </div>
+            </div>
+
+            <div id="organizar" class="tab-content">
+                <h3 style="color: var(--color-primary); margin-bottom: 15px;">Orden de las Anécdotas</h3>
+                <p style="font-size: 13px; color: var(--color-text-light); margin-bottom: 15px;">
+                    Arrastra las anécdotas para reordenarlas. El PDF se generará en este orden.
+                </p>
+                <div id="sortableList" style="display: flex; flex-direction: column; gap: 10px;">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                <button class="btn btn-primary" onclick="generatePDF()" style="margin-top: 15px;">📄 Generar PDF Final</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let anecdotes = JSON.parse(localStorage.getItem('anecdotes')) || [];
+        let selectedIndex = null;
+
+        function addAnecdote() {
+            const author = document.getElementById('authorName').value.trim();
+            const text = document.getElementById('anecdoteText').value.trim();
+            const category = document.getElementById('category').value;
+
+            if (!author || !text) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            anecdotes.push({
+                id: Date.now(),
+                author,
+                text,
+                category,
+                dateAdded: new Date().toLocaleDateString('es-GT')
+            });
+
+            document.getElementById('authorName').value = '';
+            document.getElementById('anecdoteText').value = '';
+            document.getElementById('category').value = '';
+
+            updateUI();
+            showSuccessMessage('Anécdota agregada exitosamente');
+        }
+
+        function selectAnecdote(index) {
+            selectedIndex = index;
+            document.querySelectorAll('.anecdote-item').forEach((item, i) => {
+                item.classList.toggle('selected', i === index);
+            });
+
+            const anecdote = anecdotes[index];
+            document.getElementById('editAuthor').value = anecdote.author;
+            document.getElementById('editText').value = anecdote.text;
+            document.getElementById('editCategory').value = anecdote.category;
+            document.getElementById('editorContent').style.display = 'block';
+            document.getElementById('editorPlaceholder').style.display = 'none';
+        }
+
+        function saveEdit() {
+            if (selectedIndex === null) return;
+            anecdotes[selectedIndex].text = document.getElementById('editText').value;
+            anecdotes[selectedIndex].category = document.getElementById('editCategory').value;
+            updateUI();
+            showSuccessMessage('Cambios guardados');
+        }
+
+        function deleteAnecdote() {
+            if (selectedIndex === null || !confirm('¿Eliminar esta anécdota?')) return;
+            anecdotes.splice(selectedIndex, 1);
+            selectedIndex = null;
+            document.getElementById('editorContent').style.display = 'none';
+            document.getElementById('editorPlaceholder').style.display = 'block';
+            updateUI();
+            showSuccessMessage('Anécdota eliminada');
+        }
+
+        function updateUI() {
+            // Actualizar lista
+            const listHTML = anecdotes.length === 0
+                ? '<p style="color: var(--color-text-light); text-align: center; padding: 20px;">Aún no hay anécdotas</p>'
+                : anecdotes.map((a, i) => `
+                    <div class="anecdote-item" onclick="selectAnecdote(${i})">
+                        <div class="anecdote-author">${a.author}</div>
+                        <div class="anecdote-text">${a.text}</div>
+                        <div class="anecdote-category">${getCategoryLabel(a.category)}</div>
+                    </div>
+                `).join('');
+            document.getElementById('anecdoteList').innerHTML = listHTML;
+
+            // Actualizar estadísticas
+            const authors = new Set(anecdotes.map(a => a.author)).size;
+            const words = anecdotes.reduce((sum, a) => sum + a.text.split(/\s+/).length, 0);
+            const pages = Math.ceil(words / 250);
+
+            document.getElementById('totalAnecdotes').textContent = anecdotes.length;
+            document.getElementById('totalAuthors').textContent = authors;
+            document.getElementById('totalWords').textContent = words.toLocaleString('es-GT');
+            document.getElementById('totalPages').textContent = pages;
+
+            // Actualizar lista sorteable
+            updateSortableList();
+
+            // Guardar en localStorage
+            localStorage.setItem('anecdotes', JSON.stringify(anecdotes));
+        }
+
+        function updateSortableList() {
+            const html = anecdotes.map((a, i) => `
+                <div class="anecdote-item" style="cursor: move; padding: 15px;">
+                    <strong>${a.author}</strong> - ${getCategoryLabel(a.category)}
+                    <div class="anecdote-text">${a.text.substring(0, 80)}...</div>
+                </div>
+            `).join('');
+            document.getElementById('sortableList').innerHTML = html;
+        }
+
+        function getCategoryLabel(cat) {
+            const labels = {
+                'escuela': 'Momentos en la Escuela',
+                'paseos': 'Paseos y Viajes',
+                'amigos': 'Entre Amigos',
+                'maestros': 'Con los Maestros',
+                'deportes': 'Deportes y Actividades',
+                'risas': 'Situaciones Cómicas',
+                'reflexion': 'Momentos Reflexivos',
+                'otro': 'Otro'
+            };
+            return labels[cat] || cat;
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tab === 'preview') {
+                updatePreview();
+            }
+        }
+
+        function updatePreview() {
+            let html = '<h3>LIBRO DE ANÉCDOTAS - PROMOCIÓN 30</h3>';
+            html += '<p style="text-align: center; color: var(--color-text-light);">Colegio Salesiano Don Bosco | 1979-2026</p>';
+            html += '<hr style="margin: 20px 0; border: none; border-top: 1px solid var(--color-border);">';
+
+            anecdotes.forEach(a => {
+                html += `
+                    <h3>${getCategoryLabel(a.category)}</h3>
+                    <p><span class="author">${a.author}</span></p>
+                    <p>${a.text}</p>
+                    <hr style="margin: 15px 0; border: none; border-top: 1px solid var(--color-border);">
+                `;
+            });
+
+            document.getElementById('pdfPreview').innerHTML = html;
+        }
+
+        function generatePDF() {
+            if (anecdotes.length === 0) {
+                alert('Debes agregar anécdotas antes de generar el PDF');
+                return;
+            }
+
+            alert('⚠️ Función avanzada: Para generar PDF profesional, exporta estos datos y usa:\n\n1. Herramienta profesional: convertkit.com/html-to-pdf\n2. O copia el contenido a Word/Google Docs\n3. Guarda como PDF con formato profesional\n\nLa aplicación guarda todos tus datos automáticamente.');
+        }
+
+        function showSuccessMessage(text) {
+            const msg = document.createElement('div');
+            msg.className = 'success-message';
+            msg.textContent = text;
+            document.body.insertBefore(msg, document.body.firstChild);
+            setTimeout(() => msg.remove(), 3000);
+        }
+
+        // Inicializar
+        updateUI();
+    </script>
+</body>
+</html>
