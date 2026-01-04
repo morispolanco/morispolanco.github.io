@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercitador de Ingenio - Mentalidad Barroca</title>
+    <style>
+        :root {
+            --color-bg-primary: #faf5f0;
+            --color-surface: #fff8f3;
+            --color-text-primary: #2d1b0a;
+            --color-text-secondary: #6b5344;
+            --color-accent: #c41e3a;
+            --color-secondary: #d4a574;
+            --color-success: #2d5016;
+            --color-border: #d4a574;
+            --color-focus: rgba(196, 30, 58, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Garamond', serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, var(--color-bg-primary) 0%, #ebe3d9 100%);
+            color: var(--color-text-primary);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin: 0 0 10px 0;
+            color: var(--color-accent);
+            font-style: italic;
+        }
+
+        .subtitle {
+            font-size: 0.95em;
+            color: var(--color-text-secondary);
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        .tagline {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: var(--color-secondary);
+            border-top: 1px dashed var(--color-border);
+            padding-top: 15px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(45, 27, 10, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(196, 30, 58, 0.15);
+        }
+
+        .card h2 {
+            color: var(--color-accent);
+            margin-top: 0;
+            font-size: 1.4em;
+            border-bottom: 2px solid var(--color-secondary);
+            padding-bottom: 10px;
+        }
+
+        .challenge-area {
+            grid-column: 1 / -1;
+        }
+
+        .challenge-container {
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .challenge-question {
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.05), rgba(212, 165, 116, 0.05));
+            border-left: 4px solid var(--color-accent);
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .challenge-question h3 {
+            margin-top: 0;
+            color: var(--color-accent);
+            font-size: 1.1em;
+        }
+
+        .challenge-question p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: var(--color-text-primary);
+        }
+
+        .input-area {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        textarea {
+            padding: 15px;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-family: 'Georgia', serif;
+            font-size: 1em;
+            color: var(--color-text-primary);
+            resize: vertical;
+            min-height: 100px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px var(--color-focus);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Georgia', serif;
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #a01830;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(196, 30, 58, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #c1954a;
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--color-accent);
+            border: 2px solid var(--color-accent);
+        }
+
+        .btn-ghost:hover {
+            background: var(--color-focus);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 4px;
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.success {
+            background: rgba(45, 80, 22, 0.1);
+            border-left: 4px solid var(--color-success);
+            color: var(--color-success);
+        }
+
+        .feedback.hint {
+            background: rgba(212, 165, 116, 0.15);
+            border-left: 4px solid var(--color-secondary);
+            color: var(--color-text-primary);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-box {
+            background: rgba(212, 165, 116, 0.1);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            color: var(--color-accent);
+        }
+
+        .progress-bar {
+            background: var(--color-border);
+            height: 8px;
+            border-radius: 4px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: var(--color-accent);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(196, 30, 58, 0.05);
+            border-radius: 4px;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--color-accent);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: var(--color-text-secondary);
+            margin-top: 5px;
+        }
+
+        .concept-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .concept-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .concept-list li:last-child {
+            border-bottom: none;
+        }
+
+        .concept-icon {
+            color: var(--color-accent);
+            font-weight: bold;
+            min-width: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ejercitador de Ingenio</h1>
+            <p class="subtitle">Cultivando la Agudeza Barroca: Racionalidad Intuitiva y Percepción Singular</p>
+            <div class="tagline">
+                <strong>Técnica y Kairos:</strong> Entrena tu capacidad para ver conexiones ocultas, como los pensadores barrocos.
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Panel izquierdo: Información conceptual -->
+            <div class="card">
+                <h2>El Ingenio Barroco</h2>
+                <p>El <strong>ingenio</strong> barroco no es mero ingenio en el sentido moderno. Es una facultad perceptiva que ve correspondencias sutiles entre objetos distantes, un "rayo sin aviso" que ilumina conexiones inesperadas.</p>
+                
+                <div class="info-box">
+                    <strong>Agudeza (Gracián):</strong> La capacidad de encontrar similitudes ocultas, de generar sorpresas conceptuales. No es el resultado de búsqueda metódica, sino de disposición perceptiva.
+                </div>
+
+                <h3 style="color: var(--color-accent); margin-top: 20px;">Principios del Ingenio</h3>
+                <ul class="concept-list">
+                    <li><span class="concept-icon">◆</span> <strong>Percepción singular:</strong> Ver lo que nadie ha visto</li>
+                    <li><span class="concept-icon">◆</span> <strong>Oportunidad (Kairos):</strong> El momento exacto de la conexión</li>
+                    <li><span class="concept-icon">◆</span> <strong>Sorpresa:</strong> Lo inesperado hace el ingenio memorable</li>
+                    <li><span class="concept-icon">◆</span> <strong>Concisión:</strong> El ingenio es breve, penetrante</li>
+                    <li><span class="concept-icon">◆</span> <strong>Profundidad:</strong> Conecta lo trivial con lo universal</li>
+                </ul>
+            </div>
+
+            <!-- Panel derecho: Teoría y contexto -->
+            <div class="card">
+                <h2>Mentalidad Barroca vs. Anglosajona</h2>
+                <p>La mentalidad barroca enfatiza la <strong>racionalidad intuitiva</strong> y la <strong>percepción holística</strong>, en contraste con la lógica deductiva y analítica de la tradición anglosajona.</p>
+                
+                <div class="info-box">
+                    <strong>Barroca (Latinoamericana):</strong> Intuición, correspondencias, símbolos, paradoja, síntesis
+                </div>
+                <div class="info-box">
+                    <strong>Anglosajona (Moderna):</strong> Deducción, análisis, claridad, método, distancia
+                </div>
+
+                <h3 style="color: var(--color-accent); margin-top: 20px;">El Acto de Descubrimiento</h3>
+                <p>La "lógica del descubrimiento" barroca no busca reglas universales, sino la <strong>sensibilidad ante el kairos</strong>: el momento en que las cosas revelen sus conexiones ocultas.</p>
+                <p style="font-size: 0.9em; color: var(--color-text-secondary); font-style: italic;">
+                    "No se aprende el ingenio en manuales; se posee. Es la disposición de una mente preparada para ver lo invisible."
+                </p>
+            </div>
+
+            <!-- Área de desafíos principal -->
+            <div class="card challenge-area">
+                <h2>Desafío de Ingenio</h2>
+                
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number" id="currentLevel">1</div>
+                        <div class="stat-label">Nivel Actual</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="solvedCount">0</div>
+                        <div class="stat-label">Desafíos Resueltos</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="streakCount">0</div>
+                        <div class="stat-label">Racha Actual</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+
+                <div class="challenge-container">
+                    <div class="challenge-question" id="challengeDisplay">
+                        <h3>Cargando desafío...</h3>
+                        <p>Aguarda un momento.</p>
+                    </div>
+
+                    <div class="input-area">
+                        <textarea id="userAnswer" placeholder="Escribe tu respuesta aquí. Observa cuidadosamente la pregunta y busca la conexión oculta..."></textarea>
+                        
+                        <div class="button-group">
+                            <button class="btn-primary" onclick="checkAnswer()">Enviar Respuesta</button>
+                            <button class="btn-secondary" onclick="getHint()">Obtener Pista</button>
+                            <button class="btn-ghost" onclick="nextChallenge()">Siguiente Desafío</button>
+                        </div>
+                    </div>
+
+                    <div class="feedback" id="feedback">
+                        <p id="feedbackText"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección adicional: Guía de éxito -->
+        <div class="card">
+            <h2>Cómo Ejercitar tu Ingenio</h2>
+            <ol style="line-height: 1.8;">
+                <li><strong>Observa con calma:</strong> Lee la pregunta varias veces. El ingenio surge de la atención.</li>
+                <li><strong>Busca correspondencias:</strong> ¿Qué conexión oculta une los elementos mencionados?</li>
+                <li><strong>Piensa en múltiples planos:</strong> Lo barroco ve en simultáneo: lo material, lo conceptual, lo moral.</li>
+                <li><strong>Valora la brevedad:</strong> El ingenio auténtico es conciso y penetrante.</li>
+                <li><strong>No temas la paradoja:</strong> Las tensiones internas crean el efecto de sorpresa.</li>
+                <li><strong>Cultivar intuición:</strong> Con la práctica, tu mente se sintonizará con el kairos.</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const challenges = [
+            {
+                level: 1,
+                question: "Se dice que Baltasar Gracián escribió: 'El discreto no es quien sabe mucho, sino quien sabe lo conveniente en cada ocasión.' ¿Cuál es la conexión entre el conocimiento y el momento (kairos)?",
+                acceptableAnswers: [
+                    "el conocimiento sin oportunidad es inútil",
+                    "la sabiduría requiere timing",
+                    "lo que importa es saber cuándo y dónde usar el conocimiento",
+                    "kairos es saber qué es relevante en cada momento",
+                    "el contexto determina la verdad"
+                ],
+                hint: "Piensa en la diferencia entre saber algo y saber cuándo aplicarlo. La pregunta de Gracián sugiere que la verdadera discreción no está en la cantidad de saber, sino en la percepción del momento oportuno.",
+                explanation: "Gracián captura la esencia del descubrimiento barroco: no se trata solo de tener información, sino de la sensibilidad para percibir cuándo es el momento justo para usarla. Esto es el kairos—el reconocimiento de la oportunidad singular."
+            },
+            {
+                level: 2,
+                question: "La agudeza barroca busca 'sorprender el entendimiento' mediante conexiones inesperadas. ¿Por qué la sorpresa es fundamental para el ingenio, a diferencia de la lógica deductiva?",
+                acceptableAnswers: [
+                    "porque la sorpresa es una percepción súbita que escapa al método",
+                    "la sorpresa indica una conexión no obvia, no deducible",
+                    "el ingenio revela lo oculto, y lo oculto sorprende",
+                    "la deducción es predecible; el ingenio es singular",
+                    "porque el descubrimiento es un evento, no un proceso"
+                ],
+                hint: "La deducción sigue un método conocido que no sorprende (premisa → conclusión). Pero el ingenio ¿Cómo puede una mente racional producir algo sorpresivo? ¿Qué tipo de racionalidad es esa?",
+                explanation: "La sorpresa indica que la mente ha visto algo que estaba oculto—una correspondencia no-obvia. La lógica deductiva es predecible; el ingenio es impredecible porque depende de una percepción singular, un destello. Esto es lo que Gracián llamaba 'un rayo sin aviso'."
+            },
+            {
+                level: 3,
+                question: "Peirce teorizó que ante un fenómeno sorprendente, generamos hipótesis mediante la 'abducción'. Pero reconoció que existe una infinidad de hipótesis posibles. ¿Cómo se elige la hipótesis correcta si no hay un método?",
+                acceptableAnswers: [
+                    "mediante un instinto adivinatorio, un talento perceptivo",
+                    "la mente humana tiene una afinidad con la verdad",
+                    "es una sensibilidad cultivada, no un algoritmo",
+                    "la buena hipótesis se revela, no se deduce",
+                    "mediante phronesis, el juicio prudencial"
+                ],
+                hint: "Peirce mismo tuvo que reconocer algo más allá del algoritmo lógico. Llamó a esto 'instinct to guess'—un instinto adivinatorio. ¿Cómo reconcilia esto la lógica con el kairos?",
+                explanation: "Peirce revela la misma tensión barroca dentro de la propia lógica moderna: aunque la abducción tiene una forma lógica, la selección de la hipótesis correcta depende de un 'instinto'—es decir, de una sensibilidad perceptiva que no es puramente deductiva. Es phronesis, juicio prudencial."
+            },
+            {
+                level: 4,
+                question: "Kirzner describe el empresario como alguien que descubre oportunidades sin 'buscar' deliberadamente. ¿Cómo es posible un descubrimiento sin búsqueda, y qué tiene esto que ver con la agudeza barroca?",
+                acceptableAnswers: [
+                    "el descubrimiento es un acto de percepción, no de búsqueda metódica",
+                    "estar alerta es diferente a buscar; uno solo ve lo que está ahí",
+                    "el kairos es una oportunidad que se revela al que está atento",
+                    "la búsqueda presupone saber qué se busca; el descubrimiento es pura apertura",
+                    "es la culminación del polo perceptivo puro en el descubrimiento"
+                ],
+                hint: "Kirzner dice que no puedes 'buscar' algo cuya existencia ignoras. El billete en el suelo no se busca; se ve. ¿Cómo es esto análogo al ingenio barroco?",
+                explanation: "Kirzner radicaliza el polo perceptivo: el verdadero descubrimiento es un 'hallazgo sin búsqueda', una apertura de la mente que ve oportunidades que el método no puede ver. Esto es el kairos puro: el momento en que la realidad se revela a una conciencia atenta. Es la agudeza empresarial."
+            },
+            {
+                level: 5,
+                question: "La genealogía de la 'lógica del descubrimiento' va desde la tópica aristotélica (reglas sistemáticas) hasta la alertness de Kirzner (percepción pura). ¿Cuál es la tensión fundamental que une todas estas épocas?",
+                acceptableAnswers: [
+                    "la tensión entre técnica y kairos, entre método y percepción singular",
+                    "entre lo enseñable y lo intransferible",
+                    "entre el procedimiento y el acto singular",
+                    "entre controlar el descubrimiento y reconocer su carácter misterioso",
+                    "entre racionalidad deductiva y racionalidad intuitiva"
+                ],
+                hint: "Desde Aristóteles hasta hoy, la tradición intenta tanto sistematizar el descubrimiento (técnica) como reconocer que hay algo que escapa a la sistematización (kairos). Esta tensión nunca se resuelve.",
+                explanation: "La tensión irresoluble entre técnica (el aspecto sistemático, enseñable) y kairos (la percepción singular, el momento oportuno) es lo que define la racionalidad del descubrimiento. No es una historia de progreso, sino de rearticulación constante de este mismo problema en distintos lenguajes. Es el 'arte prudencial de la conjetura'."
+            }
+        ];
+
+        let currentChallengeIndex = 0;
+        let solvedCount = 0;
+        let streak = 0;
+
+        function loadChallenge() {
+            const challenge = challenges[currentChallengeIndex];
+            const display = document.getElementById('challengeDisplay');
+            
+            display.innerHTML = `
+                <h3>Desafío Nivel ${challenge.level}</h3>
+                <p>${challenge.question}</p>
+            `;
+
+            document.getElementById('userAnswer').value = '';
+            document.getElementById('feedback').classList.remove('show', 'success', 'hint');
+            document.getElementById('currentLevel').textContent = challenge.level;
+            document.getElementById('progressFill').style.width = ((currentChallengeIndex + 1) / challenges.length * 100) + '%';
+        }
+
+        function checkAnswer() {
+            const answer = document.getElementById('userAnswer').value.toLowerCase().trim();
+            const challenge = challenges[currentChallengeIndex];
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+
+            if (!answer) {
+                feedbackText.textContent = '⚠️ Por favor, escribe una respuesta antes de enviar.';
+                feedback.className = 'feedback show hint';
+                return;
+            }
+
+            const isCorrect = challenge.acceptableAnswers.some(correctAnswer => 
+                answer.includes(correctAnswer) || correctAnswer.includes(answer)
+            );
+
+            if (isCorrect) {
+                solvedCount++;
+                streak++;
+                feedbackText.innerHTML = `<strong>✓ ¡Excelente!</strong><br><br>${challenge.explanation}<br><br><em>Racha: ${streak} desafíos consecutivos</em>`;
+                feedback.className = 'feedback show success';
+                document.getElementById('solvedCount').textContent = solvedCount;
+                document.getElementById('streakCount').textContent = streak;
+            } else {
+                streak = 0;
+                feedbackText.innerHTML = `<strong>✗ No es la respuesta esperada.</strong><br><br>Piensa en: ${challenge.hint}`;
+                feedback.className = 'feedback show hint';
+                document.getElementById('streakCount').textContent = streak;
+            }
+        }
+
+        function getHint() {
+            const challenge = challenges[currentChallengeIndex];
+            const feedback = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedbackText');
+
+            feedbackText.innerHTML = `<strong>Pista:</strong><br><br>${challenge.hint}`;
+            feedback.className = 'feedback show hint';
+        }
+
+        function nextChallenge() {
+            if (currentChallengeIndex < challenges.length - 1) {
+                currentChallengeIndex++;
+                loadChallenge();
+            } else {
+                alert(`¡Felicidades! Has completado todos los ${challenges.length} desafíos de ingenio.`);
+                currentChallengeIndex = 0;
+                solvedCount = 0;
+                streak = 0;
+                document.getElementById('solvedCount').textContent = '0';
+                document.getElementById('streakCount').textContent = '0';
+                loadChallenge();
+            }
+        }
+
+        // Iniciar
+        loadChallenge();
+    </script>
+</body>
+</html>
