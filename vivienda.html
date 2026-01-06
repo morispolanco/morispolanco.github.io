@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Subsidios de Vivienda - Guatemala</title>
+    <style>
+        :root {
+            --color-bg: #f5f5f5;
+            --color-surface: #ffffff;
+            --color-text: #1a1a1a;
+            --color-text-light: #666666;
+            --color-primary: #2b7a7a;
+            --color-primary-dark: #1d5555;
+            --color-accent: #d4a574;
+            --color-success: #27ae60;
+            --color-warning: #e67e22;
+            --color-error: #e74c3c;
+            --radius: 8px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            color: var(--color-text-light);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-btn:hover {
+            color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: var(--color-surface);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--color-accent);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1em;
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(43, 122, 122, 0.1);
+        }
+
+        button {
+            background: var(--color-primary);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        button:hover {
+            background: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(43, 122, 122, 0.3);
+        }
+
+        button.secondary {
+            background: var(--color-text-light);
+            margin-top: 10px;
+        }
+
+        button.secondary:hover {
+            background: var(--color-text);
+        }
+
+        .result {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: var(--radius);
+            border-left: 5px solid var(--color-success);
+            margin-top: 20px;
+        }
+
+        .result.warning {
+            background: #fff3e0;
+            border-left-color: var(--color-warning);
+        }
+
+        .result.error {
+            background: #ffebee;
+            border-left-color: var(--color-error);
+        }
+
+        .result h4 {
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background: var(--color-primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            height: 250px;
+            margin-bottom: 20px;
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            border-radius: var(--radius) var(--radius) 0 0;
+            position: relative;
+            min-height: 20px;
+            transition: var(--transition);
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+        }
+
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            white-space: nowrap;
+            color: var(--color-text-light);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            opacity: 0.9;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .stat-box .value {
+            color: white;
+            font-size: 2em;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin: 15px 0;
+            color: #1565c0;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin: 15px 0;
+            color: #e65100;
+        }
+
+        .export-btn {
+            background: var(--color-accent);
+            margin-top: 10px;
+        }
+
+        .export-btn:hover {
+            background: #c09060;
+        }
+
+        .department-select {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 0.95em;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 600px;
+        }
+
+        .close-modal {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--color-text-light);
+        }
+
+        .close-modal:hover {
+            color: var(--color-text);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Análisis de Subsidios de Vivienda</h1>
+            <p>Guatemala 2026 - Herramienta para calcular subsidios habitacionales</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('simulator')">📊 Simulador</button>
+            <button class="tab-btn" onclick="switchTab('analysis')">📈 Análisis Regional</button>
+            <button class="tab-btn" onclick="switchTab('database')">💾 Base de Datos</button>
+            <button class="tab-btn" onclick="switchTab('methodology')">📋 Metodología</button>
+        </div>
+
+        <!-- TAB 1: SIMULADOR -->
+        <div id="simulator" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h3>💼 Datos de la Familia</h3>
+                    <div class="form-group">
+                        <label>Circunscripción Económica</label>
+                        <select id="circunscription">
+                            <option value="ce1">CE1 - Departamento de Guatemala</option>
+                            <option value="ce2" selected>CE2 - Resto del País</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Sector Económico</label>
+                        <select id="sector">
+                            <option value="agricultural" selected>Agrícola</option>
+                            <option value="non-agricultural">No Agrícola</option>
+                            <option value="export">Maquila/Exportación</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Miembros de la Familia</label>
+                        <input type="number" id="familyMembers" value="4" min="1" max="20">
+                    </div>
+                    <div class="form-group">
+                        <label>Ingreso Mensual Familiar (Q)</label>
+                        <input type="number" id="monthlyIncome" value="15000" min="0" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label>¿Tienen bienes inmuebles? (Construcción)</label>
+                        <select id="hasLand">
+                            <option value="no" selected>No</option>
+                            <option value="yes">Sí, poseen 1 lote</option>
+                        </select>
+                    </div>
+                    <button onclick="calculateSubsidy()">Calcular Subsidio</button>
+                </div>
+
+                <div class="card">
+                    <h3>🏗️ Datos de Construcción</h3>
+                    <div class="form-group">
+                        <label>Tipo de Obra</label>
+                        <select id="workType">
+                            <option value="new" selected>Nueva Vivienda</option>
+                            <option value="improvement">Mejoramiento</option>
+                            <option value="repair">Reparación</option>
+                            <option value="expansion">Ampliación</option>
+                            <option value="services">Servicios Básicos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Área a Construir (m²)</label>
+                        <input type="number" id="area" value="60" min="1" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Costo por m² (Q)</label>
+                        <select id="costPerM2">
+                            <option value="2500">Q2,500 (Básico)</option>
+                            <option value="3500" selected>Q3,500 (Estándar)</option>
+                            <option value="4500">Q4,500 (Mejorado)</option>
+                            <option value="5000">Q5,000 (Premium)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Costo Total Estimado (Q)</label>
+                        <input type="number" id="totalCost" value="0" min="0" step="100">
+                    </div>
+                    <button onclick="calculateTotal()">Calcular Total Automático</button>
+                </div>
+            </div>
+
+            <div id="subsidyResult" class="card" style="display:none;">
+                <h3>✅ Resultado del Cálculo</h3>
+                <div class="stats">
+                    <div class="stat-box">
+                        <h4>Ingreso Mensual</h4>
+                        <div class="value" id="displayIncome">Q15,000</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Salarios Mínimos</h4>
+                        <div class="value" id="displayMinimumWages">3.5</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Elegible para Subsidio</h4>
+                        <div class="value" id="displayEligible">Sí</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Subsidio Máximo FOPAVI</h4>
+                        <div class="value">Q35,000</div>
+                    </div>
+                </div>
+
+                <div id="eligibilityMessage"></div>
+
+                <table id="subsidyTable">
+                    <thead>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Costo Total de Construcción</td>
+                            <td id="costDisplay">Q210,000</td>
+                        </tr>
+                        <tr>
+                            <td>Subsidio Recomendado (% del Ingreso)</td>
+                            <td id="subsidyDisplay">Q25,000</td>
+                        </tr>
+                        <tr>
+                            <td>Crédito Complementario Necesario</td>
+                            <td id="creditDisplay">Q185,000</td>
+                        </tr>
+                        <tr style="background:#e8f5e9;">
+                            <td><strong>Capacidad de Pago Mensual</strong></td>
+                            <td id="paymentCapacity"><strong>Q1,875</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-box">
+                    <strong>📌 Nota Importante:</strong> El subsidio se basa en porcentaje del ingreso familiar (máximo 30% para 4 salarios mínimos). El límite FOPAVI es Q35,000. Requiere crédito complementario para la diferencia.
+                </div>
+
+                <button class="export-btn" onclick="exportToCSV()">📥 Descargar Resultados (CSV)</button>
+                <button class="export-btn" onclick="saveToDB()">💾 Guardar en Base de Datos</button>
+            </div>
+        </div>
+
+        <!-- TAB 2: ANÁLISIS REGIONAL -->
+        <div id="analysis" class="tab-content">
+            <div class="card">
+                <h3>📍 Análisis por Departamento</h3>
+                <div class="form-group">
+                    <label>Seleccionar Departamento</label>
+                    <select id="departmentSelect" onchange="updateDepartmentAnalysis()">
+                        <option value="">-- Seleccionar --</option>
+                        <option value="guatemala">Guatemala</option>
+                        <option value="sacatepéquez">Sacatepéquez</option>
+                        <option value="escuintla">Escuintla</option>
+                        <option value="quetzaltenango">Quetzaltenango</option>
+                        <option value="totonicapán">Totonicapán</option>
+                        <option value="sololá">Sololá</option>
+                        <option value="chichicastenango">Quiché</option>
+                        <option value="huehuetenango">Huehuetenango</option>
+                        <option value="altaverapaz">Alta Verapaz</option>
+                        <option value="bajавerapaz">Baja Verapaz</option>
+                        <option value="jalapa">Jalapa</option>
+                        <option value="otras">Otros Departamentos</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="departmentStats" class="card" style="display:none;">
+                <h3>📊 Estadísticas del Departamento</h3>
+                <div class="stats">
+                    <div class="stat-box">
+                        <h4>Tasa de Pobreza</h4>
+                        <div class="value" id="povertyRate">56%</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Salario Mínimo Promedio</h4>
+                        <div class="value" id="minimumWage">Q3,816</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>4 Salarios Mínimos</h4>
+                        <div class="value" id="fourMinimumWages">Q15,264</div>
+                    </div>
+                    <div class="stat-box">
+                        <h4>Población Vulnerable</h4>
+                        <div class="value" id="vulnerable">Alto</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <h4 style="margin-bottom:20px;">Comparativa de Ingresos vs Subsidio Recomendado</h4>
+                    <div class="chart-bar" id="departmentChart"></div>
+                </div>
+
+                <div class="info-box">
+                    El análisis regional ayuda a identificar necesidades de subsidios según condiciones económicas locales.
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:20px;">
+                <h3>🗺️ Mapa de Pobreza 2023 (ENCOVI)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Departamento</th>
+                            <th>Tasa de Pobreza</th>
+                            <th>Nivel de Vulnerabilidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Guatemala</td>
+                            <td>21.6%</td>
+                            <td>Bajo</td>
+                        </tr>
+                        <tr>
+                            <td>Sacatepéquez</td>
+                            <td>38.7%</td>
+                            <td>Bajo-Medio</td>
+                        </tr>
+                        <tr>
+                            <td>Escuintla</td>
+                            <td>39.2%</td>
+                            <td>Bajo-Medio</td>
+                        </tr>
+                        <tr>
+                            <td>Quetzaltenango</td>
+                            <td>44.1%</td>
+                            <td>Medio</td>
+                        </tr>
+                        <tr>
+                            <td>Quiché</td>
+                            <td>86.4%</td>
+                            <td>Muy Alto</td>
+                        </tr>
+                        <tr>
+                            <td>Huehuetenango</td>
+                            <td>81.3%</td>
+                            <td>Muy Alto</td>
+                        </tr>
+                        <tr>
+                            <td>Alta Verapaz</td>
+                            <td>90.3%</td>
+                            <td>Muy Alto</td>
+                        </tr>
+                        <tr>
+                            <td>Baja Verapaz</td>
+                            <td>80.1%</td>
+                            <td>Muy Alto</td>
+                        </tr>
+                        <tr>
+                            <td>Jalapa</td>
+                            <td>79.9%</td>
+                            <td>Muy Alto</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: BASE DE DATOS -->
+        <div id="database" class="tab-content">
+            <div class="card">
+                <h3>💾 Registro de Simulaciones</h3>
+                <p style="color:var(--color-text-light); margin-bottom:15px;">
+                    Se guardan automáticamente en el navegador. Total de registros: <strong id="recordCount">0</strong>
+                </p>
+                <button onclick="clearDatabase()">🗑️ Limpiar Base de Datos</button>
+                <button onclick="exportDatabase()" style="background:var(--color-accent); margin-left:10px;">📥 Exportar Todo (CSV)</button>
+            </div>
+
+            <div id="databaseTable" class="card" style="margin-top:20px; overflow-x:auto;">
+                <table id="dbTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Ingreso Mensual</th>
+                            <th>Área (m²)</th>
+                            <th>Costo Total</th>
+                            <th>Subsidio</th>
+                            <th>Crédito Necesario</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbBody">
+                        <tr>
+                            <td colspan="7" style="text-align:center; color:var(--color-text-light);">
+                                No hay registros aún. Haz un cálculo en el simulador para comenzar.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: METODOLOGÍA -->
+        <div id="methodology" class="tab-content">
+            <div class="card">
+                <h3>📖 Metodología de Cálculo</h3>
+
+                <h4 style="margin-top:20px; color:var(--color-primary);">1. Elegibilidad Básica</h4>
+                <p>Requisitos FOPAVI (Fondo para la Vivienda):</p>
+                <ul style="margin-left:20px; margin-top:10px;">
+                    <li>Ser guatemalteco</li>
+                    <li>Ingreso familiar ≤ 4 salarios mínimos</li>
+                    <li>Grupo familiar constituido (matrimonio, unión de hecho o adultos con dependientes)</li>
+                    <li>Para construcción: poseer 1 lote en propiedad</li>
+                    <li>No haber recibido subsidio anterior</li>
+                </ul>
+
+                <h4 style="margin-top:20px; color:var(--color-primary);">2. Cálculo de Salarios Mínimos</h4>
+                <p><strong>Salarios Mínimos 2026 (Acuerdo Gubernativo 256-2025):</strong></p>
+                <table style="margin-top:10px;">
+                    <thead>
+                        <tr style="background:var(--color-primary); color:white;">
+                            <th>Circunscripción / Sector</th>
+                            <th>Mensual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>CE1 - Agrícola</td>
+                            <td>Q3,791.20</td>
+                        </tr>
+                        <tr>
+                            <td>CE1 - No Agrícola</td>
+                            <td>Q4,002.28</td>
+                        </tr>
+                        <tr>
+                            <td>CE2 - Agrícola</td>
+                            <td>Q3,625.89</td>
+                        </tr>
+                        <tr>
+                            <td>CE2 - No Agrícola</td>
+                            <td>Q3,816.90</td>
+                        </tr>
+                        <tr>
+                            <td>Maquila/Exportación</td>
+                            <td>Q3,321.10 (CE2)</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 style="margin-top:20px; color:var(--color-primary);">3. Fórmula de Subsidio</h4>
+                <p style="background:#f0f0f0; padding:15px; border-radius:var(--radius); margin-top:10px;">
+                    <strong>Subsidio Recomendado = Min (Ingreso × 0.30, Q35,000)</strong>
+                </p>
+                <p style="margin-top:10px;">Donde:</p>
+                <ul style="margin-left:20px;">
+                    <li>0.30 = Porcentaje máximo (30% del ingreso mensual)</li>
+                    <li>Q35,000 = Subsidio máximo FOPAVI</li>
+                    <li>Solo si: Ingreso ≤ 4 salarios mínimos</li>
+                </ul>
+
+                <h4 style="margin-top:20px; color:var(--color-primary);">4. Capacidad de Pago</h4>
+                <p style="background:#f0f0f0; padding:15px; border-radius:var(--radius); margin-top:10px;">
+                    <strong>Capacidad Mensual = Ingreso × 0.125 (12.5% máximo)</strong>
+                </p>
+
+                <h4 style="margin-top:20px; color:var(--color-primary);">5. Datos de Construcción</h4>
+                <p><strong>Costos Referenciales por m² (2025-2026):</strong></p>
+                <ul style="margin-left:20px; margin-top:10px;">
+                    <li>Q2,500 - Q3,000: Interés Social (básico)</li>
+                    <li>Q3,500 - Q4,000: Estándar (con acabados)</li>
+                    <li>Q4,500 - Q5,000: Mejorado (acabados premium)</li>
+                </ul>
+
+                <div class="warning-box" style="margin-top:20px;">
+                    <strong>⚠️ Nota Legal:</strong> Esta herramienta es informativa. Para subsidios oficiales, 
+                    contactar FOPAVI (fopavi.gob.gt) o CIV (civ.gob.gt). Los cálculos pueden variar según 
+                    requisitos actuales y políticas vigentes.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Base de datos local
+        let database = JSON.parse(localStorage.getItem('subsidyDB') || '[]');
+
+        // Datos de salarios mínimos 2026
+        const minimumWages = {
+            ce1: {
+                agricultural: 3791.20,
+                'non-agricultural': 4002.28,
+                export: 3409.73
+            },
+            ce2: {
+                agricultural: 3625.89,
+                'non-agricultural': 3816.90,
+                export: 3321.10
+            }
+        };
+
+        // Datos departamentales (pobreza, ubicación, etc.)
+        const departmentData = {
+            guatemala: { poverty: 21.6, wage: 4002.28, vulnerable: 'Bajo' },
+            sacatepéquez: { poverty: 38.7, wage: 3816.90, vulnerable: 'Bajo-Medio' },
+            escuintla: { poverty: 39.2, wage: 3816.90, vulnerable: 'Bajo-Medio' },
+            quetzaltenango: { poverty: 44.1, wage: 3816.90, vulnerable: 'Medio' },
+            totonicapán: { poverty: 62.1, wage: 3816.90, vulnerable: 'Alto' },
+            sololá: { poverty: 61.9, wage: 3816.90, vulnerable: 'Alto' },
+            chichicastenango: { poverty: 86.4, wage: 3816.90, vulnerable: 'Muy Alto' },
+            huehuetenango: { poverty: 81.3, wage: 3816.90, vulnerable: 'Muy Alto' },
+            altaverapaz: { poverty: 90.3, wage: 3816.90, vulnerable: 'Muy Alto' },
+            bajавerapaz: { poverty: 80.1, wage: 3816.90, vulnerable: 'Muy Alto' },
+            jalapa: { poverty: 79.9, wage: 3816.90, vulnerable: 'Muy Alto' }
+        };
+
+        // Cambiar pestañas
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Calcular total de construcción
+        function calculateTotal() {
+            const area = parseFloat(document.getElementById('area').value) || 0;
+            const costPerM2 = parseFloat(document.getElementById('costPerM2').value) || 0;
+            const total = area * costPerM2;
+            document.getElementById('totalCost').value = total;
+            return total;
+        }
+
+        // Calcular subsidio
+        function calculateSubsidy() {
+            const income = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+            const circunscription = document.getElementById('circunscription').value;
+            const sector = document.getElementById('sector').value;
+            const familyMembers = parseInt(document.getElementById('familyMembers').value) || 1;
+            const area = parseFloat(document.getElementById('area').value) || 0;
+            const costPerM2 = parseFloat(document.getElementById('costPerM2').value) || 0;
+            const totalCost = area * costPerM2;
+
+            // Obtener salario mínimo
+            const minimumWage = minimumWages[circunscription][sector];
+            const minimumWagesCount = income / minimumWage;
+
+            // Verificar elegibilidad (máximo 4 salarios mínimos)
+            const isEligible = minimumWagesCount <= 4 && familyMembers >= 1;
+
+            // Calcular subsidio (30% del ingreso, máximo Q35,000)
+            let subsidy = 0;
+            let eligible = 'No';
+            let message = '';
+
+            if (!isEligible) {
+                message = '<div class="result error"><h4>❌ No Elegible</h4><p>El ingreso familiar excede 4 salarios mínimos o no cumple requisitos básicos.</p></div>';
+            } else {
+                subsidy = Math.min(income * 0.30, 35000);
+                eligible = 'Sí';
+                message = '<div class="result"><h4>✅ Elegible para Subsidio</h4><p>La familia cumple con los requisitos de FOPAVI.</p></div>';
+            }
+
+            // Crédito complementario necesario
+            const creditNeeded = Math.max(totalCost - subsidy, 0);
+            const monthlyPayment = income * 0.125; // Capacidad: 12.5% del ingreso
+
+            // Mostrar resultado
+            document.getElementById('subsidyResult').style.display = 'block';
+            document.getElementById('displayIncome').textContent = 'Q' + income.toLocaleString('es-GT');
+            document.getElementById('displayMinimumWages').textContent = minimumWagesCount.toFixed(2);
+            document.getElementById('displayEligible').textContent = eligible;
+            document.getElementById('eligibilityMessage').innerHTML = message;
+            document.getElementById('costDisplay').textContent = 'Q' + totalCost.toLocaleString('es-GT');
+            document.getElementById('subsidyDisplay').textContent = 'Q' + subsidy.toLocaleString('es-GT');
+            document.getElementById('creditDisplay').textContent = 'Q' + creditNeeded.toLocaleString('es-GT');
+            document.getElementById('paymentCapacity').textContent = 'Q' + monthlyPayment.toLocaleString('es-GT');
+
+            // Guardar cálculo en variable global para exportar/guardar
+            window.lastCalculation = {
+                date: new Date().toLocaleString('es-GT'),
+                income,
+                area,
+                totalCost,
+                subsidy,
+                creditNeeded,
+                monthlyPayment,
+                eligible,
+                circunscription,
+                sector,
+                familyMembers
+            };
+
+            // Auto-scroll al resultado
+            document.getElementById('subsidyResult').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Guardar a base de datos
+        function saveToDB() {
+            if (!window.lastCalculation) {
+                alert('Por favor, realiza un cálculo primero.');
+                return;
+            }
+
+            database.push(window.lastCalculation);
+            localStorage.setItem('subsidyDB', JSON.stringify(database));
+            updateDatabaseTable();
+            alert('✅ Cálculo guardado en base de datos');
+        }
+
+        // Actualizar tabla de base de datos
+        function updateDatabaseTable() {
+            const tbody = document.getElementById('dbBody');
+            document.getElementById('recordCount').textContent = database.length;
+
+            if (database.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--color-text-light);">No hay registros aún.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = database.map((record, index) => `
+                <tr>
+                    <td>${record.date}</td>
+                    <td>Q${record.income.toLocaleString('es-GT')}</td>
+                    <td>${record.area}</td>
+                    <td>Q${record.totalCost.toLocaleString('es-GT')}</td>
+                    <td>Q${record.subsidy.toLocaleString('es-GT')}</td>
+                    <td>Q${record.creditNeeded.toLocaleString('es-GT')}</td>
+                    <td>
+                        <button style="background:#e74c3c; padding:6px 12px; font-size:0.9em;" onclick="deleteRecord(${index})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Eliminar registro
+        function deleteRecord(index) {
+            if (confirm('¿Eliminar este registro?')) {
+                database.splice(index, 1);
+                localStorage.setItem('subsidyDB', JSON.stringify(database));
+                updateDatabaseTable();
+            }
+        }
+
+        // Limpiar base de datos
+        function clearDatabase() {
+            if (confirm('¿Eliminar TODOS los registros de la base de datos? Esta acción no se puede deshacer.')) {
+                database = [];
+                localStorage.setItem('subsidyDB', JSON.stringify(database));
+                updateDatabaseTable();
+                alert('✅ Base de datos limpiada');
+            }
+        }
+
+        // Exportar a CSV
+        function exportToCSV() {
+            if (!window.lastCalculation) {
+                alert('Por favor, realiza un cálculo primero.');
+                return;
+            }
+
+            const calc = window.lastCalculation;
+            const csv = `Fecha,Ingreso Mensual,Área (m²),Costo Total,Subsidio,Crédito Necesario,Capacidad Mensual,Elegible\n` +
+                `${calc.date},${calc.income},${calc.area},${calc.totalCost},${calc.subsidy},${calc.creditNeeded},${calc.monthlyPayment},${calc.eligible}`;
+
+            downloadCSV(csv, 'subsidio-vivienda.csv');
+        }
+
+        // Exportar base de datos
+        function exportDatabase() {
+            if (database.length === 0) {
+                alert('No hay registros para exportar.');
+                return;
+            }
+
+            const headers = ['Fecha', 'Ingreso', 'Área', 'Costo Total', 'Subsidio', 'Crédito', 'Pago Mensual', 'Elegible'];
+            const rows = database.map(r => [
+                r.date, r.income, r.area, r.totalCost, r.subsidy, r.creditNeeded, r.monthlyPayment, r.eligible
+            ]);
+
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => csv += row.join(',') + '\n');
+
+            downloadCSV(csv, 'base-datos-subsidios.csv');
+        }
+
+        // Función auxiliar para descargar CSV
+        function downloadCSV(csv, filename) {
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Actualizar análisis por departamento
+        function updateDepartmentAnalysis() {
+            const dept = document.getElementById('departmentSelect').value;
+            if (!dept) return;
+
+            const data = departmentData[dept];
+            if (!data) return;
+
+            document.getElementById('departmentStats').style.display = 'block';
+            document.getElementById('povertyRate').textContent = data.poverty + '%';
+            document.getElementById('minimumWage').textContent = 'Q' + data.wage.toLocaleString('es-GT');
+            document.getElementById('fourMinimumWages').textContent = 'Q' + (data.wage * 4).toLocaleString('es-GT');
+            document.getElementById('vulnerable').textContent = data.vulnerable;
+
+            // Crear gráfico comparativo
+            const fourWages = data.wage * 4;
+            const subsidy = Math.min(fourWages * 0.30, 35000);
+
+            const chartHTML = `
+                <div class="bar" style="width:35%; margin-right:20px;">
+                    <div class="bar-value">Q${fourWages.toLocaleString('es-GT')}</div>
+                    <div class="bar-label">4 Salarios Mínimos</div>
+                </div>
+                <div class="bar" style="width:20%;">
+                    <div class="bar-value">Q${subsidy.toLocaleString('es-GT')}</div>
+                    <div class="bar-label">Subsidio Recomendado</div>
+                </div>
+            `;
+
+            document.getElementById('departmentChart').innerHTML = chartHTML;
+        }
+
+        // Inicializar tabla de base de datos
+        updateDatabaseTable();
+
+        // Auto-calcular total cuando cambien área o costo
+        document.getElementById('area').addEventListener('change', calculateTotal);
+        document.getElementById('area').addEventListener('input', calculateTotal);
+        document.getElementById('costPerM2').addEventListener('change', calculateTotal);
+        
+        // También recalcular cuando el usuario edite manualmente el total
+        document.getElementById('totalCost').addEventListener('input', function() {
+            // Permitir edición manual
+        });
+
+        // Calcular total inicial
+        calculateTotal();
+    </script>
+</body>
+</html>
