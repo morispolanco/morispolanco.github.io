@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Prudencial de Vivienda Guatemala 🏠</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; font-size: 2.2em; }
+        .subtitle { color: #666; font-style: italic; font-size: 1.1em; }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .tab-btn:hover { background: #667eea; color: white; }
+        .tab-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: none;
+        }
+        .tab-content.active { display: block; }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: #f9f9ff;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .result {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 6px;
+            display: none;
+        }
+        .result.show { display: block; }
+        .result h3 { color: #667eea; margin-bottom: 10px; }
+        .result-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 3px solid #764ba2;
+        }
+        .metric {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            margin: 5px 5px 5px 0;
+            font-size: 0.9em;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #eee;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+            transform: translateY(-5px);
+        }
+        .card h4 { color: #667eea; margin-bottom: 10px; }
+        .card p { color: #666; font-size: 0.95em; }
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover { background: #f9f9f9; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 { color: #667eea; margin-bottom: 15px; }
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #999;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .close-btn:hover { color: #333; }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.6em; }
+            .tabs { flex-direction: column; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Sistema de Inteligencia Prudencial para Vivienda</h1>
+            <p class="subtitle">Aplicando principios de "Ni magia ni método" de Moris Polanco</p>
+            <p style="margin-top: 10px; color: #999;">Basado en ENCOVI 2023 | Datos actualizados 2026</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('simulator')">🎯 Simulador</button>
+            <button class="tab-btn" onclick="showTab('departments')">📍 Departamentos</button>
+            <button class="tab-btn" onclick="showTab('families')">👨‍👩‍👧‍👦 Tipos de Familia</button>
+            <button class="tab-btn" onclick="showTab('solutions')">💡 Soluciones</button>
+            <button class="tab-btn" onclick="showTab('matrix')">📊 Matriz Operativa</button>
+            <button class="tab-btn" onclick="showTab('about')">ℹ️ Polanco & Gracián</button>
+            <button class="tab-btn" onclick="showTab('download')">📥 Descargar Análisis</button>
+        </div>
+
+        <!-- TAB 1: SIMULADOR -->
+        <div id="simulator" class="tab-content active">
+            <h2>🎯 Simulador de Acceso a Vivienda</h2>
+            <p style="margin-bottom: 20px; color: #666;">Ingresa tu información para obtener una solución personalizada</p>
+            
+            <div class="form-group">
+                <label for="department">Departamento:</label>
+                <select id="department">
+                    <option value="">Selecciona...</option>
+                    <option value="Alta Verapaz">Alta Verapaz (90.3% pobreza)</option>
+                    <option value="Quiché">Quiché (86.4% pobreza)</option>
+                    <option value="Huehuetenango">Huehuetenango (81.3% pobreza)</option>
+                    <option value="Baja Verapaz">Baja Verapaz (80.1% pobreza)</option>
+                    <option value="Jalapa">Jalapa (79.9% pobreza)</option>
+                    <option value="Guatemala">Guatemala (21.6% pobreza)</option>
+                    <option value="Sacatepéquez">Sacatepéquez (38.7% pobreza)</option>
+                    <option value="Escuintla">Escuintla (39.2% pobreza)</option>
+                    <option value="Otro">Otro departamento</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="family-type">Tipo de Familia:</label>
+                <select id="family-type">
+                    <option value="">Selecciona...</option>
+                    <option value="extreme-rural">Pobreza Extrema Rural (&lt;Q1,500/mes)</option>
+                    <option value="poor-urban">Pobre Urbana Informal (Q2,500-3,500/mes)</option>
+                    <option value="working-class">Clase Trabajadora Formal (Q4,500-7,000/mes)</option>
+                    <option value="middle-class">Clase Media Emergente (Q7,000-12,000/mes)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="monthly-income">Ingreso Mensual (Q):</label>
+                <input type="number" id="monthly-income" placeholder="Ej: 3500" min="500">
+            </div>
+
+            <div class="form-group">
+                <label for="family-size">Tamaño de Familia:</label>
+                <select id="family-size">
+                    <option value="2">2 personas</option>
+                    <option value="3">3 personas</option>
+                    <option value="4" selected>4 personas</option>
+                    <option value="5">5 personas</option>
+                    <option value="6">6 personas</option>
+                    <option value="7">7+ personas</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Ubicación preferida:</label>
+                <select id="location">
+                    <option value="rural">Rural</option>
+                    <option value="urban" selected>Urbana</option>
+                    <option value="peri-urban">Periurbana</option>
+                </select>
+            </div>
+
+            <button onclick="calculateSolution()">📊 Calcular Mi Solución</button>
+
+            <div id="result" class="result">
+                <h3>✅ Tu Solución Personalizada</h3>
+                <div id="result-content"></div>
+            </div>
+        </div>
+
+        <!-- TAB 2: DEPARTAMENTOS -->
+        <div id="departments" class="tab-content">
+            <h2>📍 Departamentos Clasificados por Pobreza</h2>
+            <p style="margin-bottom: 20px; color: #666;">Estrategias diferenciadas según contexto local</p>
+            
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #764ba2; margin-bottom: 15px;">🔴 GRUPO A: Extrema Pobreza Rural (>80%)</h3>
+                <div class="grid" id="group-a"></div>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h3 style="color: #667eea; margin-bottom: 15px;">🟠 GRUPO B: Pobreza Alta Mixta (50-79%)</h3>
+                <div class="grid" id="group-b"></div>
+            </div>
+
+            <div>
+                <h3 style="color: #28a745; margin-bottom: 15px;">🟢 GRUPO C: Pobreza Moderada (< 50%)</h3>
+                <div class="grid" id="group-c"></div>
+            </div>
+        </div>
+
+        <!-- TAB 3: TIPOS DE FAMILIA -->
+        <div id="families" class="tab-content">
+            <h2>👨‍👩‍👧‍👦 Tipos de Familia y Soluciones</h2>
+            <p style="margin-bottom: 20px; color: #666;">Cada familia tiene una ruta diferente hacia vivienda propia</p>
+            
+            <div class="grid" id="family-types"></div>
+        </div>
+
+        <!-- TAB 4: SOLUCIONES -->
+        <div id="solutions" class="tab-content">
+            <h2>💡 Soluciones Operativas</h2>
+            <p style="margin-bottom: 20px; color: #666;">Modelos replicables basados en casos exitosos</p>
+            
+            <div class="grid" id="solutions-grid"></div>
+        </div>
+
+        <!-- TAB 5: MATRIZ OPERATIVA -->
+        <div id="matrix" class="tab-content">
+            <h2>📊 Matriz Operativa: 16 Soluciones Detalladas</h2>
+            <p style="margin-bottom: 20px; color: #666;">Desglose completo: QUÉ CONSISTE, QUÉ HACE GOBIERNO, QUÉ HACE FAMILIA</p>
+            
+            <div class="form-group">
+                <label for="family-filter">Filtrar por Tipo de Familia:</label>
+                <select id="family-filter" onchange="filterMatrixSolutions()">
+                    <option value="">Todas las soluciones (16)</option>
+                    <option value="Pobreza Extrema Rural">Pobreza Extrema Rural (4 soluciones)</option>
+                    <option value="Pobre Urbana Informal">Pobre Urbana Informal (4 soluciones)</option>
+                    <option value="Clase Trabajadora Formal">Clase Trabajadora Formal (4 soluciones)</option>
+                    <option value="Clase Media Emergente">Clase Media Emergente (4 soluciones)</option>
+                </select>
+            </div>
+
+            <div id="matrix-grid" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+
+        <!-- TAB 6: PRINCIPIOS -->
+        <div id="about" class="tab-content">
+            <h2>ℹ️ Fundamento Filosófico: "Ni magia ni método"</h2>
+            <p style="margin-bottom: 20px; color: #666;">Sistema basado en el libro de Moris Polanco. Rechaza tanto la "magia" como el "método mecanicista"</p>
+            
+            <h3 style="color: #667eea; margin-top: 20px;">1️⃣ LA TÓPICA (Aristóteles)</h3>
+            <p><strong>¿Qué es?</strong> Arte de encontrar argumentos usando "lugares" (topoi) como depósitos de ideas.</p>
+            <p><strong>Aplicación:</strong> Interrogamos cada departamento con 5 preguntas:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Definición:</strong> ¿Qué tipo de vivienda específica se necesita?</li>
+                <li><strong>Género:</strong> ¿Es rural, urbana o periurbana?</li>
+                <li><strong>Causa:</strong> ¿Qué genera la pobreza en este lugar?</li>
+                <li><strong>Comparación:</strong> ¿Qué funciona en departamentos vecinos?</li>
+                <li><strong>Tiempo:</strong> ¿Cuál es el momento oportuno para actuar?</li>
+            </ul>
+            
+            <h3 style="color: #667eea; margin-top: 20px;">2️⃣ LA PRUDENCIA (Gracián)</h3>
+            <p><strong>¿Qué es?</strong> Sabiduría práctica: saber qué hacer en cada situación concreta, adaptándose al contexto.</p>
+            <p><strong>Aplicación:</strong> NO aplicamos solución única. Reconocemos que:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>Guatemala (21% pobreza, urbano) ≠ Alta Verapaz (90% pobreza, rural)</li>
+                <li>Cada departamento tiene su propia estrategia (cooperativas, lotes, PPP, densificación)</li>
+                <li>La "variación de la conducta" es virtud, no defecto</li>
+            </ul>
+            
+            <h3 style="color: #667eea; margin-top: 20px;">3️⃣ LA ABDUCCIÓN (Peirce)</h3>
+            <p><strong>¿Qué es?</strong> Conjetura inteligente: salto lógico que genera nueva idea a partir de anomalía observada.</p>
+            <p><strong>Aplicación:</strong> Ciclo Sorpresa → Suspicacia → Verificación</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>Sorpresa:</strong> ¿Por qué Alta Verapaz es 90% pobre pero no es prioritario?</li>
+                <li><strong>Suspicacia:</strong> Quizás cooperativas + suelo comunal + subsidio = solución</li>
+                <li><strong>Verificación:</strong> ¿Existen modelos existentes? Sí: Fe y Esperanza, EMVDU</li>
+            </ul>
+            
+            <h3 style="color: #667eea; margin-top: 20px;">4️⃣ EL KAIROS (Tiempo Oportuno)</h3>
+            <p><strong>¿Qué es?</strong> Inteligencia de la ocasión: saber cuándo actuar, no todo se hace simultáneamente.</p>
+            <p><strong>Aplicación:</strong> Identificamos tres niveles temporales:</p>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li><strong>La ventana actual (2026):</strong> Gobierno enfocado en pobreza, presupuesto FOPAVI aumentado</li>
+                <li><strong>Punto de presión:</strong> Iniciar en Grupo A (>80% pobreza) para máximo impacto</li>
+                <li><strong>Sazón de las cosas:</strong> Antes de que consolidación informal haga imposible intervenir</li>
+            </ul>
+
+            <div style="background: #f0f4ff; border-left: 4px solid #667eea; padding: 15px; border-radius: 6px; margin-top: 20px;">
+                <strong>📚 Referencia:</strong> Moris Polanco, <em>Ni magia ni método: El arte prudencial de descubrir ideas nuevas</em> (2026)
+            </div>
+
+            <div class="success" style="margin-top: 20px;">
+                <strong>💭 Reflexión de Gracián:</strong><br>
+                "La tiranía de la circunstancia solo se vence con inteligencia de la ocasión."
+            </div>
+
+            <div style="background: #fff9e6; border-left: 4px solid #f39c12; padding: 15px; border-radius: 6px; margin-top: 20px;">
+                <strong>⚡ Síntesis operativa:</strong><br>
+                Este sistema rechaza la "magia" (esperar que FOPAVI solo resuelva) y el "método mecanicista" (aplicar receta única a 22 departamentos). Propone la <strong>prudencia graciana</strong>: observación atenta + variación inteligente + escucha del tiempo oportuno.
+            </div>
+        </div>
+    </div>
+
+        <!-- TAB 7: DESCARGAS -->
+    <div id="download" class="tab-content">
+        <h2>📥 Documentos Disponibles para Descargar</h2>
+        <p style="margin-bottom: 20px; color: #666;">Análisis estratégico completo y datos para uso en política pública</p>
+        
+        <div class="grid">
+            <div class="card" onclick="downloadDocument('estrategia')">
+                <h4>📄 Análisis Estratégico Completo</h4>
+                <p>11 secciones con mapeo tópico, soluciones por familia, cronograma graciano (2026-2029)</p>
+                <div style="margin-top: 10px;">
+                    <span class="metric">📊 11 secciones</span>
+                    <span class="metric">💰 Presupuesto detallado</span>
+                </div>
+                <p style="margin-top: 10px; color: #667eea; font-weight: 600;">Descargar en Markdown →</p>
+            </div>
+            
+            <div class="card" onclick="downloadDocument('datos')">
+                <h4>📋 Base de Datos 2026</h4>
+                <p>Datos actualizados: 22 departamentos, salarios mínimos 2026, costos construcción, FOPAVI</p>
+                <div style="margin-top: 10px;">
+                    <span class="metric">22 departamentos</span>
+                    <span class="metric">Formato JSON</span>
+                </div>
+                <p style="margin-top: 10px; color: #667eea; font-weight: 600;">Descargar en JSON →</p>
+            </div>
+            
+            <div class="card" onclick="downloadDocument('matrices')">
+                <h4>🗂️ Matrices Operativas</h4>
+                <p>Tablas de decisión: por departamento, por tipo de familia, por presupuesto, indicadores de monitoreo</p>
+                <div style="margin-top: 10px;">
+                    <span class="metric">5 matrices</span>
+                    <span class="metric">Excel-ready</span>
+                </div>
+                <p style="margin-top: 10px; color: #667eea; font-weight: 600;">Descargar en CSV →</p>
+            </div>
+        </div>
+
+        <div class="warning" style="margin-top: 30px;">
+            <strong>ℹ️ Nota:</strong> Los documentos están diseñados para uso en diálogos de política pública, capacitación de funcionarios, argumentación legislativa y replicación en otros países de Centroamérica.
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const departmentsData = {
+            "Alta Verapaz": { poverty: 90.3, extreme: 58.5, population: 1200000, urban: 10, group: "A" },
+            "Quiché": { poverty: 86.4, extreme: 34.4, population: 1100000, urban: 15, group: "A" },
+            "Huehuetenango": { poverty: 81.3, extreme: 29.7, population: 1200000, urban: 20, group: "A" },
+            "Baja Verapaz": { poverty: 80.1, extreme: 35.8, population: 330000, urban: 20, group: "A" },
+            "Jalapa": { poverty: 79.9, extreme: 34.5, population: 350000, urban: 25, group: "A" },
+            "Santa Rosa": { poverty: 74.0, extreme: 16.2, population: 400000, urban: 35, group: "B" },
+            "Jutiapa": { poverty: 74.0, extreme: 18.8, population: 550000, urban: 30, group: "B" },
+            "Totonicapán": { poverty: 62.1, extreme: 10.1, population: 500000, urban: 35, group: "B" },
+            "Sololá": { poverty: 61.9, extreme: 8.8, population: 450000, urban: 40, group: "B" },
+            "Chiquimula": { poverty: 59.6, extreme: 25.3, population: 400000, urban: 35, group: "B" },
+            "San Marcos": { poverty: 53.7, extreme: 6.9, population: 1000000, urban: 45, group: "B" },
+            "Suchitepéquez": { poverty: 53.7, extreme: 7.7, population: 550000, urban: 50, group: "B" },
+            "Zacapa": { poverty: 52.6, extreme: 13.5, population: 230000, urban: 45, group: "B" },
+            "Retalhuleu": { poverty: 50.9, extreme: 4.1, population: 320000, urban: 55, group: "B" },
+            "Petén": { poverty: 50.6, extreme: 8.4, population: 800000, urban: 40, group: "B" },
+            "Izabal": { poverty: 50.5, extreme: 14.9, population: 400000, urban: 50, group: "B" },
+            "Chimaltenango": { poverty: 47.8, extreme: 5.8, population: 630000, urban: 50, group: "B" },
+            "El Progreso": { poverty: 46.4, extreme: 5.1, population: 180000, urban: 40, group: "B" },
+            "Quetzaltenango": { poverty: 44.1, extreme: 2.8, population: 800000, urban: 60, group: "C" },
+            "Escuintla": { poverty: 39.2, extreme: 2.6, population: 700000, urban: 75, group: "C" },
+            "Sacatepéquez": { poverty: 38.7, extreme: 2.5, population: 320000, urban: 80, group: "C" },
+            "Guatemala": { poverty: 21.6, extreme: 1.1, population: 3200000, urban: 95, group: "C" }
+        };
+
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tab === 'departments') loadDepartments();
+            if (tab === 'families') loadFamilyTypes();
+            if (tab === 'solutions') loadSolutions();
+        }
+
+        function loadDepartments() {
+            const groupA = document.getElementById('group-a');
+            const groupB = document.getElementById('group-b');
+            const groupC = document.getElementById('group-c');
+            groupA.innerHTML = '';
+            groupB.innerHTML = '';
+            groupC.innerHTML = '';
+
+            Object.entries(departmentsData).forEach(([name, data]) => {
+                const card = `
+                    <div class="card" onclick="showDepartmentDetail('${name}')">
+                        <div class="badge">${data.group === 'A' ? '🔴 GRUPO A' : data.group === 'B' ? '🟠 GRUPO B' : '🟢 GRUPO C'}</div>
+                        <h4>${name}</h4>
+                        <p><strong>Pobreza:</strong> ${data.poverty}% | <strong>Extrema:</strong> ${data.extreme}%</p>
+                        <p><strong>Población:</strong> ${(data.population/1000000).toFixed(1)}M | <strong>Urbano:</strong> ${data.urban}%</p>
+                    </div>
+                `;
+                if (data.group === 'A') groupA.innerHTML += card;
+                else if (data.group === 'B') groupB.innerHTML += card;
+                else groupC.innerHTML += card;
+            });
+        }
+
+        function loadFamilyTypes() {
+            const container = document.getElementById('family-types');
+            const families = [
+                { name: "Pobreza Extrema Rural", income: "< Q1,500", type: "rural", color: "#e74c3c" },
+                { name: "Pobre Urbana Informal", income: "Q2,500-3,500", type: "urban", color: "#f39c12" },
+                { name: "Clase Trabajadora Formal", income: "Q4,500-7,000", type: "formal", color: "#3498db" },
+                { name: "Clase Media Emergente", income: "Q7,000-12,000", type: "middle", color: "#27ae60" }
+            ];
+            
+            container.innerHTML = families.map(f => `
+                <div class="card" onclick="showFamilyDetail('${f.type}')" style="border-left: 4px solid ${f.color};">
+                    <h4>${f.name}</h4>
+                    <p><strong>Ingreso mensual:</strong> ${f.income}</p>
+                    <p style="color: ${f.color}; font-weight: 600; margin-top: 10px;">Ver solución personalizada →</p>
+                </div>
+            `).join('');
+        }
+
+        function loadSolutions() {
+            const container = document.getElementById('solutions-grid');
+            const solutions = [
+                { name: "Núcleos Mínimos + Progresiva", desc: "Para pobreza extrema rural", cost: "Q84-140k", time: "10 años" },
+                { name: "Lotes con Servicios", desc: "Para pobre urbana", cost: "Q280k", time: "3-5 años" },
+                { name: "Vivienda Económica Hipotecaria", desc: "Para clase trabajadora", cost: "Q280-445k", time: "20-25 años" },
+                { name: "Vivienda Vertical PPP", desc: "Para clase media urbana", cost: "Q600-900k", time: "25 años" }
+            ];
+
+            container.innerHTML = solutions.map(s => `
+                <div class="card">
+                    <h4>${s.name}</h4>
+                    <p>${s.desc}</p>
+                    <div style="margin-top: 10px;">
+                        <span class="metric">💰 ${s.cost}</span>
+                        <span class="metric">⏱️ ${s.time}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Soluciones innovadoras por tipo de familia
+        const allSolutions = [
+            // TIPO 1: POBREZA EXTREMA RURAL
+            {
+                id: 1, name: 'Núcleos Progresivos', family: 'Pobreza Extrema Rural', color: '#e74c3c',
+                consiste: 'Familia en suelo comunal/familiar. Subsidio Q59k + crédito Q24k sin interés. Construye 35m² año 1, expande 10 años a 70m².',
+                gobierno: ['Mapear suelo comunal', 'Legalizar usufructo perpetuo', 'Desembolsar Q59k subsidio', 'Desembolsar Q24k crédito en 3 tranches', '1 técnico por 50 familias'],
+                timeline_gov: 'T1-T3 2026',
+                cost_gov: 'Q83k por familia',
+                familia: ['Ingreso <Q1,500/mes', 'Acceso a suelo', 'Núcleo familiar constituido'],
+                acciones: ['Limpiar terreno mes 1-3', 'Construir 35m² mes 3-12', 'Expandir progresivamente años 2-10'],
+                compromiso: 'Residencia 5 años + 24 jornadas trabajo comunitario'
+            },
+            {
+                id: 2, name: 'Cooperativa Autofondación', family: 'Pobreza Extrema Rural', color: '#e74c3c',
+                consiste: '50 familias forman cooperativa. Ahorran Q200/mes (Q2,400 x 12m). Fondo colectivo Q120k. Banco financia 80% @ 2%.',
+                gobierno: ['Facilitar formación cooperativa legal', 'Negociar con banca @ 2%', 'Desembolsar Q59k subsidio x 50 familias', 'Capacitar junta directiva 12 horas'],
+                timeline_gov: 'T1 2026: formación | T4 2027: construcción',
+                cost_gov: 'Q59k subsidio + Q192k crédito por familia',
+                familia: ['Ahorrar Q200/mes sin falta', 'Participar 80%+ asambleas', 'Grupo 50 familias coordinadas'],
+                acciones: ['Ahorrar 12 meses Q200/mes', 'Participar capacitación construcción', 'Construcción participativa fin de semana'],
+                compromiso: 'Ahorro disciplinado + 60+ jornadas construcción + pago Q300/mes 20 años'
+            },
+            {
+                id: 3, name: 'Mejoramiento Acelerado Piso', family: 'Pobreza Extrema Rural', color: '#e74c3c',
+                consiste: 'Familia tiene techo+paredes. Financia concreto Q6k + baño Q4k + techo Q5k = Q15k total. Impacto 3-6 meses.',
+                gobierno: ['Diagnóstico viviendas precarias', 'Capacitar 100 maestros de obra', 'Comprar materiales a escala', 'Distribuir por municipios', 'Supervisar calidad mensual'],
+                timeline_gov: 'T1-T2 2026: capacitación | T3 2026+: distribución',
+                cost_gov: 'Q15k materiales por familia',
+                familia: ['Vivienda preexistente (techo+paredes)', 'Terreno propiedad/usufructo', 'Capacidad aportar mano de obra'],
+                acciones: ['Solicitar municipio', 'Preparar terreno', 'Construcción piso 4-6 semanas', 'Instalación baño 2-3 semanas'],
+                compromiso: '40+ jornadas trabajo comunitario + mantenimiento permanente'
+            },
+            {
+                id: 4, name: 'Usufructo Perpetuo Municipal', family: 'Pobreza Extrema Rural', color: '#e74c3c',
+                consiste: 'Municipio cede derecho construcción 50 años (NO compra). Familia construye progresiva. Año 50: vivienda patrimonio familiar.',
+                gobierno: ['Identificar suelo municipal disponible', 'Catastro + escrituras usufructo', 'Firmar contratos familias', 'Proporcionar servicios básicos', 'Renovar contrato cada 10 años'],
+                timeline_gov: 'T1-T4 2026',
+                cost_gov: 'Q59k subsidio + Q24k crédito + Q15k servicios = Q98k',
+                familia: ['Ingresos <Q1,500/mes', 'Aceptar ubicación periférica', 'Residencia 5 años'],
+                acciones: ['Solicitar lote municipio', 'Firmar contrato usufructo 50 años', 'Construcción progresiva años 1-10', 'Renovar contrato año 10'],
+                compromiso: 'Residencia 5 años + pagos servicios Q15/mes agua + participación comunitaria'
+            },
+            // TIPO 2: POBRE URBANA INFORMAL
+            {
+                id: 5, name: 'Lotes Urbanizados', family: 'Pobre Urbana Informal', color: '#f39c12',
+                consiste: 'Municipio compra 50-100 ha. Urbaniza (calles, agua, alcantarilla, electricidad). Vende lotes Q150-200/m² (mercado Q400-600/m²).',
+                gobierno: ['Adquirir suelo municipal', 'Urbanización básica', 'Vender lotes precio costo', 'Desembolsar subsidio FOPAVI Q35k por familia'],
+                timeline_gov: 'T1-T3 2026',
+                cost_gov: 'Q53-59k por familia (lote Q18-24k + subsidio Q35k)',
+                familia: ['Ingresos Q2,500-3,500/mes', 'Ahorros Q5k mínimos', 'Capacidad pagar lote 5 años'],
+                acciones: ['Solicitar lote municipio', 'Financiar Q400-500/mes 5 años', 'Obtener subsidio Q35k', 'Construir 70m² año 1-2', 'Ampliar 90m² años 2-3'],
+                compromiso: 'Cuota lote Q400-500/mes + participación trabajo + residencia 5 años'
+            },
+            {
+                id: 6, name: 'Reurbanización In Situ', family: 'Pobre Urbana Informal', color: '#f39c12',
+                consiste: 'Invasión se legaliza. Titulación familias. Edificio 3-5 pisos: pisos 1-2 pobres (subsidio), pisos 3-5 clase media (pagan).',
+                gobierno: ['Negociar legalización', 'Catastro + titulación', 'Invitar desarrollador PPP', 'Desembolsar Q35k x pobres', 'Garantizar servicios + cero desalojos'],
+                timeline_gov: 'T1 2026: negociación | T2 2026: catastro | T3-T4 2026: construcción',
+                cost_gov: 'Q45k por familia pobre (subsidio Q35k + servicios Q10k)',
+                familia: ['Residencia 5+ años demostrables', 'Ingresos Q2,500-3,500/mes', 'Participación 100% legal'],
+                acciones: ['Inscribirse regularización', 'Certificación residencia (6m)', 'Obtener título propiedad', 'Solicitar subsidio Q35k', 'Mudanza piso 1', 'Pagar hipotecario si aplica'],
+                compromiso: 'Residencia 10 años + participación legal + cuota condominio Q200-300/mes + no reventa 5 años'
+            },
+            {
+                id: 7, name: 'Alquiler → Compra', family: 'Pobre Urbana Informal', color: '#f39c12',
+                consiste: 'Estado construye edificios. Familias alquilan Q800-1,000/mes x 10 años. 30% cuota = capital compra. Año 10: opción compra residual Q40-50k.',
+                gobierno: ['Construir edificios 4-6 pisos (BM)', 'Contratos alquiler-venta 10 años', 'Mantener edificios', 'Subsidio Q20k reducción cuota', 'Fondo garantía desempleo Q10k'],
+                timeline_gov: '2026-2027: construcción | 2027: alquiler | 2037: opción compra',
+                cost_gov: 'Construcción Q250-300k (amortizable 30 años) + subsidio Q20k',
+                familia: ['Ingresos Q2,500-3,500/mes estables', 'Capacidad pagar Q950/mes', 'Commitment 10 años edificio'],
+                acciones: ['Solicitar programa + aprobación', 'Mudanza alquilada', 'Pagar alquiler Q800/mes x 10 años', 'Acumular capital Q36k', 'Año 10: opción compra'],
+                compromiso: 'Residencia 10 años + pago religioso alquiler + cuidado vivienda'
+            },
+            {
+                id: 8, name: 'Microfinanciamiento Garantizado', family: 'Pobre Urbana Informal', color: '#f39c12',
+                consiste: 'Banca comercial financia Q150-200k a 15 años @ 6-7%. Estado garantiza 30% riesgo. Acceso DIRECTO sin FOPAVI (2-3 meses).',
+                gobierno: ['Negociar con bancos garantía 30%', 'Crear fondo garantía Q100M', 'Capacitar oficiales bancarios', 'Facilitar aprobación 60 días', 'Supervisar tasas <7%'],
+                timeline_gov: 'T1-T2 2026: negociación | T3 2026+: créditos',
+                cost_gov: 'Garantía estatal Q50-60k (30% riesgo) por familia',
+                familia: ['Ingresos Q2,500-3,500/mes demostrables', 'Sin historial morosidad', 'Cuota Q1,200-1,500/mes sostenible'],
+                acciones: ['Solicitar banco + documentos', 'Evaluación crediticia (64 puntos)', 'Aprobación 1-2 meses', 'Desembolso directo', 'Construcción 3-24 meses', 'Pagos Q1,200-1,500/mes 15-20 años'],
+                compromiso: 'Cumplimiento puntual (default = exclusión 7 años) + construcción responsable'
+            },
+            // TIPO 3: CLASE TRABAJADORA FORMAL
+            {
+                id: 9, name: 'Hipotecario + Subsidio Focal', family: 'Clase Trabajadora Formal', color: '#3498db',
+                consiste: 'Familia ahorra Q25k. FOPAVI Q35k (30% enganche). Banco Q310k a 25 años @ 8.5%. Cuota Q2,140/mes (30% ingreso Q4,500-7,000).',
+                gobierno: ['Negociar bancos tasa 8.5%', 'Desembolsar Q35k directo a banco', 'Facilitar aprobación 30 días', 'Fondo garantía Q10k desempleo'],
+                timeline_gov: 'T1 2026: negociación | T2 2026: línea | T3 2026+: desembolsos',
+                cost_gov: 'Subsidio FOPAVI Q35k + crédito Q310k (familia paga)',
+                familia: ['Ingresos Q4,500-7,000/mes estables formales (2+ años)', 'Ahorros Q25k demostrados (6+ meses)', 'Sin deudas vencidas', 'Núcleo familiar constituido'],
+                acciones: ['Ahorrar Q4-5k/mes 6 meses', 'Solicitar subsidio FOPAVI', 'Solicitar hipotecario banco', 'Aprobación 30 días', 'Búsqueda vivienda Q345-400k', 'Desembolso (Q35k+Q310k)', 'Pagos Q2,140/mes 25 años'],
+                compromiso: 'Ahorro previo + estabilidad laboral + pago puntual Q2,140/mes'
+            },
+            {
+                id: 10, name: 'Condominio Solidario', family: 'Clase Trabajadora Formal', color: '#3498db',
+                consiste: '100-150 viviendas: 40% pobres (FOPAVI Q35k) + 60% clase media (precio mercado). Arquitectura integrada. Espacios comunes compartidos.',
+                gobierno: ['Identificar desarrollador', 'Financiar Q35k x 40-60 pobres', 'Regular precio máximo media', 'Supervisar mixtura social', 'Financiar espacios Q20-30M'],
+                timeline_gov: 'T1 2026: identificación | T2-T4 2026: construcción',
+                cost_gov: 'Subsidio Q35k (pobres) + hipotecario Q200-300k (trabajadores)',
+                familia: ['Ingresos Q4,500-7,000/mes estables', 'Ahorros Q20-30k enganche', 'Aceptación mixtura social', 'Participación junta condominal'],
+                acciones: ['Inscribirse sorteo viviendas', 'Ahorrar Q20-30k', 'Solicitar subsidio Q35k', 'Aprobación hipotecario Q200-300k', 'Entrega llaves + mudanza', 'Pagos Q1,300-1,500/mes + condominio Q300-400/mes'],
+                compromiso: 'Pago Q1,600-1,900/mes + participación junta + cuidado áreas + no venta 5 años'
+            },
+            {
+                id: 11, name: 'Cooperativa Inmobiliaria', family: 'Clase Trabajadora Formal', color: '#3498db',
+                consiste: '100 trabajadores forman cooperativa. Compran terreno (economía escala). Contratan constructor. Venden sin ganancia especulativa (Q280-350k vs Q400-500k mercado).',
+                gobierno: ['Asesoría legal cooperativa gratis', 'Desembolsar Q35k x 40-50 familias', 'Facilitar crédito colectivo @ 5%', 'Capacitación 12 horas', 'Asesoría ingeniero 4 sesiones'],
+                timeline_gov: 'T1-T4 2026',
+                cost_gov: 'Subsidio Q35k + crédito 5% + ahorros Q30-50k por familia',
+                familia: ['Ingresos Q4,500-7,000/mes', 'Grupo 100 trabajadores', 'Ahorrar Q500-1,000/mes x 12 meses', 'Participación 100% asambleas', 'Aceptación construcción progresiva'],
+                acciones: ['Organizar 100 personas', 'Formar junta directiva', 'Constitución cooperativa legal (3m)', 'Ahorros colectivos 6 meses', 'Compra terreno grupal', 'Diseño arquitectónico', 'Construcción 3 fases (8 meses c/30 viviendas)', 'Pagos Q1,200-1,500/mes 20 años'],
+                compromiso: 'Ahorro Q500-1,000/mes x 12 + participación 100% + 30+ jornadas voluntarias + roles rotativos junta'
+            },
+            {
+                id: 12, name: 'Financiamiento Híbrido', family: 'Clase Trabajadora Formal', color: '#3498db',
+                consiste: 'Familia ahorra Q500/mes x 24 meses (Q12k). Subsidio FOPAVI Q35k + crédito Q300k @ 8% = Q347k. Ahorro + subsidio = 40%, crédito = 60%.',
+                gobierno: ['Abrir cuentas ahorro especial (5% tasa)', 'Desembolsar Q35k al completar 24 meses', 'Facilitar hipotecario Q300k', 'Bonificación si ahorro > Q12k', 'Seguimiento mensual'],
+                timeline_gov: 'T1 2026: cuentas | Meses 1-24: ahorro | Meses 24-26: hipotecario',
+                cost_gov: 'Subsidio Q35k + ahorro Q12k = Q47k inicial | Crédito Q300k @ 8%',
+                familia: ['Ingresos Q4,500-7,000/mes formales', 'Disciplina ahorro Q500/mes x 24 sin falta', 'Cuenta bancaria con depósitos demostrables', 'Sin deudas vencidas'],
+                acciones: ['Abrir cuenta ahorro especial', 'Depósito Q500/mes x 24 meses', 'Revisión cumplimiento mes 12', 'Completar Q12k + solicitar subsidio mes 24', 'Aprobación hipotecario Q300k', 'Desembolso Q347k mes 26', 'Construcción 100m² (meses 26-40)', 'Pagos Q1,600/mes 20 años'],
+                compromiso: 'Ahorro religioso Q500/mes x 24 + pago Q1,600/mes 20 años'
+            },
+            // TIPO 4: CLASE MEDIA EMERGENTE
+            {
+                id: 13, name: 'Garantía Estatal Parcial', family: 'Clase Media Emergente', color: '#27ae60',
+                consiste: 'Estado garantiza 20-30% riesgo. Banco reduce tasa 10-12% a 7.5-8.5%. Acceso hipotecario competitivo sin subsidio directo. Q600-900k.',
+                gobierno: ['Negociar reducción tasa via garantía', 'Crear fondo garantía Q200M', 'Supervisar tasas max 8.5%', 'Facilitar aprobación acelerada'],
+                timeline_gov: 'T1 2026: negociación | T2 2026+: créditos',
+                cost_gov: 'Garantía estatal Q120-270k (20-30% riesgo) por familia',
+                familia: ['Ingresos Q7,000-12,000/mes demostrables', 'Ahorros Q150-200k enganche', 'Sin deudas vencidas', 'Historial crediticio limpio'],
+                acciones: ['Solicitar garantía estatal banco', 'Aprobación 15-30 días', 'Hipotecario Q600-900k @ 7.5-8.5%', 'Cuota Q2,740-4,100/mes x 25 años', 'Búsqueda + compra vivienda', 'Pagos sistemáticos'],
+                compromiso: 'Pago puntual Q2,740-4,100/mes + mantenimiento vivienda'
+            },
+            {
+                id: 14, name: 'Vivienda Vertical Mixta PPP', family: 'Clase Media Emergente', color: '#27ae60',
+                consiste: '30% pobre + 70% clase media. Municipio aporta suelo. Privado construye 6-8 pisos. Pisos 1-2 = subsidio cruzado. Pisos 3-8 = precio mercado.',
+                gobierno: ['Proporcionar suelo municipal', 'Regularización legal suelo', 'Facilitar PPP con privado', 'Desembolsar Q35k x pobres', 'Supervisar mixtura social', 'Equipamiento comunitario'],
+                timeline_gov: 'T1-T2 2026: suelo | T2-T3 2026: PPP | T4 2026-T2 2028: construcción',
+                cost_gov: 'Subsidio Q35k (pobres) + suelo Q80-120k + equipamiento',
+                familia: ['Ingresos Q7,000-12,000/mes', 'Ahorros Q100-150k enganche', 'Aceptación mixtura social', 'Participación condominio'],
+                acciones: ['Inscribirse proyecto', 'Ahorrar Q100-150k', 'Hipotecario Q400-800k', 'Aprobación 30-60 días', 'Ocupación año 2-3', 'Pagos Q2,000-3,500/mes + condominio Q400-500/mes'],
+                compromiso: 'Pago puntual + no venta 5 años + participación condominio + respeto mixtura'
+            },
+            {
+                id: 15, name: 'Fideicomiso Rendimiento', family: 'Clase Media Emergente', color: '#27ae60',
+                consiste: 'Familia invierte Q100-150k en fideicomiso (compra vivienda). Habita con alquiler interno bajo. Retira rendimientos año 15+. Doble: vivienda + inversión.',
+                gobierno: ['Facilitar fideicomisos privados', 'Supervisar transparencia', 'Garantía seguridad jurídica', 'Facilidades fiscales'],
+                timeline_gov: 'T1 2026: diseño | T2 2026+: operación',
+                cost_gov: 'Inversión familia Q100-150k (se recupera 15-20 años)',
+                familia: ['Ingresos Q7,000-12,000/mes', 'Capital invertible Q100-150k', 'Disposición 15+ años', 'Aceptación riesgo inversión'],
+                acciones: ['Abrir fideicomiso', 'Depósito Q100-150k', 'Fideicomiso compra vivienda', 'Familia ocupa (alquiler Q500-800/mes)', 'Años 1-15: rendimientos', 'Año 15+: retiro capital + ganancias'],
+                compromiso: 'Commitment 15+ años + pago alquiler interno + participación decisiones'
+            },
+            {
+                id: 16, name: 'Densificación + Airbnb', family: 'Clase Media Emergente', color: '#27ae60',
+                consiste: 'Familia construye 2 unidades en terreno. Habita 1, alquila Airbnb Q1,500-2,500/mes. Ingreso pasivo reduce/elimina cuota. Vivienda gratis 5-8 años.',
+                gobierno: ['Permitir densificación (2 unidades)', 'Regulación Airbnb responsable', 'Incentivos fiscales (0% IVA materiales)', 'Línea crédito duplicación'],
+                timeline_gov: 'T1 2026: regulación | T2 2026+: proyectos',
+                cost_gov: 'Crédito Q600-1,000k @ 8% / 25 años (ambas unidades)',
+                familia: ['Ingresos Q7,000-12,000/mes', 'Capital Q200-300k primera unidad', 'Disposición gestionar Airbnb', 'Ubicación estratégica (turismo)'],
+                acciones: ['Comprar terreno Q200-300k', 'Construir 2 unidades Q600-1,000k', 'Habitar unidad 1, alquilar unidad 2 Airbnb', 'Ingreso Q1,500-2,500/mes reduce cuota', 'Año 5-8: pago completo'],
+                compromiso: 'Gestión Airbnb activa + mantenimiento ambas + cumplimiento regulaciones turismo'
+            }
+        ];
+
+        function filterMatrixSolutions() {
+            const filter = document.getElementById('family-filter').value;
+            const matrixGrid = document.getElementById('matrix-grid');
+            matrixGrid.innerHTML = '';
+
+            const filtered = filter ? allSolutions.filter(s => s.family === filter) : allSolutions;
+
+            filtered.forEach(sol => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.style.borderLeft = `4px solid ${sol.color}`;
+                card.innerHTML = `
+                    <div class="badge" style="background: ${sol.color};">${sol.family}</div>
+                    <h4>${sol.name}</h4>
+                    <p><strong>¿QUÉ CONSISTE:</strong> ${sol.consiste}</p>
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                        <p style="margin: 8px 0; font-size: 0.9em;"><strong style="color: ${sol.color};">COSTO:</strong> ${sol.cost_gov}</p>
+                        <p style="margin: 8px 0; font-size: 0.9em;"><strong style="color: ${sol.color};">TIMELINE:</strong> ${sol.timeline_gov}</p>
+                    </div>
+                    <button onclick="showSolutionDetail(${sol.id})" style="width: 100%; margin-top: 15px; background: ${sol.color};">Ver Detalles Completos →</button>
+                `;
+                matrixGrid.appendChild(card);
+            });
+        }
+
+        function showSolutionDetail(solutionId) {
+            const sol = allSolutions.find(s => s.id === solutionId);
+            if (!sol) return;
+
+            const govHTML = `
+                <h4 style="color: ${sol.color}; margin-top: 15px;">🏛️ QUÉ DEBE HACER GOBIERNO</h4>
+                <ul style="margin-left: 20px; color: #666;">
+                    ${sol.gobierno.map(a => `<li>${a}</li>`).join('')}
+                </ul>
+                <p><strong>Timeline:</strong> ${sol.timeline_gov}</p>
+                <p><strong>Presupuesto por familia:</strong> ${sol.cost_gov}</p>
+            `;
+
+            const familyReqHTML = `
+                <h4 style="color: ${sol.color}; margin-top: 15px;">✅ REQUISITOS FAMILIA</h4>
+                <ul style="margin-left: 20px; color: #666;">
+                    ${sol.familia.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+            `;
+
+            const familyActHTML = `
+                <h4 style="color: ${sol.color}; margin-top: 15px;">📋 ACCIONES FAMILIA</h4>
+                <ul style="margin-left: 20px; color: #666;">
+                    ${sol.acciones.map(a => `<li>${a}</li>`).join('')}
+                </ul>
+            `;
+
+            const commitHTML = `
+                <div style="background: ${sol.color}; color: white; padding: 12px; border-radius: 6px; margin-top: 15px;">
+                    <strong>💪 COMPROMISO FAMILIA:</strong><br>
+                    ${sol.compromiso}
+                </div>
+            `;
+
+            const html = `
+                <h3>${sol.name}</h3>
+                <div class="badge" style="background: ${sol.color}; margin-bottom: 15px;">${sol.family}</div>
+                <p><strong>¿QUÉ CONSISTE EXACTAMENTE?</strong></p>
+                <p style="color: #333; line-height: 1.8;">${sol.consiste}</p>
+                ${govHTML}
+                ${familyReqHTML}
+                ${familyActHTML}
+                ${commitHTML}
+            `;
+
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        const innovativeSolutions = {
+            'extreme-rural': allSolutions.filter(s => s.family === 'Pobreza Extrema Rural').map(s => ({
+                name: s.name, mechanism: s.consiste, advantage: s.compromiso, cost: s.cost_gov, timeline: s.timeline_gov
+            })),
+            'poor-urban': allSolutions.filter(s => s.family === 'Pobre Urbana Informal').map(s => ({
+                name: s.name, mechanism: s.consiste, advantage: s.compromiso, cost: s.cost_gov, timeline: s.timeline_gov
+            })),
+            'working-class': allSolutions.filter(s => s.family === 'Clase Trabajadora Formal').map(s => ({
+                name: s.name, mechanism: s.consiste, advantage: s.compromiso, cost: s.cost_gov, timeline: s.timeline_gov
+            })),
+            'middle-class': allSolutions.filter(s => s.family === 'Clase Media Emergente').map(s => ({
+                name: s.name, mechanism: s.consiste, advantage: s.compromiso, cost: s.cost_gov, timeline: s.timeline_gov
+            }))
+        };
+
+        function calculateSolution() {
+            const dept = document.getElementById('department').value;
+            const familyType = document.getElementById('family-type').value;
+            const income = parseInt(document.getElementById('monthly-income').value);
+            const size = document.getElementById('family-size').value;
+            const location = document.getElementById('location').value;
+
+            if (!dept || !familyType || !income) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const deptData = departmentsData[dept];
+            const fopavi = 59000;
+            const minSalary = 4252;
+            const dwellingType = familyType === 'extreme-rural' ? 'nucleos_minimos' : 'standard';
+            const costs = {
+                nucleos_minimos: 84000,
+                economic: 280000,
+                social: 445000,
+                standard: 720000
+            };
+
+            const totalCost = costs[dwellingType === 'nucleos_minimos' ? 'nucleos_minimos' : familyType === 'poor-urban' ? 'economic' : familyType === 'working-class' ? 'social' : 'standard'];
+            const monthlyPayment = Math.max(0, (totalCost - fopavi) / 240);
+            const paymentPercent = (monthlyPayment / income) * 100;
+
+            let solution = '';
+            if (paymentPercent > 35) {
+                solution = `<div class="warning"><strong>⚠️ Alerta Financiera:</strong> La cuota estimada (Q${monthlyPayment.toFixed(0)}/mes = ${paymentPercent.toFixed(1)}% ingreso) excede lo recomendado (30%). Se necesita crédito subvencionado o vivienda más pequeña.</div>`;
+            } else {
+                solution = `<div class="success"><strong>✅ Viable:</strong> Puedes acceder con subsidio FOPAVI + crédito complementario.</div>`;
+            }
+
+            // Obtener soluciones innovadoras
+            const solutions = innovativeSolutions[familyType] || [];
+            let solutionsHtml = '<h3 style="margin-top: 20px; color: #667eea;">💡 4 Soluciones Innovadoras para Ti:</h3>';
+            solutions.forEach((sol, idx) => {
+                solutionsHtml += `
+                    <div style="background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 6px; border-left: 3px solid #667eea;">
+                        <strong>${idx + 1}. ${sol.name}</strong>
+                        <p style="margin: 8px 0 0 0; color: #666; font-size: 0.9em;"><strong>Mecanismo:</strong> ${sol.mechanism}</p>
+                        <p style="margin: 5px 0; color: #666; font-size: 0.9em;"><strong>Ventaja:</strong> ${sol.advantage}</p>
+                        <p style="margin: 5px 0; color: #666; font-size: 0.9em;"><strong>Costo:</strong> ${sol.cost} | <strong>Timeline:</strong> ${sol.timeline}</p>
+                    </div>
+                `;
+            });
+
+            const html = `
+                <div class="result-item">
+                    <strong>Departamento:</strong> ${dept} (Pobreza: ${deptData.poverty}%)
+                </div>
+                <div class="result-item">
+                    <strong>Tipo de Vivienda Estándar:</strong> ${familyType === 'extreme-rural' ? 'Núcleo Mínimo Rural' : familyType === 'poor-urban' ? 'Económica Urbana' : 'Social/Estándar'}
+                </div>
+                <div class="result-item">
+                    <strong>Costo Total Estimado:</strong> Q${totalCost.toLocaleString()}
+                </div>
+                <div class="result-item">
+                    <strong>Subsidio FOPAVI:</strong> Q${fopavi.toLocaleString()} (${((fopavi/totalCost)*100).toFixed(1)}%)
+                </div>
+                <div class="result-item">
+                    <strong>Crédito Requerido:</strong> Q${(totalCost - fopavi).toLocaleString()}
+                </div>
+                <div class="result-item">
+                    <strong>Cuota Mensual Estimada:</strong> Q${monthlyPayment.toFixed(0)} (${paymentPercent.toFixed(1)}% de ingreso)
+                </div>
+                ${solution}
+                ${solutionsHtml}
+            `;
+
+            document.getElementById('result-content').innerHTML = html;
+            document.getElementById('result').classList.add('show');
+        }
+
+        function showDepartmentDetail(dept) {
+            const data = departmentsData[dept];
+            const html = `
+                <h3>${dept}</h3>
+                <table style="width: 100%; margin-top: 15px;">
+                    <tr><td><strong>Tasa de Pobreza Total</strong></td><td>${data.poverty}%</td></tr>
+                    <tr><td><strong>Tasa de Pobreza Extrema</strong></td><td>${data.extreme}%</td></tr>
+                    <tr><td><strong>Población Total</strong></td><td>${(data.population/1000000).toFixed(1)} millones</td></tr>
+                    <tr><td><strong>Población Urbana</strong></td><td>${data.urban}%</td></tr>
+                </table>
+                <div style="margin-top: 20px;">
+                    <strong>Estrategia Recomendada:</strong><br>
+                    ${data.group === 'A' ? 'Núcleos mínimos + cooperativas + suelo comunal' : data.group === 'B' ? 'Lotes urbanizados + hipotecario + subsidio' : 'Vivienda vertical + PPP + regulación urbana'}
+                </div>
+            `;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function showFamilyDetail(type) {
+            const details = {
+                rural: {
+                    title: "Pobreza Extrema Rural",
+                    income: "< Q1,500/mes",
+                    vivienda: "Núcleo mínimo (35 m², Q84,000 total)",
+                    subsidio: "Q59,000 (70%)",
+                    credito: "Q24,000 sin interés (10 años)",
+                    aporte: "Q1,000 + trabajo comunitario",
+                    tiempo: "10 años (progresiva)"
+                },
+                urban: {
+                    title: "Pobre Urbana Informal",
+                    income: "Q2,500-3,500/mes",
+                    vivienda: "Económica urbana (70 m², Q280,000 total)",
+                    subsidio: "Q35,000",
+                    credito: "Q200,000 @ 8% / 20 años = Q1,250/mes",
+                    aporte: "Q45,000 lote + servicios",
+                    tiempo: "3-5 años construcción"
+                },
+                formal: {
+                    title: "Clase Trabajadora Formal",
+                    income: "Q4,500-7,000/mes",
+                    vivienda: "Social (95 m², Q445,000 total)",
+                    subsidio: "Q35,000",
+                    credito: "Q390,000 @ 8.5% / 25 años = Q2,140/mes (30% ingreso)",
+                    aporte: "Q20,000 enganche",
+                    tiempo: "25 años"
+                },
+                middle: {
+                    title: "Clase Media Emergente",
+                    income: "Q7,000-12,000/mes",
+                    vivienda: "Estándar (120-150 m², Q600-900k)",
+                    subsidio: "Opcional 0-20k",
+                    credito: "Q500-750k @ 8% / 25 años = Q2,740-4,100/mes",
+                    aporte: "Q150-200k enganche",
+                    tiempo: "25 años"
+                }
+            };
+
+            const d = details[type];
+            const html = `
+                <h3>${d.title}</h3>
+                <table style="width: 100%; margin-top: 15px;">
+                    <tr><td><strong>Ingreso Mensual</strong></td><td>${d.income}</td></tr>
+                    <tr><td><strong>Tipo de Vivienda</strong></td><td>${d.vivienda}</td></tr>
+                    <tr><td><strong>Subsidio FOPAVI</strong></td><td>${d.subsidio}</td></tr>
+                    <tr><td><strong>Crédito</strong></td><td>${d.credito}</td></tr>
+                    <tr><td><strong>Aporte Familia</strong></td><td>${d.aporte}</td></tr>
+                    <tr><td><strong>Plazo</strong></td><td>${d.tiempo}</td></tr>
+                </table>
+            `;
+            document.getElementById('modal-body').innerHTML = html;
+            document.getElementById('modal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('show');
+        }
+
+        function downloadDocument(type) {
+            let content = '';
+            let filename = '';
+            
+            if (type === 'estrategia') {
+                content = `SISTEMA DE INTELIGENCIA PRUDENCIAL PARA VIVIENDA EN GUATEMALA
+Aplicando "Ni magia ni método" de Moris Polanco
+
+I. FUNDAMENTO FILOSÓFICO
+Este sistema aplica cuatro principios del pensamiento de Polanco:
+
+1. LA TÓPICA (Aristóteles)
+Usamos "lugares" para interrogar cada contexto:
+- Definición: ¿Qué tipo de vivienda se necesita?
+- Género: ¿Urbano o rural?
+- Causa: ¿Por qué existe el déficit?
+- Comparación: ¿Qué funciona en otros departamentos?
+- Tiempo: ¿Cuál es el kairos (momento oportuno)?
+
+2. LA PRUDENCIA (Gracián)
+No una solución única. Adaptamos según contexto:
+- Observación del contexto
+- Variación de la conducta
+- Sentido de la ocasión
+
+3. LA ABDUCCIÓN (Peirce)
+Conjetura inteligente: Anomalía → Hipótesis → Verificación
+
+4. EL KAIROS (Tiempo Oportuno)
+Identificamos la ventana actual (2026), punto de presión (Grupo A >80% pobreza), sazón de las cosas.
+
+II. SOLUCIONES POR TIPO DE FAMILIA
+
+TIPO 1: Pobreza Extrema Rural (<Q1,500/mes)
+- Vivienda: Núcleo mínimo (35 m²)
+- Costo total: Q84,000
+- Subsidio FOPAVI: Q59,000 (70%)
+- Crédito: Q24,000 sin interés (10 años)
+- Aporte familia: Q1,000 + trabajo comunitario
+- Plazo: 10 años (progresiva)
+
+TIPO 2: Pobre Urbana Informal (Q2,500-3,500/mes)
+- Vivienda: Económica urbana (70 m²)
+- Costo total: Q280,000
+- Subsidio FOPAVI: Q35,000
+- Crédito: Q200,000 @ 8% / 20 años = Q1,250/mes
+- Plazo: 3-5 años construcción
+
+TIPO 3: Clase Trabajadora Formal (Q4,500-7,000/mes)
+- Vivienda: Social (95 m²)
+- Costo total: Q445,000
+- Subsidio FOPAVI: Q35,000
+- Crédito: Q390,000 @ 8.5% / 25 años = Q2,140/mes
+- Plazo: 25 años
+
+TIPO 4: Clase Media Emergente (Q7,000-12,000/mes)
+- Vivienda: Estándar (120-150 m²)
+- Costo total: Q600-900k
+- Crédito: Q500-750k @ 8% / 25 años
+- Plazo: 25 años
+
+III. CLASIFICACIÓN DE DEPARTAMENTOS
+
+GRUPO A: Extrema Pobreza Rural (>80%)
+- Alta Verapaz (90.3% / 58.5% extrema)
+- Quiché (86.4% / 34.4%)
+- Huehuetenango (81.3% / 29.7%)
+- Baja Verapaz (80.1% / 35.8%)
+- Jalapa (79.9% / 34.5%)
+Estrategia: Núcleos mínimos + cooperativas + suelo comunal
+
+GRUPO B: Pobreza Alta Mixta (50-79%)
+- 13 departamentos
+Estrategia: Lotes urbanizados + hipotecario + subsidio parcial
+
+GRUPO C: Pobreza Moderada (<50%)
+- Guatemala, Sacatepéquez, Escuintla, Quetzaltenango
+Estrategia: Vivienda vertical + PPP + regulación urbana
+
+IV. PRESUPUESTO TOTAL 2026-2029
+- Subsidios FOPAVI: Q870M
+- Crédito IDB/BM @ 2%: Q600M
+- Suelo/Urbanización: Q510M
+- Coordinación: Q165M
+- Comunicación/Monitoreo: Q75M
+- TOTAL: Q2.237 mil millones
+
+Beneficiarios esperados: 8,000-10,000 familias/año (2027+)
+Meta acumulativa 2026-2029: 20,000-30,000 familias
+
+V. CRONOGRAMA GRACIANO (2026-2029)
+
+TRIMESTRE 1-2 2026: Vigilancia e Investigación
+- Mapeo de suelo disponible
+- Validación de modelos piloto
+- Negociación con banca comercial
+- Línea IDB/BM
+- Presupuesto: Q15M
+
+TRIMESTRE 3-4 2026: Pilotos e Institucionalidad
+- 5 proyectos piloto iniciados
+- 200-300 familias en proceso
+- Coordinadores regionales
+- Presupuesto: Q60M
+
+2027-2028: Escalado Progresivo
+- 5,000-8,000 familias/año
+- Replicación de pilotos exitosos
+- Presupuesto: Q400-500M/año
+
+2029+: Modelo Autosostenible
+- 50,000+ familias acumuladas
+- Banca comercial autosustentable
+- Municipios como agentes principales
+
+VI. INDICADORES DE MONITOREO
+
+Proceso: Viviendas iniciadas, completadas, beneficiarios únicos
+Calidad: Satisfacción familiar >85%, Cumplimiento de pagos >95%, Servicios accesibles 100%
+Equidad: Mujeres jefas de hogar 40-50%, Población indígena proporcional, Accesibilidad 5-10%
+Prudencia: Adaptabilidad >30%, Replicabilidad >7/10, Gobernanza comunitaria >80%
+
+---
+Documento preparado según principios de Moris Polanco.
+Enero 2026 | Versión 1.0`;
+                filename = 'housing_estrategia_completa.txt';
+            } else if (type === 'datos') {
+                content = JSON.stringify({
+                    metadata: {
+                        version: "1.0",
+                        date: "2026-01-06",
+                        source: "ENCOVI 2023, Acuerdo Gubernativo 256-2025, FOPAVI",
+                        departments: 22,
+                        last_updated: "Enero 2026"
+                    },
+                    departments: departmentsData,
+                    salaries_2026: {
+                        agricultural: 3500,
+                        non_agricultural: 4252,
+                        maquila: 4127
+                    },
+                    fopavi: {
+                        subsidy_amount: 59000,
+                        family_contribution: 1000,
+                        max_salary_multiple: 4
+                    },
+                    construction_costs: {
+                        basic: 2400,
+                        economic: 3500,
+                        social: 4500,
+                        standard: 6000,
+                        premium: 7200
+                    }
+                }, null, 2);
+                filename = 'housing_datos_2026.json';
+            } else if (type === 'matrices') {
+                content = `MATRIZ 1: DECISIÓN POR DEPARTAMENTO
+Departamento,Grupo,Pobreza%,Extrema%,Población,Urbano%,Estrategia,Meta 2026,Presupuesto
+Alta Verapaz,A,90.3,58.5,1200000,10,Nucleos+Coop,500,Q42M
+Quiché,A,86.4,34.4,1100000,15,Nucleos+Coop,400,Q34M
+Huehuetenango,A,81.3,29.7,1200000,20,Nucleos+Coop,350,Q30M
+...
+
+MATRIZ 2: SOLUCIONES POR TIPO DE FAMILIA
+Familia,Ingreso,Vivienda,CostoTotal,SubsidioFOPAVI,Credito,CuotaMensual%Ingreso,Plazo
+Extrema Rural,<1500,Nucleos 35m2,84000,59000,24000,sim,10 años
+Pobre Urbana,2500-3500,Economica 70m2,280000,35000,200000,43.5%,20 años
+Trabajadora,4500-7000,Social 95m2,445000,35000,390000,30%,25 años
+Clase Media,7000-12000,Estandar 130m2,720000,0-20000,500000,27-30%,25 años
+
+MATRIZ 3: INDICADORES DE VIABILIDAD
+Indicador,Meta,Umbral Crítico,Frecuencia Monitoreo
+Viviendas Iniciadas/año,8000,>6000,Mensual
+Viviendas Completadas/año,3000,>1500,Trimestral
+Satisfacción Familiar,>85%,<75%,Semestral
+Cumplimiento de Pagos,>95%,<85%,Mensual
+Cobertura Departamental,20+ de 22,>15,Anual
+
+MATRIZ 4: PRESUPUESTO ANUAL
+Rubro,2026,2027,2028,2029,Total
+Subsidios FOPAVI,60M,180M,280M,350M,870M
+Credito IDB/BM,0,100M,200M,300M,600M
+Suelo/Urbanizacion,30M,100M,180M,200M,510M
+Coordinacion,15M,40M,60M,50M,165M
+Comunicacion,5M,15M,25M,30M,75M
+TOTAL,112M,440M,750M,935M,2237M
+
+MATRIZ 5: RIESGOS Y MITIGACIONES
+Riesgo,Señal de Alerta,Mitigación
+Cooptacion Politica,>30% en municipios afines,Veeduría independiente + asignación por fórmula
+Insostenibilidad Creditos,Morosidad >15%,Fondos de socorro + tasa 0% en crisis
+Gentrificacion Urbana,Reventa >20% en 5 años,Congelamiento 10 años + preferencia comunitaria
+Viviendas Vacias,Ocupacion <80%,Requisito de residencia 5 años
+Falta Equipamiento,Sin escuela/salud 500m,Coordinacion MINEDU+MSPAS
+Debil Capacidad Municipal,Retrasos >6 meses,Coordinadores regionales con autoridad`;
+                filename = 'housing_matrices_operativas.csv';
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        // Inicializar
+        window.addEventListener('load', () => {
+            loadDepartments();
+            loadFamilyTypes();
+            loadSolutions();
+            filterMatrixSolutions();
+        });
+    </script>
+</body>
+</html>
