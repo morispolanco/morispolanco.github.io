@@ -1,13 +1,365 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <title>Buscador</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moris Polanco | Estratega del Ingenio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Slate 900 */
+            color: #e2e8f0; /* Slate 200 */
+        }
+        h1, h2, h3, .serif-font {
+            font-family: 'Cinzel', serif;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #94a3b8, #e2e8f0, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: shine 5s linear infinite;
+        }
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+    </style>
 </head>
-<body>
-  <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="script.js"></script>
+<body class="antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-panel transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold serif-font text-white tracking-wider">MORIS POLANCO</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#filosofia" class="text-slate-300 hover:text-white transition-colors text-sm uppercase tracking-widest">Filosofía & IA</a>
+                    <a href="#servicios" class="text-slate-300 hover:text-white transition-colors text-sm uppercase tracking-widest">Estrategia</a>
+                    <a href="#legado" class="text-slate-300 hover:text-white transition-colors text-sm uppercase tracking-widest">Legado</a>
+                    <a href="#contacto" class="px-4 py-2 border border-white/20 hover:bg-white/10 text-white rounded transition-all text-sm uppercase tracking-widest">Conectar</a>
+                </div>
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white hover:text-gray-300 focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-panel border-t border-gray-700">
+            <a href="#filosofia" class="block py-4 px-6 text-sm text-gray-300 hover:bg-slate-800 hover:text-white uppercase tracking-widest">Filosofía & IA</a>
+            <a href="#servicios" class="block py-4 px-6 text-sm text-gray-300 hover:bg-slate-800 hover:text-white uppercase tracking-widest">Estrategia</a>
+            <a href="#legado" class="block py-4 px-6 text-sm text-gray-300 hover:bg-slate-800 hover:text-white uppercase tracking-widest">Legado</a>
+            <a href="#contacto" class="block py-4 px-6 text-sm text-gray-300 hover:bg-slate-800 hover:text-white uppercase tracking-widest">Conectar</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="absolute inset-0 hero-pattern opacity-20"></div>
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[100px] animate-pulse" style="animation-delay: 2s;"></div>
+
+        <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+            <div class="mb-6 inline-flex items-center px-4 py-2 rounded-full border border-slate-700 bg-slate-900/50 backdrop-blur-sm">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>
+                <span class="text-xs text-slate-400 uppercase tracking-widest">Disponible para Consultoría Estratégica</span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-8 leading-tight">
+                Estratega del <br>
+                <span class="gradient-text serif-font italic">Ingenio</span>
+            </h1>
+            
+            <p class="mt-4 text-xl md:text-2xl text-slate-400 max-w-3xl mx-auto font-light leading-relaxed">
+                No vendo eficiencia, revelo inteligencia. <br>
+                <span class="text-slate-200 font-normal">Arqueólogo de problemas</span> y <span class="text-slate-200 font-normal">Arquitecto de soluciones transdisciplinares</span> en la intersección de la filosofía clásica y la Inteligencia Artificial.
+            </p>
+
+            <div class="mt-12 flex flex-col sm:flex-row justify-center gap-6">
+                <a href="#contacto" class="px-8 py-4 bg-white text-slate-900 rounded hover:bg-gray-100 transition-colors font-semibold text-lg tracking-wide shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                    Iniciar Conversación
+                </a>
+                <a href="#filosofia" class="px-8 py-4 border border-slate-600 text-slate-300 rounded hover:border-slate-400 hover:text-white transition-all font-light text-lg tracking-wide flex items-center justify-center gap-2 group">
+                    Explorar Enfoque <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Philosophy / The "Why" Section -->
+    <section id="filosofia" class="py-24 bg-slate-900 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Text Content -->
+                <div class="order-2 lg:order-1">
+                    <h2 class="text-3xl md:text-5xl font-bold text-white mb-8 serif-font">
+                        La Fundación <span class="text-indigo-400 italic">Abductiva</span>
+                    </h2>
+                    <div class="space-y-6 text-lg text-slate-400 font-light leading-relaxed">
+                        <p>
+                            En un mundo saturado de "métodos" sin alma, ofrezco razón y oportunidad. Mi enfoque no comienza con el "qué" —las herramientas o la tecnología— sino con el <strong>"porqué"</strong> y el <strong>"cómo"</strong>.
+                        </p>
+                        <p class="border-l-2 border-indigo-500 pl-6 py-2 italic text-slate-300">
+                            "Mientras la mayoría persigue la eficiencia, yo exploro la inteligencia de los procesos."
+                        </p>
+                        <p>
+                            Mi experiencia en filosofía me permite interrogar las premisas ocultas de cada desafío empresarial. Mi pericia en IA me permite construir herramientas que no solo automatizan, sino que piensan de un modo nuevo. Transformo la incertidumbre en una ventaja competitiva tangible.
+                        </p>
+                    </div>
+
+                    <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="glass-panel p-6 rounded-lg border-l-4 border-indigo-500">
+                            <i data-lucide="brain" class="w-8 h-8 text-indigo-400 mb-4"></i>
+                            <h3 class="text-xl font-bold text-white mb-2">Pensamiento Crítico</h3>
+                            <p class="text-sm text-slate-400">Interrogación profunda de premisas para evitar soluciones superficiales.</p>
+                        </div>
+                        <div class="glass-panel p-6 rounded-lg border-l-4 border-emerald-500">
+                            <i data-lucide="cpu" class="w-8 h-8 text-emerald-400 mb-4"></i>
+                            <h3 class="text-xl font-bold text-white mb-2">Desarrollo de IA</h3>
+                            <p class="text-sm text-slate-400">Creación de más de 1,000 aplicaciones que convierten ideas en sistemas.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Abstract Visual Representation -->
+                <div class="order-1 lg:order-2 relative h-full min-h-[400px] flex items-center justify-center">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 rounded-full filter blur-3xl opacity-30"></div>
+                    <div class="relative z-10 grid grid-cols-2 gap-4 rotate-3 transform hover:rotate-0 transition-transform duration-700">
+                        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 flex flex-col items-center justify-center text-center h-48 w-48 hover:-translate-y-2 transition-transform">
+                            <i data-lucide="book-open" class="w-10 h-10 text-slate-300 mb-2"></i>
+                            <span class="serif-font font-bold text-slate-200">Ética</span>
+                            <span class="text-xs text-slate-500 mt-1">Aristóteles</span>
+                        </div>
+                        <div class="bg-indigo-900/50 p-8 rounded-2xl shadow-2xl border border-indigo-500/30 flex flex-col items-center justify-center text-center h-48 w-48 mt-12 hover:-translate-y-2 transition-transform">
+                            <i data-lucide="network" class="w-10 h-10 text-indigo-300 mb-2"></i>
+                            <span class="font-mono font-bold text-indigo-200">Algoritmos</span>
+                            <span class="text-xs text-indigo-400 mt-1">Redes Neuronales</span>
+                        </div>
+                        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 flex flex-col items-center justify-center text-center h-48 w-48 -mt-12 hover:-translate-y-2 transition-transform">
+                            <i data-lucide="scroll" class="w-10 h-10 text-slate-300 mb-2"></i>
+                            <span class="serif-font font-bold text-slate-200">Retórica</span>
+                            <span class="text-xs text-slate-500 mt-1">Gracián</span>
+                        </div>
+                        <div class="bg-emerald-900/50 p-8 rounded-2xl shadow-2xl border border-emerald-500/30 flex flex-col items-center justify-center text-center h-48 w-48 hover:-translate-y-2 transition-transform">
+                            <i data-lucide="bot" class="w-10 h-10 text-emerald-300 mb-2"></i>
+                            <span class="font-mono font-bold text-emerald-200">Automatización</span>
+                            <span class="text-xs text-emerald-400 mt-1">Soluciones Escalables</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services / The Approach -->
+    <section id="servicios" class="py-24 bg-slate-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <span class="text-emerald-400 uppercase tracking-[0.2em] text-sm font-semibold">Propuesta de Valor</span>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mt-4 serif-font">Arquitectura de Soluciones</h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-emerald-500 to-indigo-500 mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="group relative bg-slate-900 rounded-xl p-8 border border-slate-800 hover:border-indigo-500 transition-colors duration-300 overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="merge" class="w-24 h-24 text-white"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-indigo-900/50 rounded-lg flex items-center justify-center mb-6 text-indigo-400">
+                            <i data-lucide="git-merge" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 serif-font">La "Traducción Infiel"</h3>
+                        <p class="text-slate-400 mb-6 font-light">
+                            Conecto dominios dispares. ¿Cómo la ética ilumina la arquitectura de una IA? ¿Cómo la poética enseña UX? Soy el curador de conexiones inesperadas que generan innovación.
+                        </p>
+                        <ul class="text-sm text-slate-500 space-y-2">
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></span>Estrategias Convergentes</li>
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-2"></span>Interdisciplinariedad Radical</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group relative bg-slate-900 rounded-xl p-8 border border-slate-800 hover:border-emerald-500 transition-colors duration-300 overflow-hidden shadow-lg shadow-emerald-900/10">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="scale" class="w-24 h-24 text-white"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-emerald-900/50 rounded-lg flex items-center justify-center mb-6 text-emerald-400">
+                            <i data-lucide="compass" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 serif-font">Prudencia Estratégica</h3>
+                        <p class="text-slate-400 mb-6 font-light">
+                            No solo ejecución técnica, sino discernimiento. En un mundo volátil, actúo como su Consejero Áulico, identificando no solo qué hacer, sino qué <em>no</em> hacer.
+                        </p>
+                        <ul class="text-sm text-slate-500 space-y-2">
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>Navegación de Incertidumbre</li>
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2"></span>Auditoría Ética de Proyectos</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group relative bg-slate-900 rounded-xl p-8 border border-slate-800 hover:border-amber-500 transition-colors duration-300 overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="coins" class="w-24 h-24 text-white"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="w-12 h-12 bg-amber-900/50 rounded-lg flex items-center justify-center mb-6 text-amber-400">
+                            <i data-lucide="gem" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4 serif-font">Arbitraje Intelectual</h3>
+                        <p class="text-slate-400 mb-6 font-light">
+                            Alquimia de datos. Identifico el valor latente en su conocimiento y lo transformo en activos digitales o sistemas monetizables. Del caos a la oportunidad.
+                        </p>
+                        <ul class="text-sm text-slate-500 space-y-2">
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>Monetización de Conocimiento</li>
+                            <li class="flex items-center"><span class="w-1.5 h-1.5 bg-amber-500 rounded-full mr-2"></span>Economía de la Atención</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Legacy / Authority Section -->
+    <section id="legado" class="py-20 relative overflow-hidden">
+        <div class="absolute inset-0 bg-slate-900"></div>
+        <div class="absolute inset-0 hero-pattern opacity-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="glass-panel rounded-2xl p-8 md:p-12 border border-slate-700">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                    <div class="md:w-1/2">
+                        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">
+                            El Consultor "Anfibio"
+                        </h2>
+                        <p class="text-slate-300 text-lg leading-relaxed mb-6">
+                            Mi trayectoria es una sinfonía de disrupciones disciplinarias. Doctor en Filosofía, miembro de la Academia de la Lengua, y desarrollador prolífico.
+                        </p>
+                        <p class="text-slate-400 text-base leading-relaxed mb-8">
+                            Esta dualidad me permite moverme entre el pensamiento abstracto y la concreción práctica con fluidez. No soy un programador que leyó un libro de filosofía, ni un filósofo que aprendió a programar un fin de semana. Soy la integración viviente de ambos mundos.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <span class="px-4 py-2 bg-slate-800 rounded-full text-slate-300 text-sm border border-slate-600">Ph.D. Filosofía</span>
+                            <span class="px-4 py-2 bg-slate-800 rounded-full text-slate-300 text-sm border border-slate-600">+1,000 Apps IA</span>
+                            <span class="px-4 py-2 bg-slate-800 rounded-full text-slate-300 text-sm border border-slate-600">Academia de la Lengua</span>
+                            <span class="px-4 py-2 bg-slate-800 rounded-full text-slate-300 text-sm border border-slate-600">+60 Libros</span>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="relative">
+                            <div class="absolute -inset-4 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-full opacity-20 blur-lg animate-pulse"></div>
+                            <div class="relative bg-slate-950 p-8 rounded-xl border border-slate-800 max-w-sm">
+                                <i data-lucide="quote" class="w-8 h-8 text-slate-600 mb-4"></i>
+                                <p class="text-xl text-slate-200 serif-font italic mb-4">
+                                    "He convertido ideas filosóficas en plataformas tecnológicas, y conceptos éticos en herramientas de gestión."
+                                </p>
+                                <div class="flex items-center mt-6">
+                                    <div class="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-slate-400 font-bold serif-font">MP</div>
+                                    <div class="ml-4">
+                                        <p class="text-white font-semibold">Moris Polanco</p>
+                                        <p class="text-slate-500 text-sm">Arqueólogo de Problemas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA / Contact -->
+    <section id="contacto" class="py-24 bg-gradient-to-b from-slate-950 to-slate-900">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 serif-font">Transforme su Incertidumbre en Ventaja</h2>
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                No busque solo una habilidad; busque la resolución. Hablemos sobre cómo la "traducción infiel" de saberes puede desbloquear el valor oculto en su organización.
+            </p>
+            
+            <form class="max-w-md mx-auto space-y-4 text-left" onsubmit="event.preventDefault(); alert('Gracias por su interés. El Dr. Polanco contactará con usted pronto para discutir la estrategia.');">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-400 mb-1">Correo Electrónico</label>
+                    <input type="email" id="email" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-slate-500 transition-all" placeholder="su@correo.com" required>
+                </div>
+                <div>
+                    <label for="message" class="block text-sm font-medium text-slate-400 mb-1">Desafío Actual</label>
+                    <textarea id="message" rows="4" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-slate-500 transition-all" placeholder="¿Qué problema complejo necesita una perspectiva abductiva?" required></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold rounded-lg shadow-lg transform transition hover:-translate-y-1">
+                    Solicitar Consulta Estratégica
+                </button>
+            </form>
+
+            <div class="mt-12 flex justify-center space-x-8 text-slate-500">
+                <a href="#" class="hover:text-white transition-colors"><span class="sr-only">LinkedIn</span><i data-lucide="linkedin" class="w-6 h-6"></i></a>
+                <a href="#" class="hover:text-white transition-colors"><span class="sr-only">Twitter</span><i data-lucide="twitter" class="w-6 h-6"></i></a>
+                <a href="#" class="hover:text-white transition-colors"><span class="sr-only">Mail</span><i data-lucide="mail" class="w-6 h-6"></i></a>
+            </div>
+            
+            <p class="mt-8 text-sm text-slate-600">
+                &copy; 2026 Moris Polanco. Todos los derechos reservados.<br>
+                Diseñado bajo principios de Ingenio y Ética.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                menu.classList.add('hidden'); // Close mobile menu if open
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Navbar transparency on scroll
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('shadow-lg');
+                navbar.classList.replace('bg-opacity-0', 'bg-opacity-90');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+        });
+    </script>
 </body>
 </html>
