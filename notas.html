@@ -116,6 +116,14 @@
             font-weight: 500;
         }
         
+        .timer {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #e74c3c;
+            font-weight: 600;
+            display: none;
+        }
+        
         .transcript-section {
             margin-bottom: 30px;
         }
@@ -409,10 +417,11 @@
         <div class="recording-section">
             <button id="recordBtn" class="record-btn">GRABAR</button>
             <div id="status" class="status">Haz clic para comenzar a grabar</div>
+            <div id="timer" class="timer">Tiempo restante: 20s</div>
         </div>
         
         <div class="transcript-section">
-            <h2>Texto Transcrito y Corregido</h2>
+            <h2>Texto transcrito y corregido</h2>
             <textarea id="transcript" placeholder="El texto transcrito y corregido aparecerá aquí..."></textarea>
         </div>
         
@@ -426,7 +435,7 @@
     <div id="historyModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Historial de Grabaciones</h2>
+                <h2>Historial de grabaciones</h2>
                 <button class="close-modal">&times;</button>
             </div>
             <div id="historyList" class="history-list">
@@ -446,7 +455,7 @@
                     <label for="apiKey">Clave API de OpenRouter:</label>
                     <input type="password" id="apiKey" placeholder="Ingresa tu clave API de OpenRouter">
                 </div>
-                <button id="saveSettingsBtn" class="save-settings-btn">Guardar Configuración</button>
+                <button id="saveSettingsBtn" class="save-settings-btn">Guardar configuración</button>
             </div>
         </div>
     </div>
@@ -457,14 +466,17 @@
         // Variables globales
         let isRecording = false;
         let recognition = null;
+        let recordingTimeout = null;
         const MAX_HISTORY_ITEMS = 50;
         const HISTORY_KEY = 'voiceNotesHistory';
         const API_KEY_KEY = 'openRouterApiKey';
         const MODEL_NAME = 'xiaomi/mimo-v2-flash:free';
+        const MAX_RECORDING_TIME = 20000; // 20 segundos en milisegundos
         
         // Elementos del DOM
         const recordBtn = document.getElementById('recordBtn');
         const statusEl = document.getElementById('status');
+        const timerEl = document.getElementById('timer');
         const transcriptEl = document.getElementById('transcript');
         const copyBtn = document.getElementById('copyBtn');
         const clearBtn = document.getElementById('clearBtn');
@@ -497,6 +509,7 @@
                 recordBtn.classList.add('recording');
                 statusEl.textContent = 'Grabando... Habla ahora';
                 transcriptEl.value = '';
+                startRecordingTimer();
             };
             
             recognition.onresult = async (event) => {
@@ -519,16 +532,12 @@
             recognition.onerror = (event) => {
                 console.error('Error de reconocimiento:', event.error);
                 statusEl.textContent = 'Error: ' + event.error;
-                isRecording = false;
-                recordBtn.textContent = 'GRABAR';
-                recordBtn.classList.remove('recording');
+                stopRecording();
             };
             
             recognition.onend = () => {
                 if (isRecording) {
-                    isRecording = false;
-                    recordBtn.textContent = 'GRABAR';
-                    recordBtn.classList.remove('recording');
+                    stopRecording();
                 }
             };
         }
@@ -670,6 +679,43 @@ Texto corregido:`;
             }
         }
         
+        // Iniciar temporizador de grabación
+        function startRecordingTimer() {
+            timerEl.style.display = 'block';
+            let timeLeft = 20;
+            timerEl.textContent = `Tiempo restante: ${timeLeft}s`;
+            
+            recordingTimeout = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = `Tiempo restante: ${timeLeft}s`;
+                
+                if (timeLeft <= 0) {
+                    stopRecording();
+                }
+            }, 1000);
+        }
+        
+        // Detener grabación
+        function stopRecording() {
+            if (recordingTimeout) {
+                clearInterval(recordingTimeout);
+                recordingTimeout = null;
+            }
+            
+            if (recognition) {
+                recognition.stop();
+            }
+            
+            isRecording = false;
+            recordBtn.textContent = 'GRABAR';
+            recordBtn.classList.remove('recording');
+            timerEl.style.display = 'none';
+            
+            if (statusEl.textContent.includes('Grabando')) {
+                statusEl.textContent = 'Grabación detenida automáticamente (20s)';
+            }
+        }
+        
         // Evento de grabación
         recordBtn.addEventListener('click', () => {
             if (!SpeechRecognition) return;
@@ -690,11 +736,9 @@ Texto corregido:`;
                     statusEl.textContent = 'Error al iniciar la grabación';
                 }
             } else {
-                // Detener grabación
-                recognition.stop();
-                isRecording = false;
-                recordBtn.textContent = 'GRABAR';
-                recordBtn.classList.remove('recording');
+                // Detener grabación manualmente
+                stopRecording();
+                statusEl.textContent = 'Grabación detenida manualmente';
             }
         });
         
