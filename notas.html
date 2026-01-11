@@ -467,11 +467,13 @@
         let isRecording = false;
         let recognition = null;
         let recordingTimeout = null;
+        let pauseTimeout = null;
         const MAX_HISTORY_ITEMS = 50;
         const HISTORY_KEY = 'voiceNotesHistory';
         const API_KEY_KEY = 'openRouterApiKey';
         const MODEL_NAME = 'xiaomi/mimo-v2-flash:free';
         const MAX_RECORDING_TIME = 20000; // 20 segundos en milisegundos
+        const PAUSE_TIMEOUT = 20000; // 20 segundos para pausa
         
         // Elementos del DOM
         const recordBtn = document.getElementById('recordBtn');
@@ -499,7 +501,7 @@
             recordBtn.disabled = true;
         } else {
             recognition = new SpeechRecognition();
-            recognition.continuous = false;
+            recognition.continuous = true; // Cambiado a true para permitir transcripción continua
             recognition.interimResults = false;
             recognition.lang = 'es-ES';
             
@@ -508,25 +510,29 @@
                 recordBtn.textContent = 'DETENER';
                 recordBtn.classList.add('recording');
                 statusEl.textContent = 'Grabando... Habla ahora';
-                transcriptEl.value = '';
                 startRecordingTimer();
             };
             
-            recognition.onresult = async (event) => {
-                const transcript = event.results[0][0].transcript;
-                transcriptEl.value = transcript;
-                statusEl.textContent = 'Corrigiendo texto con IA...';
+            recognition.onresult = (event) => {
+                // Obtener el último resultado
+                const lastResult = event.results[event.results.length - 1];
+                const transcript = lastResult[0].transcript;
                 
-                try {
-                    const correctedText = await correctTextWithAI(transcript);
-                    transcriptEl.value = correctedText;
-                    statusEl.textContent = 'Texto corregido exitosamente';
-                    saveToHistory(correctedText);
-                } catch (error) {
-                    console.error('Error en corrección:', error);
-                    statusEl.textContent = 'Error en corrección: ' + error.message;
-                    showNotification('Error al corregir el texto');
+                // Si es el primer resultado, limpiar el textarea
+                if (event.resultIndex === 0 && transcriptEl.value.trim() === '') {
+                    transcriptEl.value = transcript;
+                } else {
+                    // Agregar al texto existente
+                    const currentText = transcriptEl.value;
+                    if (currentText && !currentText.endsWith(' ')) {
+                        transcriptEl.value = currentText + ' ' + transcript;
+                    } else {
+                        transcriptEl.value = currentText + transcript;
+                    }
                 }
+                
+                // Reiniciar el temporizador de pausa
+                resetPauseTimer();
             };
             
             recognition.onerror = (event) => {
@@ -537,7 +543,8 @@
             
             recognition.onend = () => {
                 if (isRecording) {
-                    stopRecording();
+                    // La grabación se detuvo, iniciar temporizador de pausa
+                    startPauseTimer();
                 }
             };
         }
@@ -679,7 +686,7 @@ Texto corregido:`;
             }
         }
         
-        // Iniciar temporizador de grabación
+        // Iniciar temporizador de grabación (para el límite total de 20 segundos desde inicio)
         function startRecordingTimer() {
             timerEl.style.display = 'block';
             let timeLeft = 20;
@@ -690,9 +697,61 @@ Texto corregido:`;
                 timerEl.textContent = `Tiempo restante: ${timeLeft}s`;
                 
                 if (timeLeft <= 0) {
-                    stopRecording();
+                    stopRecordingAndCorrect();
                 }
             }, 1000);
+        }
+        
+        // Reiniciar temporizador de grabación (cuando hay actividad)
+        function resetRecordingTimer() {
+            if (recordingTimeout) {
+                clearInterval(recordingTimeout);
+            }
+            startRecordingTimer();
+        }
+        
+        // Iniciar temporizador de pausa
+        function startPauseTimer() {
+            // Limpiar cualquier temporizador de pausa anterior
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+            }
+            
+            pauseTimeout = setTimeout(() => {
+                // Si han pasado 20 segundos de pausa, detener la grabación
+                stopRecordingAndCorrect();
+            }, PAUSE_TIMEOUT);
+        }
+        
+        // Reiniciar temporizador de pausa (cuando hay nueva actividad)
+        function resetPauseTimer() {
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+            }
+            // No reiniciamos el temporizador de grabación aquí porque ya se maneja en onresult
+            startPauseTimer();
+        }
+        
+        // Detener grabación y corregir el texto
+        async function stopRecordingAndCorrect() {
+            stopRecording();
+            
+            const currentText = transcriptEl.value.trim();
+            if (currentText) {
+                statusEl.textContent = 'Corrigiendo texto con IA...';
+                try {
+                    const correctedText = await correctTextWithAI(currentText);
+                    transcriptEl.value = correctedText;
+                    statusEl.textContent = 'Texto corregido exitosamente';
+                    saveToHistory(correctedText);
+                } catch (error) {
+                    console.error('Error en corrección:', error);
+                    statusEl.textContent = 'Error en corrección: ' + error.message;
+                    showNotification('Error al corregir el texto');
+                }
+            } else {
+                statusEl.textContent = 'Grabación finalizada (sin texto)';
+            }
         }
         
         // Detener grabación
@@ -700,6 +759,11 @@ Texto corregido:`;
             if (recordingTimeout) {
                 clearInterval(recordingTimeout);
                 recordingTimeout = null;
+            }
+            
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+                pauseTimeout = null;
             }
             
             if (recognition) {
@@ -710,10 +774,6 @@ Texto corregido:`;
             recordBtn.textContent = 'GRABAR';
             recordBtn.classList.remove('recording');
             timerEl.style.display = 'none';
-            
-            if (statusEl.textContent.includes('Grabando')) {
-                statusEl.textContent = 'Grabación detenida automáticamente (20s)';
-            }
         }
         
         // Evento de grabación
@@ -737,8 +797,7 @@ Texto corregido:`;
                 }
             } else {
                 // Detener grabación manualmente
-                stopRecording();
-                statusEl.textContent = 'Grabación detenida manualmente';
+                stopRecordingAndCorrect();
             }
         });
         
