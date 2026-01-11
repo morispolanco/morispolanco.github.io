@@ -518,8 +518,8 @@
                 const lastResult = event.results[event.results.length - 1];
                 const transcript = lastResult[0].transcript;
                 
-                // Si es el primer resultado, limpiar el textarea
-                if (event.resultIndex === 0 && transcriptEl.value.trim() === '') {
+                // Si es el primer resultado de una nueva sesión, limpiar el textarea
+                if (event.resultIndex === 0 && !transcriptEl.value.trim()) {
                     transcriptEl.value = transcript;
                 } else {
                     // Agregar al texto existente
@@ -787,6 +787,9 @@ Texto corregido:`;
                     openSettingsModal();
                     return;
                 }
+                
+                // Limpiar el texto antes de comenzar una nueva grabación
+                transcriptEl.value = '';
                 
                 // Iniciar grabación
                 try {
