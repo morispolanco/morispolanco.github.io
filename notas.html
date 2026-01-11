@@ -518,17 +518,12 @@
                 const lastResult = event.results[event.results.length - 1];
                 const transcript = lastResult[0].transcript;
                 
-                // Si es el primer resultado de una nueva sesión, limpiar el textarea
-                if (event.resultIndex === 0 && !transcriptEl.value.trim()) {
-                    transcriptEl.value = transcript;
+                // Agregar al texto existente (nunca se limpia automáticamente al grabar)
+                const currentText = transcriptEl.value;
+                if (currentText && !currentText.endsWith(' ')) {
+                    transcriptEl.value = currentText + ' ' + transcript;
                 } else {
-                    // Agregar al texto existente
-                    const currentText = transcriptEl.value;
-                    if (currentText && !currentText.endsWith(' ')) {
-                        transcriptEl.value = currentText + ' ' + transcript;
-                    } else {
-                        transcriptEl.value = currentText + transcript;
-                    }
+                    transcriptEl.value = currentText + transcript;
                 }
                 
                 // Reiniciar el temporizador de pausa
@@ -797,8 +792,8 @@ Texto corregido:`;
                     return;
                 }
                 
-                // Limpiar el texto antes de comenzar una nueva grabación
-                transcriptEl.value = '';
+                // NO limpiar el texto al hacer clic en grabar nuevamente
+                // El texto solo se limpia con el botón "Limpiar"
                 
                 // Iniciar grabación
                 try {
@@ -829,7 +824,7 @@ Texto corregido:`;
             }
         });
         
-        // Evento de limpiar
+        // Evento de limpiar - ÚNICO lugar donde se limpia el texto
         clearBtn.addEventListener('click', () => {
             transcriptEl.value = '';
             showNotification('Contenido limpiado');
