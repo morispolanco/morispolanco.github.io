@@ -501,7 +501,7 @@
             recordBtn.disabled = true;
         } else {
             recognition = new SpeechRecognition();
-            recognition.continuous = true; // Cambiado a true para permitir transcripción continua
+            recognition.continuous = true; // Permite transcripción continua
             recognition.interimResults = false;
             recognition.lang = 'es-ES';
             
@@ -543,8 +543,17 @@
             
             recognition.onend = () => {
                 if (isRecording) {
-                    // La grabación se detuvo, iniciar temporizador de pausa
-                    startPauseTimer();
+                    // La grabación se detuvo, pero no queremos detenerla por pausas cortas
+                    // Reiniciamos el reconocimiento automáticamente si estamos grabando
+                    setTimeout(() => {
+                        if (isRecording) {
+                            try {
+                                recognition.start();
+                            } catch (error) {
+                                console.error('Error al reiniciar el reconocimiento:', error);
+                            }
+                        }
+                    }, 100);
                 }
             };
         }
