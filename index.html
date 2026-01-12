@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moris Polanco | Arquitecto de Mentes Digitales</title>
     
+    <!-- Fuentes: Playfair Display (Serif para títulos) y Lato (Sans para cuerpo) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Paleta de colores extraída de la imagen "El Pórtico Lógico" */
+            /* Paleta de colores inspirada en "El Pórtico Lógico" */
             --bg-color: #F9F7F2; /* Crema suave / Papel antiguo */
             --text-color: #2C2C2C; /* Carbón oscuro para lectura */
-            --accent-color: #8C6239; /* Marrón bronce/cuero (Botones) */
+            --accent-color: #8C6239; /* Marrón bronce/cuero (Botones y destacados) */
             --accent-hover: #6b4a2a;
-            --secondary-text: #666666;
+            --secondary-text: #5A5A5A;
             --border-color: #E0Dbd0;
             --card-bg: #FFFFFF;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         * {
@@ -31,7 +36,7 @@
             font-family: 'Lato', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            line-height: 1.6;
+            line-height: 1.7;
             font-weight: 300;
         }
 
@@ -39,27 +44,29 @@
             font-family: 'Playfair Display', serif;
             color: var(--text-color);
             margin-bottom: 1rem;
+            line-height: 1.3;
         }
 
         strong {
             font-weight: 700;
+            color: #4a4a4a;
         }
 
         a {
             text-decoration: none;
             color: var(--accent-color);
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         /* Estructura General */
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
         section {
-            padding: 80px 0;
+            padding: 90px 0;
             border-bottom: 1px solid var(--border-color);
         }
 
@@ -69,37 +76,40 @@
 
         /* Header Minimalista */
         header {
-            padding: 30px 0;
+            padding: 40px 0;
             text-align: center;
         }
 
         .brand {
             font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            letter-spacing: 2px;
+            font-size: 1.4rem;
+            letter-spacing: 3px;
             text-transform: uppercase;
             color: var(--accent-color);
             font-weight: 700;
+            border-bottom: 2px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 5px;
         }
 
         /* Sección 1: El Desafío (Hero) */
         .hero {
             text-align: center;
             padding-top: 60px;
-            padding-bottom: 100px;
+            padding-bottom: 110px;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            line-height: 1.2;
+            font-size: 3.2rem;
             margin-bottom: 1.5rem;
+            font-weight: 700;
         }
 
         .hero .subtitle {
-            font-size: 1.25rem;
+            font-size: 1.35rem;
             color: var(--secondary-text);
-            max-width: 700px;
-            margin: 0 auto 3rem auto;
+            max-width: 750px;
+            margin: 0 auto 3.5rem auto;
             font-style: italic;
         }
 
@@ -107,226 +117,295 @@
             display: inline-block;
             background-color: var(--accent-color);
             color: #fff;
-            padding: 15px 35px;
+            padding: 16px 40px;
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
-            border-radius: 4px; /* Bordes suaves pero serios */
+            letter-spacing: 1px;
+            border-radius: 2px;
             transition: background 0.3s ease, transform 0.2s ease;
             cursor: pointer;
-            border: none;
+            border: 1px solid var(--accent-color);
+            text-transform: uppercase;
         }
 
         .btn:hover {
             background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
             transform: translateY(-2px);
+            color: #fff;
         }
 
         /* Elemento Visual Comparativo */
         .dichotomy {
             display: flex;
             justify-content: center;
-            margin-top: 60px;
-            gap: 40px;
+            margin-top: 80px;
+            gap: 60px;
             flex-wrap: wrap;
         }
 
         .dichotomy-col {
             text-align: center;
+            position: relative;
         }
 
         .dichotomy-title {
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             font-weight: 700;
+            color: var(--accent-color);
         }
 
         .dichotomy-list {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             color: var(--secondary-text);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
-        .bad { color: #999; text-decoration: line-through; }
-        .good { color: var(--accent-color); }
+        .bad { 
+            color: #999; 
+            text-decoration: line-through; 
+            text-decoration-color: #d1d1d1;
+        }
+        .good { 
+            color: var(--text-color); 
+            font-weight: 600;
+        }
 
         /* Sección 2: La Tesis */
+        .separator {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--accent-color);
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            opacity: 0.6;
+        }
+
         .thesis-content {
-            max-width: 750px;
+            max-width: 780px;
             margin: 0 auto;
-            text-align: justify;
-            font-size: 1.1rem;
+            text-align: justify; /* Estilo libro */
+            font-size: 1.15rem;
+        }
+
+        .thesis-content h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
         }
 
         .thesis-content p {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
         }
 
-        .highlight-box {
-            border-left: 3px solid var(--accent-color);
-            padding-left: 20px;
-            margin: 30px 0;
+        .highlight-phrase {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            text-align: center;
+            margin: 40px 0;
             font-style: italic;
-            color: #555;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 30px 20px;
         }
 
         /* Sección 3: El Método */
         .method-intro {
             text-align: center;
-            max-width: 600px;
-            margin: 0 auto 50px auto;
-            font-size: 1.1rem;
+            max-width: 650px;
+            margin: 0 auto 60px auto;
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--secondary-text);
         }
 
         .act-card {
             background: var(--card-bg);
-            padding: 40px;
+            padding: 50px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
             border: 1px solid var(--border-color);
             position: relative;
+            transition: transform 0.3s ease;
+        }
+        
+        .act-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
         }
 
         .act-number {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
             margin-bottom: 10px;
             display: block;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            width: fit-content;
         }
 
         .act-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
+            font-size: 1.8rem;
+            margin: 15px 0 20px 0;
         }
 
-        .act-details strong {
-            color: var(--accent-color);
+        .act-details {
+            font-size: 1.05rem;
+        }
+        
+        .act-details div {
+            margin-bottom: 8px;
         }
 
         /* Sección 4: El Laboratorio */
         .lab-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 40px;
-            margin-top: 40px;
+            gap: 50px;
+            margin-top: 50px;
         }
 
         .artifact {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 40px;
-            transition: transform 0.3s ease;
-        }
-
-        .artifact:hover {
-            border-color: var(--accent-color);
+            padding: 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
 
         .artifact h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--text-color);
         }
 
         .artifact-meta {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--secondary-text);
-            margin-bottom: 20px;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            margin-bottom: 15px;
             display: block;
+            font-weight: 700;
         }
 
-        .artifact p {
+        .artifact-section {
             margin-bottom: 20px;
-            font-size: 1rem;
         }
         
-        .artifact-link {
-            display: inline-block;
-            margin-top: 10px;
+        .artifact-label {
+            font-family: 'Playfair Display', serif;
             font-weight: 700;
-            border-bottom: 1px solid var(--accent-color);
-            padding-bottom: 2px;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            display: block;
+            margin-bottom: 5px;
+            text-decoration: underline;
+            text-decoration-color: var(--border-color);
+            text-decoration-thickness: 2px;
         }
 
-        .artifact-link:hover {
-            color: var(--accent-hover);
-            border-bottom-color: var(--accent-hover);
+        .artifact-link-btn {
+            display: inline-block;
+            margin-top: 25px;
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 12px 25px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .artifact-link-btn:hover {
+            background: var(--accent-color);
+            color: #fff;
         }
 
         /* Sección 5: La Conversación */
+        .contact-subtitle {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+        }
+
         .contact-form {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
+            background: #fff;
+            padding: 50px;
             border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-family: 'Playfair Display', serif;
             font-weight: 700;
+            color: var(--text-color);
+            font-size: 1.1rem;
         }
 
         .form-control {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            background: #fafafa;
+            padding: 15px;
+            border: 1px solid #ccc;
+            background: #fdfdfd;
             font-family: 'Lato', sans-serif;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .form-control:focus {
             outline: none;
             border-color: var(--accent-color);
-            background: #fff;
-        }
-
-        textarea.form-control {
-            resize: vertical;
+            box-shadow: 0 0 0 3px rgba(140, 98, 57, 0.1);
         }
 
         .note-final {
-            margin-top: 30px;
-            font-size: 0.9rem;
+            margin-top: 40px;
+            font-size: 0.95rem;
             color: var(--secondary-text);
             text-align: center;
+            font-style: italic;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
         }
 
         /* Footer */
         footer {
             text-align: center;
-            padding: 40px 0;
+            padding: 60px 0;
             font-size: 0.9rem;
             color: var(--secondary-text);
             border-top: 1px solid var(--border-color);
             background: #F4F1EB;
         }
 
-        /* Decoración */
-        .separator {
-            text-align: center;
-            margin: 20px 0;
-            color: var(--accent-color);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-        }
-
         /* Responsividad */
         @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .dichotomy { flex-direction: column; gap: 30px; }
-            .act-card, .artifact, .contact-form { padding: 25px; }
+            .hero h1 { font-size: 2.4rem; }
+            .hero .subtitle { font-size: 1.1rem; padding: 0 10px;}
+            .dichotomy { flex-direction: column; gap: 40px; }
+            .act-card, .artifact, .contact-form { padding: 30px 20px; }
+            .thesis-content h2 { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -338,22 +417,23 @@
         </div>
     </header>
 
+    <!-- SECCIÓN 1: EL DESAFÍO -->
     <section class="hero">
         <div class="container">
-            <h1>La inteligencia de su empresa merece más que un loro digital.</h1>
+            <h1>LA INTELIGENCIA DE SU EMPRESA MERECE MÁS QUE UN LORO DIGITAL.</h1>
             <p class="subtitle">Sus competidores están instalando chatbots genéricos. Ruido. Yo no programo ecos. Arquitecto mentes digitales que razonan con el alma de su negocio.</p>
             
             <a href="#metodo" class="btn">DESCUBRA EL MÉTODO</a>
 
             <div class="dichotomy">
                 <div class="dichotomy-col">
-                    <div class="dichotomy-title bad">Software</div>
+                    <div class="dichotomy-title bad">SOFTWARE</div>
                     <div class="dichotomy-list bad">
                         Genérico<br>Reactivo<br>Efímero<br>Mercancía
                     </div>
                 </div>
                 <div class="dichotomy-col">
-                    <div class="dichotomy-title good">Inteligencia</div>
+                    <div class="dichotomy-title" style="color:var(--text-color);">INTELIGENCIA</div>
                     <div class="dichotomy-list good">
                         Propietaria<br>Estratégica<br>Perenne<br>Activo
                     </div>
@@ -362,87 +442,135 @@
         </div>
     </section>
 
+    <!-- SECCIÓN 2: LA TESIS -->
     <section id="tesis">
         <div class="container">
             <div class="separator">§</div>
             <div class="thesis-content">
-                <h2 style="text-align: center;">La Tesis: El Alma no se Programa, se Diseña.</h2>
+                <h2>LA TESIS: EL ALMA NO SE PROGRAMA, SE DISEÑA.</h2>
                 <p>Vivimos la peste del chatbot genérico. Una plaga de IA insípida que promete eficiencia pero solo entrega mediocridad. Estas herramientas no piensan; imitan. Son espejos que reflejan la vacuidad de internet, no la profundidad de su empresa.</p>
                 
                 <p>El error es de categoría: intentar resolver un problema estratégico con una solución meramente técnica. Un ingeniero puede conectar una API, pero no puede codificar la prudencia, el ingenio o la sabiduría acumulada de su organización.</p>
                 
-                <div class="highlight-box">
-                    "La verdadera ventaja competitiva no reside en tener IA, sino en tener <strong>su</strong> IA. Una entidad digital que encapsule su conocimiento propietario, sus modelos de decisión y su filosofía de negocio."
+                <div class="highlight-phrase">
+                    "La verdadera ventaja competitiva no reside en tener IA, sino en tener <strong>su</strong> IA."
                 </div>
+                
+                <p>Una entidad digital que encapsule su conocimiento propietario, sus modelos de decisión y su filosofía de negocio. Un activo que aprende de usted, no del mundo.</p>
 
                 <p>Mi vida profesional ha sido un entrenamiento para esto. Como Doctor en Filosofía, disecciono sistemas de racionalidad. Como editor, estructuro el pensamiento. Como desarrollador, lo encarno en código. No soy un híbrido; soy la síntesis necesaria para esta nueva era.</p>
             </div>
         </div>
     </section>
 
+    <!-- SECCIÓN 3: EL MÉTODO -->
     <section id="metodo">
         <div class="container">
-            <h2 style="text-align: center;">El Método: Los Tres Actos de la Creación</h2>
+            <h2 style="text-align: center; margin-bottom: 20px;">EL MÉTODO: LOS TRES ACTOS DE LA CREACIÓN.</h2>
             <p class="method-intro">Esto no es un menú de servicios. Es el proceso para forjar un activo estratégico. Cada fase es un prerrequisito para la siguiente.</p>
             
             <div class="act-card">
                 <span class="act-number">Acto I</span>
-                <h3 class="act-title">Auditoría de Racionalidad</h3>
-                <p class="act-details"><strong>Objetivo:</strong> Desenterrar y codificar el ADN intelectual de su empresa.<br>
-                <strong>Entregable:</strong> El "Códice de Racionalidad". El plano maestro de su pensamiento estratégico.</p>
+                <h3 class="act-title">AUDITORÍA DE RACIONALIDAD</h3>
+                <div class="act-details">
+                    <div><strong>Objetivo:</strong> Desenterrar y codificar el ADN intelectual de su empresa.</div>
+                    <div><strong>Entregable:</strong> El "Códice de Racionalidad". El plano maestro de su pensamiento estratégico.</div>
+                </div>
             </div>
 
             <div class="act-card">
                 <span class="act-number">Acto II</span>
-                <h3 class="act-title">Diseño del Arquetipo</h3>
-                <p class="act-details"><strong>Objetivo:</strong> Esculpir la personalidad y el rol de su aliado digital.<br>
-                <strong>Entregable:</strong> El "Blueprint de la Persona". Las especificaciones para la mente de su IA.</p>
+                <h3 class="act-title">DISEÑO DEL ARQUETIPO</h3>
+                <div class="act-details">
+                    <div><strong>Objetivo:</strong> Esculpir la personalidad y el rol de su aliado digital.</div>
+                    <div><strong>Entregable:</strong> El "Blueprint de la Persona". Las especificaciones para la mente de su IA.</div>
+                </div>
             </div>
 
             <div class="act-card">
                 <span class="act-number">Acto III</span>
-                <h3 class="act-title">Construcción y Encarnación</h3>
-                <p class="act-details"><strong>Objetivo:</strong> Dar vida al diseño, traduciendo la filosofía en código funcional.<br>
-                <strong>Entregable:</strong> Su Persona Digital. Un activo operativo, listo para pensar a su lado.</p>
+                <h3 class="act-title">CONSTRUCCIÓN Y ENCARNACIÓN</h3>
+                <div class="act-details">
+                    <div><strong>Objetivo:</strong> Dar vida al diseño, traduciendo la filosofía en código funcional.</div>
+                    <div><strong>Entregable:</strong> Su Persona Digital. Un activo operativo, listo para pensar a su lado.</div>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- SECCIÓN 4: EL LABORATORIO -->
     <section id="laboratorio">
         <div class="container">
-            <h2 style="text-align: center;">El Laboratorio: Demostraciones, no Promesas</h2>
+            <h2 style="text-align: center;">EL LABORATORIO: DEMOSTRACIONES, NO PROMESAS.</h2>
             
             <div class="lab-grid">
+                <!-- Artefacto 1 -->
                 <div class="artifact">
                     <span class="artifact-meta">Artefacto #1</span>
-                    <h3>El Oráculo: Ni Magia Ni Método</h3>
-                    <p>Un ejercicio de construcción de identidad. Se diseñó una Persona Digital basada en la filosofía de la racionalidad barroca y el pensamiento abductivo para actuar como un estratega intelectual. No es un asistente; es un pensador.</p>
-                    <a href="#" class="artifact-link">Interactúe con una versión del Oráculo &rarr;</a>
+                    <h3>El Oráculo</h3>
+                    <div class="artifact-section">
+                        <span class="artifact-label">Descripción</span>
+                        <p>Un ejercicio de construcción de identidad. Se diseñó una Persona Digital ('El Oráculo Ni Magia Ni Método') basada en la filosofía de la racionalidad barroca y el pensamiento abductivo para actuar como un estratega intelectual. No es un asistente; es un pensador.</p>
+                    </div>
+                    <a href="https://el-oraculo.lovable.app" target="_blank" class="artifact-link-btn">Interactúe con El Oráculo &rarr;</a>
                 </div>
 
+                <!-- Artefacto 2 -->
                 <div class="artifact">
                     <span class="artifact-meta">Artefacto #2</span>
-                    <h3>El Pórtico Lógico</h3>
-                    <p><strong>El Problema:</strong> Las escuelas de negocios producen excelentes analistas y peores estrategas. Enseñan métodos, no mentalidades. El resultado son gerentes que pueden optimizar un sistema conocido, pero se paralizan ante lo desconocido.</p>
-                    <p><strong>La Solución:</strong> El Pórtico Lógico no es un curso. Es un entorno de simulación para la mente, un dojo donde el juicio se forja a través del combate intelectual. Un 'sparring partner' digital diseñado bajo los principios de la Racionalidad Inventiva.</p>
-                    <p><strong>El Resultado:</strong> Estrategas anfibios. Líderes que respiran tanto en el océano de los datos como en el aire de la ambigüedad.</p>
+                    <h3>El Pórtico Lógico: Un Dojo para el Juicio Estratégico</h3>
+                    
+                    <div class="artifact-section">
+                        <span class="artifact-label">El Problema que Resuelve</span>
+                        <p>Las escuelas de negocios producen excelentes analistas y peores estrategas. Enseñan métodos, no mentalidades. El resultado son gerentes que pueden optimizar un sistema conocido, pero se paralizan ante lo desconocido. Son soldados de manual en una guerra de guerrillas.</p>
+                    </div>
+                    
+                    <div class="artifact-section">
+                        <span class="artifact-label">La Solución</span>
+                        <p>El Pórtico Lógico no es un curso. Es un entorno de simulación para la mente, un dojo donde el juicio se forja a través del combate intelectual. Un 'sparring partner' digital diseñado bajo los principios de la Racionalidad Inventiva, que obliga al participante a abandonar los atajos mentales y a construir decisiones desde primeros principios.</p>
+                    </div>
+
+                    <div class="artifact-section">
+                        <span class="artifact-label">El Resultado Prometido</span>
+                        <p>No producimos mejores estudiantes. Forjamos estrategas anfibios: líderes que respiran tanto en el océano de los datos como en el aire de la ambigüedad. Graduados que una empresa no puede permitirse no contratar.</p>
+                    </div>
+
+                    <a href="https://portico-logico.lovable.app" target="_blank" class="artifact-link-btn">Ingrese al Pórtico Lógico &rarr;</a>
                 </div>
 
+                <!-- Artefacto 3 -->
                 <div class="artifact">
                     <span class="artifact-meta">Artefacto #3</span>
-                    <h3>La Cartografía del Ingenio</h3>
-                    <p>La arquitectura visual de un nuevo sistema operativo mental: la Racionalidad Inventiva. Un manifiesto gráfico que decodifica cómo la intuición profunda y el diseño consciente no son opuestos, sino dos fases del mismo ciclo de creación de valor. Es el mapa para el líder que debe operar entre el rigor matemático y el ingenio poético.</p>
+                    <h3>La Cartografía del Ingenio: El Sistema Operativo del Estratega Anfibio</h3>
+                    
+                    <div class="artifact-section">
+                        <span class="artifact-label">El Problema que Resuelve</span>
+                        <p>El liderazgo moderno está esquizofrénico. Se le exige ser 'data-driven' y al mismo tiempo 'visionario'. Se debate entre la rigidez del algoritmo y la nebulosa de la 'intuición'. La mayoría de los líderes se ahogan intentando nadar en uno de los dos extremos.</p>
+                    </div>
+                    
+                    <div class="artifact-section">
+                        <span class="artifact-label">La Solución</span>
+                        <p>Esta no es una infografía. Es la arquitectura visual de un nuevo sistema operativo mental: la Racionalidad Inventiva. Un manifiesto gráfico que decodifica cómo la intuición profunda y el diseño consciente no son opuestos, sino dos fases del mismo ciclo de creación de valor. Es el mapa para el líder que debe operar entre el rigor matemático y el ingenio poético.</p>
+                    </div>
+
+                    <div class="artifact-section">
+                        <span class="artifact-label">La Promesa</span>
+                        <p>Quien comprende esta cartografía deja de ser víctima de la complejidad. Empieza a utilizarla como arma. Esta pieza no 'explica' una mentalidad; la instala.</p>
+                    </div>
+
+                    <a href="https://inventiva.lovable.app" target="_blank" class="artifact-link-btn">Explore la Cartografía &rarr;</a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- SECCIÓN 5: LA CONVERSACIÓN -->
     <section id="contacto">
         <div class="container">
-            <h2 style="text-align: center;">La Conversación: No para todos</h2>
-            <p class="subtitle" style="text-align: center;">Mi método requiere compromiso intelectual y visión estratégica. Solo colaboro en un número limitado de proyectos.</p>
+            <h2 style="text-align: center;">LA CONVERSACIÓN: NO PARA TODOS.</h2>
+            <p class="contact-subtitle">Mi método requiere compromiso intelectual y visión estratégica. Solo colaboro en un número limitado de proyectos que presenten un desafío de racionalidad genuino.</p>
             
-            <form class="contact-form" onsubmit="event.preventDefault(); alert('Solicitud recibida. Si el desafío es el adecuado, responderé en 48 horas.');">
+            <form class="contact-form" onsubmit="event.preventDefault(); alert('Solicitud enviada. Si el desafío es el adecuado, responderé en 48 horas.');">
                 <div class="form-group">
                     <label for="email">Su Correo Electrónico</label>
                     <input type="email" id="email" class="form-control" required placeholder="ej. director@suempresa.com">
@@ -450,17 +578,17 @@
 
                 <div class="form-group">
                     <label for="org">Su Organización</label>
-                    <input type="text" id="org" class="form-control" required placeholder="Nombre de su empresa o proyecto">
+                    <input type="text" id="org" class="form-control" required placeholder="Nombre de su empresa">
                 </div>
 
                 <div class="form-group">
                     <label for="desafio">El Desafío</label>
-                    <p style="font-size: 0.9rem; margin-bottom: 10px; color: #666;">"¿Cuál es el principal activo intelectual de su empresa y por qué no está siendo potenciado por la tecnología?"</p>
-                    <textarea id="desafio" rows="5" class="form-control" required></textarea>
+                    <p style="font-size: 0.95rem; margin-bottom: 12px; color: #555; font-style: italic;">"¿Cuál es el principal activo intelectual de su empresa y por qué no está siendo potenciado por la tecnología?"</p>
+                    <textarea id="desafio" rows="6" class="form-control" required></textarea>
                 </div>
 
                 <div style="text-align: center;">
-                    <button type="submit" class="btn" style="width: 100%;">Iniciar Conversación</button>
+                    <button type="submit" class="btn" style="width: 100%;">ENVIAR DESAFÍO</button>
                 </div>
             </form>
 
