@@ -136,8 +136,8 @@
         
         #transcript {
             width: 100%;
-            min-height: 400px; /* Aumentado significativamente */
-            height: 500px; /* Altura fija grande para manejar texto muy largo */
+            min-height: 400px;
+            height: 500px;
             padding: 15px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
@@ -145,8 +145,8 @@
             line-height: 1.6;
             resize: vertical;
             transition: border-color 0.3s ease;
-            overflow-y: auto; /* Scroll vertical para texto largo */
-            word-wrap: break-word; /* Rompe palabras largas */
+            overflow-y: auto;
+            word-wrap: break-word;
         }
         
         #transcript:focus {
@@ -478,13 +478,11 @@
         let isRecording = false;
         let recognition = null;
         let recordingTimeout = null;
-        let pauseTimeout = null;
         const MAX_HISTORY_ITEMS = 50;
         const HISTORY_KEY = 'voiceNotesHistory';
         const API_KEY_KEY = 'openRouterApiKey';
         const MODEL_NAME = 'xiaomi/mimo-v2-flash:free';
-        const MAX_RECORDING_TIME = 20000; // 20 segundos en milisegundos
-        const PAUSE_TIMEOUT = 20000; // 20 segundos para pausa
+        const MAX_RECORDING_TIME = 120000; // 2 minutos en milisegundos para permitir texto largo
         
         // Elementos del DOM
         const recordBtn = document.getElementById('recordBtn');
@@ -512,13 +510,9 @@
             recordBtn.disabled = true;
         } else {
             recognition = new SpeechRecognition();
-            recognition.continuous = true; // Permite transcripción continua
+            recognition.continuous = true;
             recognition.interimResults = false;
             recognition.lang = 'es-ES';
-            recognition.maxAlternatives = 1;
-            
-            // Configuración para manejar mejor el texto largo
-            recognition.grammars = null;
             
             recognition.onstart = () => {
                 isRecording = true;
@@ -529,52 +523,52 @@
             };
             
             recognition.onresult = (event) => {
-                // Obtener todos los resultados acumulados
-                let finalTranscript = '';
+                // Procesar todos los resultados finales
                 for (let i = 0; i < event.results.length; i++) {
                     if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript + ' ';
+                        const transcript = event.results[i][0].transcript;
+                        const currentText = transcriptEl.value;
+                        
+                        if (currentText && !currentText.endsWith(' ')) {
+                            transcriptEl.value = currentText + ' ' + transcript;
+                        } else {
+                            transcriptEl.value = currentText + transcript;
+                        }
+                        
+                        // Desplazar al final
+                        transcriptEl.scrollTop = transcriptEl.scrollHeight;
                     }
                 }
                 
-                // Si hay texto final, agregarlo al textarea existente
-                if (finalTranscript.trim()) {
-                    const currentText = transcriptEl.value;
-                    if (currentText && !currentText.endsWith(' ')) {
-                        transcriptEl.value = currentText + ' ' + finalTranscript.trim();
-                    } else {
-                        transcriptEl.value = currentText + finalTranscript.trim();
-                    }
-                    
-                    // Desplazar al final del textarea
-                    transcriptEl.scrollTop = transcriptEl.scrollHeight;
-                }
-                
-                // Reiniciar el temporizador de pausa
-                resetPauseTimer();
+                // Reiniciar el temporizador cuando hay actividad
+                resetRecordingTimer();
             };
             
             recognition.onerror = (event) => {
                 console.error('Error de reconocimiento:', event.error);
-                // No detenemos la grabación en errores menores, solo mostramos el error
-                if (event.error !== 'no-speech' && event.error !== 'audio-capture') {
+                if (event.error === 'not-allowed') {
+                    statusEl.textContent = 'Permiso denegado para usar el micrófono';
+                } else if (event.error === 'audio-capture') {
+                    statusEl.textContent = 'Error al acceder al micrófono';
+                } else {
                     statusEl.textContent = 'Error: ' + event.error;
                 }
+                stopRecording();
             };
             
             recognition.onend = () => {
                 if (isRecording) {
-                    // La grabación se detuvo, pero no queremos detenerla por pausas cortas
-                    // Reiniciamos el reconocimiento automáticamente si estamos grabando
+                    // Si seguimos grabando, reiniciar automáticamente
                     setTimeout(() => {
                         if (isRecording) {
                             try {
                                 recognition.start();
                             } catch (error) {
-                                console.error('Error al reiniciar el reconocimiento:', error);
+                                console.error('Error al reiniciar:', error);
+                                stopRecording();
                             }
                         }
-                    }, 100);
+                    }, 300);
                 }
             };
         }
@@ -600,7 +594,6 @@
                 throw new Error('No se ha configurado una clave API. Por favor, configura tu clave API en la configuración.');
             }
             
-            // Prompt mejorado para asegurar corrección de mayúsculas y puntuación
             const prompt = `Corrige la gramática, ortografía, mayúsculas y puntuación del siguiente texto en español. Asegúrate de:
 - Empezar oraciones con mayúscula
 - Usar puntos finales correctamente
@@ -629,7 +622,7 @@ Texto corregido:`;
                         }
                     ],
                     temperature: 0.1,
-                    max_tokens: 4000 // Máximo permitido para manejar texto muy largo
+                    max_tokens: 4000
                 })
             });
             
@@ -716,10 +709,10 @@ Texto corregido:`;
             }
         }
         
-        // Iniciar temporizador de grabación (para el límite total de 20 segundos desde inicio)
+        // Iniciar temporizador de grabación
         function startRecordingTimer() {
             timerEl.style.display = 'block';
-            let timeLeft = 20;
+            let timeLeft = Math.floor(MAX_RECORDING_TIME / 1000);
             timerEl.textContent = `Tiempo restante: ${timeLeft}s`;
             
             recordingTimeout = setInterval(() => {
@@ -732,34 +725,12 @@ Texto corregido:`;
             }, 1000);
         }
         
-        // Reiniciar temporizador de grabación (cuando hay actividad)
+        // Reiniciar temporizador de grabación
         function resetRecordingTimer() {
             if (recordingTimeout) {
                 clearInterval(recordingTimeout);
             }
             startRecordingTimer();
-        }
-        
-        // Iniciar temporizador de pausa
-        function startPauseTimer() {
-            // Limpiar cualquier temporizador de pausa anterior
-            if (pauseTimeout) {
-                clearTimeout(pauseTimeout);
-            }
-            
-            pauseTimeout = setTimeout(() => {
-                // Si han pasado 20 segundos de pausa, detener la grabación
-                stopRecordingAndCorrect();
-            }, PAUSE_TIMEOUT);
-        }
-        
-        // Reiniciar temporizador de pausa (cuando hay nueva actividad)
-        function resetPauseTimer() {
-            if (pauseTimeout) {
-                clearTimeout(pauseTimeout);
-            }
-            // No reiniciamos el temporizador de grabación aquí porque ya se maneja en onresult
-            startPauseTimer();
         }
         
         // Detener grabación y corregir el texto
@@ -791,11 +762,6 @@ Texto corregido:`;
                 recordingTimeout = null;
             }
             
-            if (pauseTimeout) {
-                clearTimeout(pauseTimeout);
-                pauseTimeout = null;
-            }
-            
             if (recognition) {
                 recognition.stop();
             }
@@ -811,22 +777,18 @@ Texto corregido:`;
             if (!SpeechRecognition) return;
             
             if (!isRecording) {
-                // Verificar si hay API key configurada
                 if (!getApiKey()) {
                     showNotification('Configura tu clave API primero');
                     openSettingsModal();
                     return;
                 }
                 
-                // NO limpiar el texto al hacer clic en grabar nuevamente
-                // El texto solo se limpia con el botón "Limpiar"
-                
                 // Iniciar grabación
                 try {
                     recognition.start();
                 } catch (error) {
                     console.error('Error al iniciar el reconocimiento:', error);
-                    statusEl.textContent = 'Error al iniciar la grabación';
+                    statusEl.textContent = 'Error al iniciar la grabación: ' + error.message;
                 }
             } else {
                 // Detener grabación manualmente
@@ -850,7 +812,7 @@ Texto corregido:`;
             }
         });
         
-        // Evento de limpiar - ÚNICO lugar donde se limpia el texto
+        // Evento de limpiar
         clearBtn.addEventListener('click', () => {
             transcriptEl.value = '';
             showNotification('Contenido limpiado');
