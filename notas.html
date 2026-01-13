@@ -428,7 +428,7 @@
         <div class="recording-section">
             <button id="recordBtn" class="record-btn">GRABAR</button>
             <div id="status" class="status">Haz clic para comenzar a grabar</div>
-            <div id="timer" class="timer">Tiempo restante: 20s</div>
+            <div id="timer" class="timer">Tiempo restante: 120s</div>
         </div>
         
         <div class="transcript-section">
@@ -478,11 +478,13 @@
         let isRecording = false;
         let recognition = null;
         let recordingTimeout = null;
+        let lastProcessedResult = '';
+        let accumulatedText = '';
         const MAX_HISTORY_ITEMS = 50;
         const HISTORY_KEY = 'voiceNotesHistory';
         const API_KEY_KEY = 'openRouterApiKey';
         const MODEL_NAME = 'xiaomi/mimo-v2-flash:free';
-        const MAX_RECORDING_TIME = 120000; // 2 minutos en milisegundos para permitir texto largo
+        const MAX_RECORDING_TIME = 120000; // 2 minutos en milisegundos
         
         // Elementos del DOM
         const recordBtn = document.getElementById('recordBtn');
@@ -523,20 +525,33 @@
             };
             
             recognition.onresult = (event) => {
-                // Procesar todos los resultados finales
-                for (let i = 0; i < event.results.length; i++) {
+                // Obtener el último resultado final
+                let latestTranscript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
                     if (event.results[i].isFinal) {
-                        const transcript = event.results[i][0].transcript;
-                        const currentText = transcriptEl.value;
-                        
-                        if (currentText && !currentText.endsWith(' ')) {
-                            transcriptEl.value = currentText + ' ' + transcript;
+                        latestTranscript += event.results[i][0].transcript + ' ';
+                    }
+                }
+                
+                if (latestTranscript.trim()) {
+                    // Eliminar espacios extra y normalizar
+                    latestTranscript = latestTranscript.trim();
+                    
+                    // Verificar si es diferente del último resultado procesado
+                    if (latestTranscript !== lastProcessedResult) {
+                        // Agregar al texto acumulado
+                        if (accumulatedText && !accumulatedText.endsWith(' ')) {
+                            accumulatedText += ' ' + latestTranscript;
                         } else {
-                            transcriptEl.value = currentText + transcript;
+                            accumulatedText += latestTranscript;
                         }
                         
-                        // Desplazar al final
+                        // Actualizar el textarea
+                        transcriptEl.value = accumulatedText;
                         transcriptEl.scrollTop = transcriptEl.scrollHeight;
+                        
+                        // Guardar como último resultado procesado
+                        lastProcessedResult = latestTranscript;
                     }
                 }
                 
@@ -770,6 +785,10 @@ Texto corregido:`;
             recordBtn.textContent = 'GRABAR';
             recordBtn.classList.remove('recording');
             timerEl.style.display = 'none';
+            
+            // Resetear variables de seguimiento
+            lastProcessedResult = '';
+            accumulatedText = transcriptEl.value; // Mantener el texto actual
         }
         
         // Evento de grabación
@@ -815,6 +834,7 @@ Texto corregido:`;
         // Evento de limpiar
         clearBtn.addEventListener('click', () => {
             transcriptEl.value = '';
+            accumulatedText = '';
             showNotification('Contenido limpiado');
         });
         
