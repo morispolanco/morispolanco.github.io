@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AudioMind - Transcriptor y Corrector IA</title>
+    <title>AudioMind - Corrector de Ortografía</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,15 +23,10 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        /* Estilos personalizados para el contenedor de Markdown */
         .prose-custom {
             max-width: none;
             color: #f1f5f9;
         }
-        .prose-custom strong { color: #fff; font-weight: 700; }
-        .prose-custom h1, .prose-custom h2, .prose-custom h3 { color: #e2e8f0; margin-top: 1rem; margin-bottom: 0.5rem; }
-        .prose-custom ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
-        .prose-custom li { margin-bottom: 0.25rem; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
@@ -41,7 +36,7 @@
         <header class="flex justify-between items-center mb-8">
             <div class="flex items-center gap-3">
                 <div class="bg-indigo-600 p-2 rounded-xl text-white">
-                    <i class="fas fa-microphone-lines text-2xl"></i>
+                    <i class="fas fa-check-double text-2xl"></i>
                 </div>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-800">AudioMind</h1>
             </div>
@@ -55,62 +50,49 @@
             <section class="glass-morphism rounded-2xl p-6 shadow-sm border border-slate-200">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
                     <h2 class="text-lg font-semibold text-slate-700 flex items-center gap-2">
-                        <i class="fas fa-pen-nib text-indigo-500"></i> Transcripción en vivo
+                        <i class="fas fa-pen-nib text-indigo-500"></i> Entrada de texto
                     </h2>
                     <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                        <!-- Botón Grabar -->
                         <button id="recordBtn" onclick="toggleRecording()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all shadow-md active:scale-95">
                             <i class="fas fa-microphone" id="micIcon"></i>
-                            <span id="recordText">Empezar a dictar</span>
-                        </button>
-                        
-                        <button id="copyTranscriptBtn" onclick="copyTranscript()" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-medium hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm" title="Copiar texto actual">
-                            <i class="fas fa-copy"></i>
-                            <span class="hidden sm:inline">Copiar</span>
+                            <span id="recordText">Dictar</span>
                         </button>
 
-                        <button onclick="clearTranscript()" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-xl font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm" title="Borrar texto actual">
+                        <!-- Botón Corregir (Movid Arriba) -->
+                        <button onclick="processAI()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-all shadow-md active:scale-95">
+                            <i class="fas fa-magic"></i>
+                            <span>Corregir</span>
+                        </button>
+                        
+                        <!-- Botón Copiar Transcripción -->
+                        <button id="copyTranscriptBtn" onclick="copyTranscript()" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-medium hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm">
+                            <i class="fas fa-copy"></i>
+                        </button>
+
+                        <!-- Botón Limpiar -->
+                        <button onclick="clearTranscript()" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-xl font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm">
                             <i class="fas fa-trash-alt"></i>
-                            <span class="hidden sm:inline">Limpiar</span>
                         </button>
                     </div>
                 </div>
                 
                 <textarea id="transcriptArea" 
-                    class="w-full h-48 p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-lg leading-relaxed outline-none" 
-                    placeholder="El texto aparecerá aquí mientras hablas..."></textarea>
+                    class="w-full h-64 p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-lg leading-relaxed outline-none" 
+                    placeholder="Escribe o dicta tu nota aquí..."></textarea>
                 
                 <div id="recordingStatus" class="hidden mt-3 flex items-center gap-2 text-red-500 text-sm font-medium">
-                    <span class="w-2 h-2 bg-red-500 rounded-full recording-pulse"></span> Escuchando...
+                    <span class="w-2 h-2 bg-red-500 rounded-full recording-pulse"></span> Micrófono encendido...
                 </div>
-            </section>
-
-            <!-- Acciones de IA -->
-            <section class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button onclick="processAI('correct')" class="ai-btn flex flex-col items-center gap-2 p-4 bg-white border border-slate-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all shadow-sm">
-                    <i class="fas fa-magic text-indigo-600 text-xl"></i>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Corregir</span>
-                </button>
-                <button onclick="processAI('summarize')" class="ai-btn flex flex-col items-center gap-2 p-4 bg-white border border-slate-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all shadow-sm">
-                    <i class="fas fa-align-left text-indigo-600 text-xl"></i>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Resumir</span>
-                </button>
-                <button onclick="processAI('bullets')" class="ai-btn flex flex-col items-center gap-2 p-4 bg-white border border-slate-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all shadow-sm">
-                    <i class="fas fa-list-ul text-indigo-600 text-xl"></i>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Puntos Clave</span>
-                </button>
-                <button onclick="processAI('formal')" class="ai-btn flex flex-col items-center gap-2 p-4 bg-white border border-slate-200 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all shadow-sm">
-                    <i class="fas fa-briefcase text-indigo-600 text-xl"></i>
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-600">Formatear</span>
-                </button>
             </section>
 
             <!-- Resultado de IA -->
             <section id="resultSection" class="hidden space-y-3">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-slate-700">Resultado IA</h2>
+                    <h2 class="text-lg font-semibold text-slate-700">Texto Corregido</h2>
                     <div class="flex gap-4">
                         <button id="copyBtn" onclick="copyToClipboard()" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
-                            <i class="fas fa-copy"></i> Copiar
+                            <i class="fas fa-copy"></i> Copiar resultado
                         </button>
                         <button onclick="clearResult()" class="text-sm font-medium text-slate-400 hover:text-red-500 flex items-center gap-1">
                             <i class="fas fa-times-circle"></i> Ocultar
@@ -119,9 +101,9 @@
                 </div>
                 <div id="aiLoader" class="hidden w-full p-12 bg-white border border-slate-200 rounded-2xl flex flex-col items-center justify-center gap-4">
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-                    <p class="text-slate-500 font-medium">Conectando con Gemini 2.5 Flash...</p>
+                    <p class="text-slate-500 font-medium">Corrigiendo ortografía...</p>
                 </div>
-                <div id="aiResult" class="w-full min-h-[150px] p-8 bg-slate-900 text-slate-100 rounded-2xl shadow-inner text-lg leading-relaxed prose prose-invert prose-custom"></div>
+                <div id="aiResult" class="w-full min-h-[100px] p-8 bg-slate-900 text-slate-100 rounded-2xl shadow-inner text-lg leading-relaxed prose prose-invert prose-custom"></div>
             </section>
         </main>
 
@@ -129,23 +111,17 @@
         <div id="settingsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl">
                 <div class="flex items-center gap-3 mb-4">
-                    <i class="fas fa-shield-halved text-indigo-600 text-2xl"></i>
-                    <h3 class="text-xl font-bold">Configurar API Key</h3>
+                    <i class="fas fa-key text-indigo-600 text-2xl"></i>
+                    <h3 class="text-xl font-bold">API Key</h3>
                 </div>
-                <p class="text-slate-500 text-sm mb-6">Tu clave se guarda localmente en tu navegador.</p>
+                <p class="text-slate-500 text-sm mb-6">Pega tu clave de Gemini para habilitar la corrección automática.</p>
                 
                 <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1">Gemini API Key</label>
-                        <input type="password" id="apiKeyInput" class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Pega tu clave (AIza...)">
-                    </div>
+                    <input type="password" id="apiKeyInput" class="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="AIza...">
                     <div class="flex gap-3">
                         <button onclick="saveApiKey()" class="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition-all">Guardar</button>
                         <button onclick="closeSettings()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all">Cerrar</button>
                     </div>
-                    <p class="text-center">
-                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-xs text-indigo-600 font-medium hover:underline">Consigue una clave gratis en Google AI Studio</a>
-                    </p>
                 </div>
             </div>
         </div>
@@ -162,20 +138,14 @@
         const transcriptArea = document.getElementById('transcriptArea');
         const recordingStatus = document.getElementById('recordingStatus');
 
-        // Configurar Marked.js para seguridad
-        marked.setOptions({
-            breaks: true,
-            gfm: true
-        });
+        marked.setOptions({ breaks: true, gfm: true });
 
-        // Inicializar reconocimiento de voz
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
             recognition.lang = 'es-ES';
             recognition.continuous = true;
             recognition.interimResults = true;
-
             recognition.onresult = (event) => {
                 let currentText = '';
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -186,33 +156,30 @@
             recognition.onerror = () => stopRecording();
         }
 
-        function toggleRecording() {
-            if (isRecording) stopRecording();
-            else startRecording();
-        }
+        function toggleRecording() { isRecording ? stopRecording() : startRecording(); }
 
         function startRecording() {
             isRecording = true;
             try {
                 recognition.start();
                 recordBtn.classList.replace('bg-indigo-600', 'bg-red-500');
-                recordText.innerText = "Detener";
+                recordText.innerText = "Parar";
                 micIcon.className = "fas fa-stop";
                 recordingStatus.classList.remove('hidden');
-            } catch (e) { console.error(e); }
+            } catch (e) {}
         }
 
         function stopRecording() {
             isRecording = false;
             recognition.stop();
             recordBtn.classList.replace('bg-red-500', 'bg-indigo-600');
-            recordText.innerText = "Empezar a dictar";
+            recordText.innerText = "Dictar";
             micIcon.className = "fas fa-microphone";
             recordingStatus.classList.add('hidden');
         }
 
         function clearTranscript() {
-            if (transcriptArea.value && confirm("¿Borrar texto?")) {
+            if (transcriptArea.value && confirm("¿Borrar todo?")) {
                 transcriptArea.value = "";
                 clearResult();
             }
@@ -228,9 +195,7 @@
             document.getElementById('apiKeyInput').value = localStorage.getItem('audio_mind_key') || "";
         }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
+        function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
 
         function saveApiKey() {
             const key = document.getElementById('apiKeyInput').value.trim();
@@ -243,11 +208,10 @@
         function copyTranscript() {
             const text = transcriptArea.value.trim();
             if (!text) return;
-
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copyTranscriptBtn');
                 const original = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check text-green-500"></i> <span class="hidden sm:inline">Copiado</span>';
+                btn.innerHTML = '<i class="fas fa-check text-green-500"></i>';
                 setTimeout(() => btn.innerHTML = original, 2000);
             });
         }
@@ -258,18 +222,16 @@
                 try {
                     const response = await fetch(url, options);
                     if (response.ok) return await response.json();
-                    if (response.status === 401 || response.status === 403) throw new Error("API Key inválida.");
+                    if (response.status === 401 || response.status === 403) throw new Error("Key inválida.");
                     if (response.status !== 429 && response.status < 500) break;
-                } catch (e) {
-                    if (i === maxRetries - 1) throw e;
-                }
+                } catch (e) { if (i === maxRetries - 1) throw e; }
                 await new Promise(r => setTimeout(r, delay));
                 delay *= 2;
             }
-            throw new Error("No se pudo conectar con la IA.");
+            throw new Error("Sin conexión.");
         }
 
-        async function processAI(type) {
+        async function processAI() {
             const apiKey = localStorage.getItem('audio_mind_key');
             if (!apiKey) return openSettings();
 
@@ -284,28 +246,19 @@
             loader.classList.remove('hidden');
             resultBox.classList.add('hidden');
 
-            let userPrompt = "";
-            switch(type) {
-                case 'correct': userPrompt = `Corrige la gramática y ortografía de esta nota de voz. Estructura el resultado con títulos y negritas si es necesario:\n\n${text}`; break;
-                case 'summarize': userPrompt = `Resume los puntos clave de esta nota usando listas y títulos:\n\n${text}`; break;
-                case 'bullets': userPrompt = `Extrae una lista de tareas de este texto:\n\n${text}`; break;
-                case 'formal': userPrompt = `Convierte esto en un correo profesional estructurado con asunto y cuerpo:\n\n${text}`; break;
-            }
+            // Prompt limitado estrictamente a ortografía y puntuación
+            const userPrompt = `Corrige ÚNICAMENTE los errores evidentes de ortografía y puntuación del siguiente texto. No resumas, no añadas títulos, no cambies el estilo ni el tono, y no añadidas comentarios. Respeta saltos de línea originales. Devuelve solo el texto corregido:\n\n${text}`;
 
             try {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
                 const data = await fetchWithRetry(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userPrompt }] }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: userPrompt }] }] })
                 });
 
                 const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta.";
-                // Renderizado de Markdown a HTML
                 resultBox.innerHTML = marked.parse(rawContent);
-
             } catch (error) {
                 resultBox.innerText = "Error: " + error.message;
             } finally {
@@ -318,8 +271,9 @@
             const text = document.getElementById('aiResult').innerText;
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('copyBtn');
+                const original = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check"></i> Copiado';
-                setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i> Copiar', 2000);
+                setTimeout(() => btn.innerHTML = original, 2000);
             });
         }
     </script>
