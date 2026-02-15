@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AudioMind - Transcriptor y Corrector IA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -22,6 +23,15 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        /* Estilos personalizados para el contenedor de Markdown */
+        .prose-custom {
+            max-width: none;
+            color: #f1f5f9;
+        }
+        .prose-custom strong { color: #fff; font-weight: 700; }
+        .prose-custom h1, .prose-custom h2, .prose-custom h3 { color: #e2e8f0; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .prose-custom ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
+        .prose-custom li { margin-bottom: 0.25rem; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
@@ -48,19 +58,16 @@
                         <i class="fas fa-pen-nib text-indigo-500"></i> Transcripción en vivo
                     </h2>
                     <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                        <!-- Botón Grabar -->
                         <button id="recordBtn" onclick="toggleRecording()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-all shadow-md active:scale-95">
                             <i class="fas fa-microphone" id="micIcon"></i>
                             <span id="recordText">Empezar a dictar</span>
                         </button>
                         
-                        <!-- Botón Copiar Transcripción (NUEVO) -->
                         <button id="copyTranscriptBtn" onclick="copyTranscript()" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl font-medium hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50 transition-all shadow-sm" title="Copiar texto actual">
                             <i class="fas fa-copy"></i>
                             <span class="hidden sm:inline">Copiar</span>
                         </button>
 
-                        <!-- Botón Limpiar -->
                         <button onclick="clearTranscript()" class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 text-slate-500 rounded-xl font-medium hover:text-red-600 hover:border-red-200 hover:bg-red-50 transition-all shadow-sm" title="Borrar texto actual">
                             <i class="fas fa-trash-alt"></i>
                             <span class="hidden sm:inline">Limpiar</span>
@@ -114,7 +121,7 @@
                     <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
                     <p class="text-slate-500 font-medium">Conectando con Gemini 2.5 Flash...</p>
                 </div>
-                <div id="aiResult" class="w-full min-h-[150px] p-6 bg-slate-900 text-slate-100 rounded-2xl shadow-inner text-lg leading-relaxed whitespace-pre-wrap"></div>
+                <div id="aiResult" class="w-full min-h-[150px] p-8 bg-slate-900 text-slate-100 rounded-2xl shadow-inner text-lg leading-relaxed prose prose-invert prose-custom"></div>
             </section>
         </main>
 
@@ -125,7 +132,7 @@
                     <i class="fas fa-shield-halved text-indigo-600 text-2xl"></i>
                     <h3 class="text-xl font-bold">Configurar API Key</h3>
                 </div>
-                <p class="text-slate-500 text-sm mb-6">Tu clave se guarda localmente en tu navegador y no se envía a ningún otro servidor que no sea el de Google.</p>
+                <p class="text-slate-500 text-sm mb-6">Tu clave se guarda localmente en tu navegador.</p>
                 
                 <div class="space-y-4">
                     <div>
@@ -154,6 +161,12 @@
         const micIcon = document.getElementById('micIcon');
         const transcriptArea = document.getElementById('transcriptArea');
         const recordingStatus = document.getElementById('recordingStatus');
+
+        // Configurar Marked.js para seguridad
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
 
         // Inicializar reconocimiento de voz
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -207,10 +220,9 @@
 
         function clearResult() {
             document.getElementById('resultSection').classList.add('hidden');
-            document.getElementById('aiResult').innerText = "";
+            document.getElementById('aiResult').innerHTML = "";
         }
 
-        // Gestión de API Key
         function openSettings() {
             document.getElementById('settingsModal').classList.remove('hidden');
             document.getElementById('apiKeyInput').value = localStorage.getItem('audio_mind_key') || "";
@@ -228,8 +240,6 @@
             }
         }
 
-        /** * Copia la transcripción original (sin corregir)
-         */
         function copyTranscript() {
             const text = transcriptArea.value.trim();
             if (!text) return;
@@ -239,12 +249,9 @@
                 const original = btn.innerHTML;
                 btn.innerHTML = '<i class="fas fa-check text-green-500"></i> <span class="hidden sm:inline">Copiado</span>';
                 setTimeout(() => btn.innerHTML = original, 2000);
-            }).catch(err => {
-                console.error("Error al copiar:", err);
             });
         }
 
-        // Llamada a la API con Exponential Backoff
         async function fetchWithRetry(url, options, maxRetries = 5) {
             let delay = 1000;
             for (let i = 0; i < maxRetries; i++) {
@@ -279,10 +286,10 @@
 
             let userPrompt = "";
             switch(type) {
-                case 'correct': userPrompt = `Corrige la gramática y ortografía de esta nota de voz:\n\n${text}`; break;
-                case 'summarize': userPrompt = `Resume los puntos clave de esta nota:\n\n${text}`; break;
+                case 'correct': userPrompt = `Corrige la gramática y ortografía de esta nota de voz. Estructura el resultado con títulos y negritas si es necesario:\n\n${text}`; break;
+                case 'summarize': userPrompt = `Resume los puntos clave de esta nota usando listas y títulos:\n\n${text}`; break;
                 case 'bullets': userPrompt = `Extrae una lista de tareas de este texto:\n\n${text}`; break;
-                case 'formal': userPrompt = `Convierte esto en un correo profesional estructurado:\n\n${text}`; break;
+                case 'formal': userPrompt = `Convierte esto en un correo profesional estructurado con asunto y cuerpo:\n\n${text}`; break;
             }
 
             try {
@@ -295,9 +302,12 @@
                     })
                 });
 
-                resultBox.innerText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta.";
+                const rawContent = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sin respuesta.";
+                // Renderizado de Markdown a HTML
+                resultBox.innerHTML = marked.parse(rawContent);
+
             } catch (error) {
-                resultBox.innerText = "Error: " + error.message + " Verifica tu API Key o conexión.";
+                resultBox.innerText = "Error: " + error.message;
             } finally {
                 loader.classList.add('hidden');
                 resultBox.classList.remove('hidden');
