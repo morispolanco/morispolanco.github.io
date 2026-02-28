@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESTRATEGA IA - CON HISTORIAL</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root { --primary: #1a73e8; --sidebar-bg: #202124; --bg: #ffffff; --text: #3c4043; }
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; background: #f8f9fa; }
+
+    /* Sidebar Historial */
+    .sidebar { width: 260px; background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; padding: 10px; flex-shrink: 0; }
+    .sidebar h2 { font-size: 0.9rem; color: #9aa0a6; text-transform: uppercase; margin: 20px 10px 10px; }
+    .nav-btn { background: transparent; border: 1px solid #5f6368; color: white; padding: 10px; border-radius: 5px; cursor: pointer; text-align: left; margin-bottom: 20px; transition: 0.2s; }
+    .nav-btn:hover { background: #3c4043; }
+    
+    .history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+    .history-item { padding: 10px; border-radius: 5px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; }
+    .history-item:hover { background: #3c4043; }
+    .history-item.active { background: #4285f4; color: white; }
+
+    /* Área Principal */
+    .main-content { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+    .header { padding: 15px 25px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+    .header input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; width: 180px; }
+
+    /* Chat */
+    #chat-container { flex: 1; overflow-y: auto; padding: 30px; display: flex; flex-direction: column; gap: 20px; }
+    .message { max-width: 85%; padding: 20px; border-radius: 12px; line-height: 1.6; }
+    .user-msg { align-self: flex-end; background: #f1f3f4; color: #202124; border: 1px solid #dadce0; }
+    .ai-msg { align-self: flex-start; background: white; border-left: 4px solid var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    
+    /* Input Area */
+    .footer { padding: 20px; background: white; border-top: 1px solid #ddd; }
+    .input-wrapper { max-width: 800px; margin: 0 auto; display: flex; gap: 10px; }
+    #user-input { flex: 1; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; outline: none; }
+    .btn { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    .btn-blue { background: var(--primary); color: white; }
+    .btn-pdf { background: #34a853; color: white; }
+
+    #suggestions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; justify-content: center; }
+    .suggest-btn { font-size: 0.8rem; padding: 5px 12px; border-radius: 15px; border: 1px solid var(--primary); background: white; color: var(--primary); cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <button class="nav-btn" onclick="nuevaConsulta()">+ Nueva Consulta</button>
+  <h2>Historial Reciente</h2>
+  <div id="history-list" class="history-list"></div>
+</div>
+
+<div class="main-content">
+  <div class="header">
+    <div style="font-weight: bold; font-size: 1.2rem;">Consultor Estratégico</div>
+    <div style="display: flex; gap: 10px;">
+      <input type="password" id="apiKey" placeholder="API Key..." oninput="saveKey()">
+      <button class="btn btn-pdf" onclick="exportarPDF()">PDF</button>
+    </div>
+  </div>
+
+  <div id="chat-container">
+    <div class="message ai-msg">Introduce el sector que deseas optimizar hoy.</div>
+  </div>
+
+  <div class="footer">
+    <div id="suggestions"></div>
+    <div class="input-wrapper">
+      <input type="text" id="user-input" placeholder="Ej: Distribución eléctrica..." onkeypress="if(event.key==='Enter') enviar()">
+      <button class="btn btn-blue" id="btnSend" onclick="enviar()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentChatId = null;
+  let chatSessions = JSON.parse(localStorage.getItem('chat_sessions') || '{}');
+
+  window.onload = () => {
+    const savedKey = localStorage.getItem('gemini_api_key');
+    if (savedKey) document.getElementById('apiKey').value = savedKey;
+    renderHistory();
+  };
+
+  function saveKey() {
+    localStorage.setItem('gemini_api_key', document.getElementById('apiKey').value.trim());
+  }
+
+  function nuevaConsulta() {
+    currentChatId = null;
+    document.getElementById("chat-container").innerHTML = `<div class="message ai-msg">Nueva consulta iniciada. Introduce el sector.</div>`;
+    document.getElementById("suggestions").innerHTML = "";
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const list = document.getElementById("history-list");
+    list.innerHTML = "";
+    Object.keys(chatSessions).reverse().forEach(id => {
+      const item = document.createElement("div");
+      item.className = `history-item ${id === currentChatId ? 'active' : ''}`;
+      item.innerText = chatSessions[id].title;
+      item.onclick = () => cargarChat(id);
+      list.appendChild(item);
+    });
+  }
+
+  function cargarChat(id) {
+    currentChatId = id;
+    const session = chatSessions[id];
+    const container = document.getElementById("chat-container");
+    container.innerHTML = "";
+    session.messages.forEach(msg => {
+      const clase = msg.role === 'user' ? 'user-msg' : 'ai-msg';
+      renderMessage(msg.parts[0].text.split('|')[0], clase, false);
+    });
+    renderHistory();
+  }
+
+  async function enviar(textoPredefinido = null) {
+    const input = document.getElementById("user-input");
+    const msgTexto = textoPredefinido || input.value.trim();
+    const apiKey = document.getElementById("apiKey").value.trim();
+    if (!msgTexto || !apiKey) return;
+
+    if (!currentChatId) {
+      currentChatId = Date.now().toString();
+      chatSessions[currentChatId] = { title: msgTexto, messages: [] };
+    }
+
+    renderMessage(msgTexto, 'user-msg');
+    input.value = "";
+    document.getElementById("suggestions").innerHTML = "";
+    
+    chatSessions[currentChatId].messages.push({ role: "user", parts: [{ text: msgTexto }] });
+
+    const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+    try {
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          contents: chatSessions[currentChatId].messages,
+          system_instruction: { parts: [{ text: "Eres un consultor experto. Responde en HTML estructurado (h3, p, li). Sé técnico y enfocado en mejora. Al final, añade 3 sugerencias separadas por |." }] }
+        })
+      });
+
+      const data = await response.json();
+      let aiResponse = data.candidates[0].content.parts[0].text;
+      
+      let partes = aiResponse.split('|');
+      renderMessage(partes[0].replace(/```html|```/g, ''), 'ai-msg');
+      chatSessions[currentChatId].messages.push({ role: "model", parts: [{ text: aiResponse }] });
+      
+      localStorage.setItem('chat_sessions', JSON.stringify(chatSessions));
+      renderSuggestions(partes.slice(1));
+      renderHistory();
+
+    } catch (e) {
+      renderMessage("Error: " + e.message, 'ai-msg');
+    }
+  }
+
+  function renderMessage(html, clase, scroll = true) {
+    const div = document.createElement("div");
+    div.className = `message ${clase}`;
+    div.innerHTML = html;
+    const container = document.getElementById("chat-container");
+    container.appendChild(div);
+    if(scroll) container.scrollTop = container.scrollHeight;
+  }
+
+  function renderSuggestions(lista) {
+    const container = document.getElementById("suggestions");
+    lista.forEach(s => {
+      const btn = document.createElement("button");
+      btn.className = "suggest-btn";
+      btn.innerText = s.trim();
+      btn.onclick = () => enviar(s.trim());
+      container.appendChild(btn);
+    });
+  }
+
+  function exportarPDF() {
+    html2pdf().from(document.getElementById('chat-container')).save('Analisis.pdf');
+  }
+</script>
+</body>
+</html>
