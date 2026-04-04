@@ -205,6 +205,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // Configuración inyectada
         const firebaseConfig = JSON.parse(__firebase_config);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'book-project-default';
         
@@ -222,7 +223,7 @@
         lucide.createIcons();
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // 1. Inicialización de Autenticación (Regla 3)
+        // 1. Inicialización de Autenticación mejorada
         const initAuth = async () => {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
@@ -231,16 +232,26 @@
                     await signInAnonymously(auth);
                 }
             } catch (error) {
-                console.error("Auth error:", error);
+                console.error("Auth initialization error:", error);
+                // Si la autenticación falla, igual intentamos mostrar la UI
+                loadingScreen.classList.add('hidden');
             }
         };
 
+        // Escuchar cambios de autenticación
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 userTag.textContent = `LECTOR: ${user.uid.substring(0, 8)}...`;
-                await bootstrapApp();
-                loadingScreen.classList.add('hidden');
+                
+                try {
+                    await bootstrapApp();
+                } catch (err) {
+                    console.error("Critical bootstrap error:", err);
+                } finally {
+                    // SIEMPRE ocultar la pantalla de carga, incluso si bootstrapApp falla parcialmente
+                    loadingScreen.classList.add('hidden');
+                }
             }
         });
 
@@ -251,29 +262,32 @@
             const statsRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'global');
             const userVoteRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', currentUser.uid);
 
+            // Intentar cargar voto previo
             try {
                 const voteSnap = await getDoc(userVoteRef);
                 if (voteSnap.exists()) {
                     markAsVoted();
                 }
+            } catch (e) { console.warn("Could not fetch user vote history"); }
 
-                const visitedKey = `visited_${appId}`;
-                if (!localStorage.getItem(visitedKey)) {
+            // Registrar visita (una vez por sesión local)
+            const visitedKey = `visited_${appId}`;
+            if (!localStorage.getItem(visitedKey)) {
+                try {
                     await setDoc(statsRef, { visits: increment(1) }, { merge: true });
                     localStorage.setItem(visitedKey, 'true');
-                }
-
-                onSnapshot(statsRef, 
-                    (docSnap) => {
-                        if (docSnap.exists()) {
-                            updateStatsUI(docSnap.data());
-                        }
-                    }, 
-                    (err) => console.error("Snapshot error:", err)
-                );
-            } catch (err) {
-                console.error("Bootstrap error:", err);
+                } catch (e) { console.warn("Could not register visit increment"); }
             }
+
+            // Escuchar cambios en tiempo real
+            onSnapshot(statsRef, 
+                (docSnap) => {
+                    if (docSnap.exists()) {
+                        updateStatsUI(docSnap.data());
+                    }
+                }, 
+                (err) => console.error("Real-time snapshot error:", err)
+            );
         }
 
         function updateStatsUI(data) {
@@ -347,6 +361,7 @@
             });
         }
 
+        // Ejecutar inicio de sesión
         initAuth();
     </script>
 </body>
