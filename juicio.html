@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votación de Portadas - Alberto Barrera</title>
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons para los iconos -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .progress-bar { transition: width 1s ease-in-out; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 selection:bg-blue-100">
+
+    <!-- Pantalla de Carga -->
+    <div id="loading-screen" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"></div>
+        <p class="text-slate-500 font-medium">Conectando con la biblioteca...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2 font-bold text-xl text-blue-700">
+                <i data-lucide="book-open" class="w-6 h-6"></i>
+                <span>Alberto Barrera</span>
+            </div>
+            <div class="flex items-center gap-4 sm:gap-8 text-sm">
+                <div class="hidden sm:flex items-center gap-1.5 text-slate-500">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span id="header-visits">0</span> <span class="ml-1">visitas</span>
+                </div>
+                <div id="user-id-tag" class="text-[10px] text-slate-400 font-mono bg-slate-100 px-2 py-1 rounded">
+                    CONECTANDO...
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+        <!-- Hero Section -->
+        <section class="text-center mb-20">
+            <h1 class="text-4xl md:text-6xl font-black mb-6 tracking-tight text-slate-900 leading-tight">
+                Elige la cara de <br class="hidden md:block"> mi <span class="text-blue-600">próximo libro</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-10">
+                Tu opinión es fundamental. He diseñado tres propuestas y quiero que tú decidas cuál llegará a las librerías. Como agradecimiento, puedes leer el primer capítulo ahora mismo.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button onclick="document.getElementById('votar').scrollIntoView({behavior:'smooth'})" 
+                    class="group flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-xl hover:-translate-y-1">
+                    Ver portadas <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <a href="https://morispolanco.github.io/Cap%C3%ADtulo_1.pdf" target="_blank" rel="noopener noreferrer"
+                    class="flex items-center justify-center gap-2 bg-white border-2 border-slate-200 hover:border-blue-500 hover:text-blue-600 px-8 py-4 rounded-2xl font-bold transition-all shadow-sm">
+                    <i data-lucide="download" class="w-5 h-5"></i> Descargar Capítulo 1
+                </a>
+            </div>
+        </section>
+
+        <!-- Portadas -->
+        <section id="votar" class="mb-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900">Propuestas de Diseño</h2>
+                    <p class="text-slate-500">Haz clic en el botón debajo de tu favorita</p>
+                </div>
+                <div id="vote-success-msg" class="hidden bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl border border-emerald-100 flex items-center gap-2 animate-bounce">
+                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    <span class="font-bold">¡Gracias por votar!</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10" id="portadas-grid">
+                <!-- Portada 1 -->
+                <div class="cover-card group bg-white rounded-[2.5rem] p-4 shadow-sm border-2 border-slate-100 hover:border-blue-400 hover:shadow-2xl transition-all duration-300">
+                    <div class="aspect-[3/4] rounded-[2rem] overflow-hidden bg-slate-200 mb-6 shadow-inner relative">
+                        <img src="https://morispolanco.github.io/p1.png" alt="Portada 1" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <div class="px-2 pb-2">
+                        <h3 class="font-bold text-slate-800 mb-4 text-center">Opción 1: Estilo Clásico</h3>
+                        <button onclick="votar('p1')" class="vote-btn w-full py-4 rounded-2xl font-black tracking-wide transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-100">
+                            ELEGIR ESTA
+                        </button>
+                    </div>
+                </div>
+                <!-- Portada 2 -->
+                <div class="cover-card group bg-white rounded-[2.5rem] p-4 shadow-sm border-2 border-slate-100 hover:border-blue-400 hover:shadow-2xl transition-all duration-300">
+                    <div class="aspect-[3/4] rounded-[2rem] overflow-hidden bg-slate-200 mb-6 shadow-inner relative">
+                        <img src="https://morispolanco.github.io/p3.png" alt="Portada 2" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <div class="px-2 pb-2">
+                        <h3 class="font-bold text-slate-800 mb-4 text-center">Opción 2: Minimalista</h3>
+                        <button onclick="votar('p3')" class="vote-btn w-full py-4 rounded-2xl font-black tracking-wide transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-100">
+                            ELEGIR ESTA
+                        </button>
+                    </div>
+                </div>
+                <!-- Portada 3 -->
+                <div class="cover-card group bg-white rounded-[2.5rem] p-4 shadow-sm border-2 border-slate-100 hover:border-blue-400 hover:shadow-2xl transition-all duration-300">
+                    <div class="aspect-[3/4] rounded-[2rem] overflow-hidden bg-slate-200 mb-6 shadow-inner relative">
+                        <img src="https://morispolanco.github.io/p2.png" alt="Portada 3" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <div class="px-2 pb-2">
+                        <h3 class="font-bold text-slate-800 mb-4 text-center">Opción 3: Ilustrada</h3>
+                        <button onclick="votar('p2')" class="vote-btn w-full py-4 rounded-2xl font-black tracking-wide transition-all bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-100">
+                            ELEGIR ESTA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estadísticas -->
+        <section class="bg-white rounded-[3rem] p-8 md:p-12 shadow-2xl shadow-slate-200/50 border border-slate-100">
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <div class="lg:w-1/3 text-center lg:text-left">
+                    <div class="inline-flex p-3 bg-blue-50 rounded-2xl mb-6">
+                        <i data-lucide="bar-chart-3" class="w-8 h-8 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-3xl font-black mb-4">Resultados en Vivo</h2>
+                    <p class="text-slate-500 leading-relaxed mb-8">
+                        Mira qué diseño está ganando el corazón de los lectores en tiempo real.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 text-center">
+                            <span id="stats-visits" class="block text-3xl font-black text-slate-800 tracking-tighter">0</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Visitantes</span>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100 text-center">
+                            <span id="stats-total-votes" class="block text-3xl font-black text-blue-700 tracking-tighter">0</span>
+                            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Votos Totales</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:w-2/3 w-full space-y-10">
+                    <div>
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="font-bold text-slate-700">Opción 1: Clásico</span>
+                            <span id="label-p1" class="text-blue-600 text-sm font-black bg-blue-50 px-2 py-0.5 rounded-md">0 votos (0%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-5 rounded-full overflow-hidden p-1 shadow-inner">
+                            <div id="bar-p1" class="progress-bar bg-gradient-to-r from-blue-600 to-indigo-500 h-full rounded-full shadow-sm" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="font-bold text-slate-700">Opción 2: Minimalista</span>
+                            <span id="label-p3" class="text-blue-600 text-sm font-black bg-blue-50 px-2 py-0.5 rounded-md">0 votos (0%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-5 rounded-full overflow-hidden p-1 shadow-inner">
+                            <div id="bar-p3" class="progress-bar bg-gradient-to-r from-blue-600 to-indigo-500 h-full rounded-full shadow-sm" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-end mb-3">
+                            <span class="font-bold text-slate-700">Opción 3: Ilustrada</span>
+                            <span id="label-p2" class="text-blue-600 text-sm font-black bg-blue-50 px-2 py-0.5 rounded-md">0 votos (0%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-5 rounded-full overflow-hidden p-1 shadow-inner">
+                            <div id="bar-p2" class="progress-bar bg-gradient-to-r from-blue-600 to-indigo-500 h-full rounded-full shadow-sm" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer CTA -->
+        <section class="mt-32 relative overflow-hidden bg-slate-900 rounded-[3rem] p-12 md:p-20 text-center text-white">
+            <div class="relative z-10">
+                <h2 class="text-3xl md:text-5xl font-black mb-6">Lectura anticipada gratuita</h2>
+                <p class="text-slate-400 max-w-xl mx-auto mb-10 text-lg leading-relaxed">
+                    He preparado el Capítulo 1 completo en PDF para que puedas sumergirte en la historia antes que nadie.
+                </p>
+                <a href="https://morispolanco.github.io/Cap%C3%ADtulo_1.pdf" target="_blank" rel="noopener noreferrer"
+                    class="inline-block bg-blue-600 hover:bg-blue-500 text-white px-12 py-5 rounded-2xl font-black text-xl shadow-2xl transition-all hover:scale-105 active:scale-95">
+                    DESCARGAR CAPÍTULO 1
+                </a>
+            </div>
+            <div class="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none">
+                <div class="absolute -top-24 -left-24 w-80 h-80 bg-blue-600 blur-[120px] rounded-full"></div>
+                <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-indigo-600 blur-[120px] rounded-full"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-16 border-t border-slate-200 text-center bg-white">
+        <div class="flex items-center justify-center gap-2 mb-4 font-bold text-slate-400 uppercase tracking-widest text-xs">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            <span>Proyecto Editorial Alberto Barrera</span>
+        </div>
+        <p class="text-slate-400 text-sm">
+            © <span id="year"></span> · Todos los derechos reservados · Ciudad de Guatemala
+        </p>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'book-project-default';
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let hasVoted = false;
+
+        const loadingScreen = document.getElementById('loading-screen');
+        const headerVisits = document.getElementById('header-visits');
+        const userTag = document.getElementById('user-id-tag');
+
+        lucide.createIcons();
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // 1. Inicialización de Autenticación (Regla 3)
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Auth error:", error);
+            }
+        };
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                userTag.textContent = `LECTOR: ${user.uid.substring(0, 8)}...`;
+                await bootstrapApp();
+                loadingScreen.classList.add('hidden');
+            }
+        });
+
+        // 2. Lógica Principal (Firestore)
+        async function bootstrapApp() {
+            if (!currentUser) return;
+
+            const statsRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'global');
+            const userVoteRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', currentUser.uid);
+
+            try {
+                const voteSnap = await getDoc(userVoteRef);
+                if (voteSnap.exists()) {
+                    markAsVoted();
+                }
+
+                const visitedKey = `visited_${appId}`;
+                if (!localStorage.getItem(visitedKey)) {
+                    await setDoc(statsRef, { visits: increment(1) }, { merge: true });
+                    localStorage.setItem(visitedKey, 'true');
+                }
+
+                onSnapshot(statsRef, 
+                    (docSnap) => {
+                        if (docSnap.exists()) {
+                            updateStatsUI(docSnap.data());
+                        }
+                    }, 
+                    (err) => console.error("Snapshot error:", err)
+                );
+            } catch (err) {
+                console.error("Bootstrap error:", err);
+            }
+        }
+
+        function updateStatsUI(data) {
+            const visits = data.visits || 0;
+            const p1 = data.p1 || 0;
+            const p2 = data.p2 || 0;
+            const p3 = data.p3 || 0;
+            const total = p1 + p2 + p3;
+
+            headerVisits.textContent = visits;
+            document.getElementById('stats-visits').textContent = visits;
+            document.getElementById('stats-total-votes').textContent = total;
+
+            const updateBar = (id, count) => {
+                const perc = total > 0 ? Math.round((count / total) * 100) : 0;
+                const bar = document.getElementById(`bar-${id}`);
+                const label = document.getElementById(`label-${id}`);
+                if(bar) bar.style.width = `${perc}%`;
+                if(label) label.textContent = `${count} votos (${perc}%)`;
+            };
+
+            updateBar('p1', p1);
+            updateBar('p2', p2);
+            updateBar('p3', p3);
+        }
+
+        window.votar = async function(portadaId) {
+            if (hasVoted || !currentUser) return;
+
+            const voteBtns = document.querySelectorAll('.vote-btn');
+            voteBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-t-2 border-white mx-auto"></div>';
+            });
+            
+            try {
+                const statsRef = doc(db, 'artifacts', appId, 'public', 'data', 'stats', 'global');
+                const userVoteRef = doc(db, 'artifacts', appId, 'public', 'data', 'votes', currentUser.uid);
+
+                await setDoc(statsRef, { [portadaId]: increment(1) }, { merge: true });
+                await setDoc(userVoteRef, { 
+                    votedFor: portadaId, 
+                    timestamp: new Date().toISOString() 
+                });
+
+                markAsVoted();
+            } catch (error) {
+                console.error("Error al votar:", error);
+                voteBtns.forEach(btn => {
+                    btn.disabled = false;
+                    btn.textContent = 'ELEGIR ESTA';
+                });
+            }
+        };
+
+        function markAsVoted() {
+            hasVoted = true;
+            document.getElementById('vote-success-msg').classList.remove('hidden');
+            const voteBtns = document.querySelectorAll('.vote-btn');
+            voteBtns.forEach(btn => {
+                btn.disabled = true;
+                btn.textContent = 'VOTO REGISTRADO';
+                btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                btn.classList.add('bg-slate-100', 'text-slate-400', 'cursor-not-allowed');
+            });
+            
+            const cards = document.querySelectorAll('.cover-card');
+            cards.forEach(card => {
+                card.classList.remove('hover:border-blue-400', 'hover:shadow-2xl');
+                card.classList.add('opacity-90');
+            });
+        }
+
+        initAuth();
+    </script>
+</body>
+</html>
