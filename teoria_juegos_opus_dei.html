@@ -3,384 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Análisis estratégico: teoría de juegos aplicada a la situación jurídica del Opus Dei frente a la Santa Sede. Jugadores, estrategias, matrices de pagos y escenarios.">
+    <meta property="og:title" content="Teoría de juegos: Opus Dei y Santa Sede — Análisis estratégico">
+    <meta property="og:description" content="Un enfoque interdisciplinario: Derecho Canónico, Ciencia Política y Análisis Estratégico.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://morispolanco.github.io/teoria_juegos_opus_dei.html">
+    <meta property="og:locale" content="es_ES">
+
+    <link rel="stylesheet" href="editorial-system.css">
     <title>Teoría de Juegos: Opus Dei y Santa Sede - Análisis Estratégico</title>
     <style>
-        :root {
-            --primary: #1A1F16;
-            --body: #2D3329;
-            --secondary: #4A5548;
-            --accent: #94A3B8;
-            --table-bg: #F8FAF7;
-            --table-border: #4A5548;
-            --highlight: #2E7D32;
-            --warning: #C19A6B;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Times New Roman', Georgia, serif;
-            line-height: 1.7;
-            color: var(--body);
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
-        }
-        
-        /* Cover Section */
+        /* --- Específico: teoría de juegos (informe editorial) --- */
+
+        /* Portada: página de título en papel, sin bloque oscuro */
         .cover {
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary) 0%, #2D3329 100%);
-            color: white;
-            padding: 2rem;
+            padding: var(--section-y) var(--gutter);
+            border-bottom: 1px solid var(--border);
+            background: var(--paper);
         }
-        
+
+        .cover__inner {
+            width: 100%;
+            max-width: var(--container-max);
+            margin-inline: auto;
+        }
+
         .cover h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
+            max-width: 28ch;
+            font-size: clamp(2.1rem, 5.6vw, 4.25rem);
+            margin-bottom: var(--space-6);
         }
-        
-        .cover h2 {
-            font-size: 1.8rem;
-            font-weight: 400;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
-        
-        .cover h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 3rem;
-        }
-        
-        .cover .subtitle {
+
+        .cover__subtitle {
+            font-family: var(--font-display);
+            font-size: clamp(1.05rem, 2vw, 1.35rem);
             font-style: italic;
-            color: var(--accent);
-            max-width: 600px;
-            margin-top: 2rem;
+            color: var(--ink-2);
+            max-width: 56ch;
+            margin-bottom: var(--space-8);
         }
-        
-        .cover .date {
-            margin-top: 4rem;
-            color: var(--accent);
+
+        .cover__date {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0;
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--border);
+            max-width: 320px;
         }
-        
-        /* Main Content */
+
+        /* Columna de lectura */
         .container {
             max-width: 900px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-            background: white;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-inline: auto;
+            padding: var(--section-y) var(--gutter);
         }
-        
-        /* Table of Contents */
+
+        /* Índice */
         .toc {
-            background: var(--table-bg);
-            padding: 2rem;
-            border-radius: 8px;
-            margin-bottom: 3rem;
-            border-left: 4px solid var(--primary);
+            background: var(--surface-warm);
+            border-top: 2px solid var(--ink);
+            padding: var(--space-6) var(--space-6) var(--space-5);
+            margin-bottom: var(--space-10);
         }
-        
-        .toc h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
+
+        .toc__title {
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--ink-2);
+            margin-bottom: var(--space-4);
         }
-        
-        .toc ul {
-            list-style: none;
-        }
-        
+
+        .toc ul { list-style: none; margin: 0; padding: 0; }
+
         .toc li {
-            padding: 0.3rem 0;
-            border-bottom: 1px dashed #ddd;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-soft);
         }
-        
+
+        .toc li:last-child { border-bottom: 0; }
+
         .toc a {
-            color: var(--body);
+            color: var(--ink-2);
             text-decoration: none;
-            transition: color 0.3s;
+            font-size: var(--text-sm);
         }
-        
-        .toc a:hover {
-            color: var(--highlight);
+
+        .toc a:hover { color: var(--accent-deep); text-decoration: underline; text-underline-offset: 0.2em; }
+
+        .toc .level-1 > a { font-weight: 600; color: var(--ink); }
+        .toc .level-1 { counter-increment: toc; }
+        .toc .level-2 { padding-left: var(--space-6); }
+        .toc .level-2 > a { color: var(--muted); }
+
+        /* Secciones y jerarquía */
+        section { margin-bottom: var(--space-11); scroll-margin-top: 24px; }
+        section:last-of-type { margin-bottom: 0; }
+
+        section > h2 {
+            font-size: clamp(1.5rem, 3vw, 2.1rem);
+            margin: 0 0 var(--space-6);
+            padding-bottom: var(--space-3);
+            border-bottom: 2px solid var(--ink);
         }
-        
-        .toc .level-1 { font-weight: 600; }
-        .toc .level-2 { padding-left: 2rem; font-size: 0.95rem; color: var(--secondary); }
-        
-        /* Sections */
-        section {
-            margin-bottom: 3rem;
+
+        section > h3,
+        .rec-content h4 { margin-top: var(--space-8); }
+
+        .prose-like p { text-wrap: pretty; }
+
+        ul, ol { padding-left: var(--space-6); margin: 0 0 var(--space-5); }
+        li + li { margin-top: var(--space-2); }
+        li strong { color: var(--ink); }
+
+        /* Cajas de análisis */
+        .info-box,
+        .highlight-box,
+        .warning-box {
+            padding: var(--space-5) var(--space-6);
+            margin: var(--space-6) 0;
+            font-size: var(--text-sm);
+            line-height: 1.62;
+            background: var(--paper-deep);
+            border-top: 2px solid var(--border-strong);
         }
-        
-        h1 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            margin: 2.5rem 0 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid var(--primary);
+
+        .info-box strong,
+        .highlight-box strong,
+        .warning-box strong {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--accent-strong);
+            margin-bottom: var(--space-2);
         }
-        
-        h2 {
-            color: var(--secondary);
-            font-size: 1.4rem;
-            margin: 2rem 0 1rem;
+
+        .highlight-box {
+            background: var(--accent-tint);
+            border-top-color: var(--accent);
         }
-        
-        h3 {
-            color: var(--secondary);
-            font-size: 1.2rem;
-            margin: 1.5rem 0 0.8rem;
+
+        .warning-box {
+            background: var(--warn-soft);
+            border-top-color: var(--warn);
         }
-        
-        p {
-            margin-bottom: 1.2rem;
-            text-align: justify;
-            line-height: 1.8;
+
+        /* Conjuntos de estrategias (S1…O4) */
+        .recommendation {
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            gap: var(--space-5);
+            padding-block: var(--space-6);
+            border-top: 1px solid var(--border);
         }
-        
-        /* Lists */
-        ul, ol {
-            margin: 1rem 0 1.5rem 2rem;
+
+        .recommendation:last-of-type { border-bottom: 1px solid var(--border); }
+
+        .rec-number {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            color: var(--accent-strong);
+            padding-top: 0.35em;
         }
-        
-        li {
-            margin-bottom: 0.8rem;
-            line-height: 1.7;
+
+        .rec-content h4 {
+            margin: 0 0 var(--space-3);
+            font-size: var(--text-lg);
         }
-        
-        li strong {
-            color: var(--primary);
+
+        .rec-content p { margin: 0; max-width: var(--measure); }
+
+        /* Matriz de pagos */
+        .matrix-label {
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0 0 var(--space-3);
         }
-        
-        /* Tables */
-        .table-container {
-            overflow-x: auto;
-            margin: 2rem 0;
-        }
-        
+
+        .table-container { margin-bottom: var(--space-6); }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            background: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border-radius: 8px;
-            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
         }
-        
-        th {
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            font-weight: 600;
+
+        th, td {
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            vertical-align: top;
+            border-bottom: 1px solid var(--border-soft);
         }
-        
-        td {
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 1px solid #eee;
+
+        thead th {
+            background: var(--paper-deep);
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--ink-2);
+            border-bottom: 1px solid var(--border);
         }
-        
-        tr:nth-child(even) {
-            background: var(--table-bg);
+
+        tbody tr:hover { background: var(--paper-deep); }
+
+        .cell-note {
+            display: block;
+            margin-top: 2px;
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+            font-style: normal;
+            letter-spacing: 0.02em;
+            color: var(--muted);
         }
-        
-        tr:hover {
-            background: #f0f4f0;
-        }
-        
+
+        .cell-note--best { color: var(--accent-strong); font-weight: 500; }
+
         .table-caption {
-            text-align: center;
-            font-style: italic;
-            color: var(--secondary);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
+            margin-top: var(--space-3);
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+            color: var(--muted);
         }
-        
-        /* Highlight boxes */
-        .highlight-box {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-left: 4px solid var(--highlight);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .warning-box {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-            border-left: 4px solid var(--warning);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        .info-box {
-            background: var(--table-bg);
-            border-left: 4px solid var(--accent);
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 8px 8px 0;
-        }
-        
-        /* Strong text */
-        strong {
-            color: var(--primary);
-        }
-        
-        /* Scenario cards */
+
+        /* Escenarios: probabilidad con barra rellena */
         .scenario-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
         }
-        
+
         .scenario-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            border-top: 4px solid var(--secondary);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: var(--surface);
+            padding: var(--space-6);
         }
-        
-        .scenario-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-        
-        .scenario-card.high-prob {
-            border-top-color: var(--highlight);
-        }
-        
-        .scenario-card.med-prob {
-            border-top-color: var(--warning);
-        }
-        
-        .scenario-card.low-prob {
-            border-top-color: var(--accent);
-        }
-        
-        .scenario-card h4 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
+
+        .scenario-card h3 { font-size: var(--text-lg); margin-bottom: var(--space-3); }
+
+        .scenario-card p { margin: 0; font-size: var(--text-sm); color: var(--ink-2); }
+
         .probability-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
+            display: block;
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--ink-2);
+            margin-bottom: var(--space-2);
         }
-        
-        .prob-high { background: #e8f5e9; color: var(--highlight); }
-        .prob-med { background: #fff8e1; color: #F57C00; }
-        .prob-low { background: #f5f5f5; color: var(--secondary); }
-        
-        /* Recommendations */
-        .recommendation {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
+
+        .prob-bar {
+            display: block;
+            height: 6px;
+            margin-bottom: var(--space-4);
+            background: var(--paper-deep);
+            border: 1px solid var(--border-soft);
         }
-        
-        .rec-number {
-            background: var(--primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
+
+        .prob-bar__fill {
+            display: block;
+            height: 100%;
+            background: var(--cat-1);
         }
-        
-        .rec-content h3 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.1rem;
-        }
-        
-        /* Matrix visualization */
-        .matrix-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 2rem 0;
-        }
-        
-        .matrix-label {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        /* Footer */
+
+        .med-prob .prob-bar__fill { background: var(--cat-2); }
+        .low-prob .prob-bar__fill { background: var(--cat-3); }
+
+        /* Pie */
         .footer {
-            text-align: center;
-            padding: 2rem;
-            background: var(--primary);
-            color: var(--accent);
-            margin-top: 3rem;
+            border-top: 1px solid var(--border);
+            background: var(--paper-deep);
+            padding: var(--space-9) var(--gutter) var(--space-8);
+            text-align: left;
         }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .cover h1 { font-size: 2rem; }
-            .cover h2 { font-size: 1.3rem; }
-            .container { padding: 1.5rem; }
-            h1 { font-size: 1.5rem; }
-            h2 { font-size: 1.2rem; }
-            table { font-size: 0.9rem; }
-            th, td { padding: 0.7rem; }
-            .scenario-grid { grid-template-columns: 1fr; }
+
+        .footer p {
+            max-width: var(--container-max);
+            margin: 0 auto var(--space-2);
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+            color: var(--muted);
+            letter-spacing: 0.02em;
         }
-        
-        /* Print styles */
-        @media print {
-            .cover { background: white; color: black; page-break-after: always; }
-            body { background: white; }
-            .container { box-shadow: none; }
-            .scenario-card, .recommendation { break-inside: avoid; }
+
+        .footer p:first-child { color: var(--ink-2); font-weight: 500; }
+
+        @media (max-width: 800px) {
+            .scenario-grid { grid-template-columns: minmax(0, 1fr); }
+            .recommendation { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+            .rec-number { padding-top: 0; }
         }
     </style>
 </head>
 <body>
+
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
     <!-- Cover Page -->
-    <div class="cover">
-        <h1>ANÁLISIS ESTRATÉGICO</h1>
-        <h2>Teoría de Juegos Aplicada a la</h2>
-        <h3>Situación Jurídica del Opus Dei frente a la Santa Sede</h3>
-        <p class="subtitle">Un enfoque interdisciplinario: Derecho Canónico, Ciencia Política y Análisis Estratégico</p>
-        <p class="date">Marzo 2026</p>
-    </div>
+    <header class="cover">
+        <div class="cover__inner">
+            <p class="eyebrow">Análisis estratégico</p>
+            <h1>Teoría de juegos aplicada a la situación jurídica del Opus&nbsp;Dei frente a la Santa&nbsp;Sede</h1>
+            <p class="cover__subtitle">Un enfoque interdisciplinario: Derecho Canónico, Ciencia Política y Análisis Estratégico</p>
+            <p class="cover__date">Marzo 2026</p>
+        </div>
+    </header>
     
     <!-- Main Content -->
-    <div class="container">
+    <main id="contenido" class="container">
         <!-- Table of Contents -->
         <nav class="toc">
-            <h2>Índice de Contenidos</h2>
+            <h2 class="toc__title">Índice de contenidos</h2>
             <ul>
                 <li class="level-1"><a href="#introduccion">1. Introducción: El Conflicto Institucional</a></li>
                 <li class="level-1"><a href="#contexto">2. Contexto Histórico-Jurídico del Conflicto</a></li>
@@ -401,7 +353,7 @@
         
         <!-- Section 1: Introduction -->
         <section id="introduccion">
-            <h1>1. Introducción: El Conflicto Institucional</h1>
+            <h2>1. Introducción: El Conflicto Institucional</h2>
             
             <p>La aplicación de la teoría de juegos al análisis de conflictos institucionales dentro de la Iglesia Católica representa un campo fascinante donde el derecho canónico, la ciencia política y las matemáticas estratégicas convergen de manera particularmente fructífera. El presente estudio examina la situación jurídica contemporánea del Opus Dei frente a la Santa Sede, utilizando los instrumentos analíticos desarrollados por John Nash, John von Neumann y otros pioneros de la teoría de juegos, para proponer vías de resolución estratégica que beneficien a ambas partes y, fundamentalmente, a la misión evangelizadora de la Iglesia.</p>
             
@@ -412,15 +364,15 @@
         
         <!-- Section 2: Context -->
         <section id="contexto">
-            <h1>2. Contexto Histórico-Jurídico del Conflicto</h1>
+            <h2>2. Contexto Histórico-Jurídico del Conflicto</h2>
             
-            <h2 id="estructura">2.1 La Estructura Canónica del Opus Dei</h2>
+            <h3 id="estructura">2.1 La Estructura Canónica del Opus Dei</h3>
             
             <p>El Opus Dei, fundado por San Josemaría Escrivá de Balaguer en 1928, obtuvo su reconocimiento canónico definitivo como prelatura personal mediante la constitución apostólica <strong>"Ut sit"</strong> de Juan Pablo II el 28 de noviembre de 1982. Esta figura jurídica, prevista en el Código de Derecho Canónico de 1983 (cánones 294-297), constituía una novedad en el ordenamiento canónico: una circunscripción eclesiástica personal, no territorial, donde coexistían fieles laicos y sacerdotes bajo la jurisdicción de un Prelado, quien tradicionalmente había sido obispo desde 1982. Esta estructura híbrida permitía al Opus Dei operar con considerable autonomía respecto a los obispos diocesanos, manteniendo simultáneamente una relación directa con la Santa Sede a través del Dicasterio para los Obispos.</p>
             
             <p>La prelatura personal representa así una excepción significativa al principio territorial que domina la organización eclesiástica católica. Los fieles del Opus Dei, tanto laicos como sacerdotes, permanecen bajo la jurisdicción de sus respectivos obispos diocesanos para los asuntos ordinarios, pero se incardinan en la prelatura para cuestiones específicas relacionadas con el carisma y la misión propia de la institución. Esta dualidad jurisdiccional ha generado tensiones recurrentes con los obispos locales, quienes en ocasiones han percibido que la estructura de la prelatura crea una "iglesia paralela" que evade su autoridad pastoral ordinaria.</p>
             
-            <h2 id="motu">2.2 El Motu Proprio "Ad Charisma Tuendum"</h2>
+            <h3 id="motu">2.2 El Motu Proprio "Ad Charisma Tuendum"</h3>
             
             <p>El 14 de julio de 2022, el Papa Francisco promulgó el motu proprio <strong>"Ad charisma tuendum"</strong> ("Para tutelar el carisma"), que introdujo modificaciones sustanciales en el régimen jurídico del Opus Dei. Los cambios principales pueden sintetizarse en cuatro puntos fundamentales:</p>
             
@@ -431,7 +383,7 @@
                 <li><strong>Revisión de los estatutos:</strong> Se ordena la revisión de los estatutos de la Prelatura para adaptarlos a las nuevas disposiciones, un proceso que según informaciones de prensa habría encontrado múltiples obstáculos y supuestos rechazos por parte de las autoridades vaticanas.</li>
             </ol>
             
-            <h2 id="leon">2.3 La Situación Actual: El Papa León XIV</h2>
+            <h3 id="leon">2.3 La Situación Actual: El Papa León XIV</h3>
             
             <p>El proceso de revisión estatutaria iniciado en 2022 entró en una fase de incertidumbre con el fallecimiento del Papa Francisco y la elección del Papa León XIV en febrero de 2026. Según informaciones publicadas, el nuevo Pontífice recibió al Prelado del Opus Dei, Mons. Fernando Ocáriz, el 16 de febrero de 2026, comunicándole que <em>"el proceso de adecuación de los estatutos del Opus Dei sigue en fase de estudio y todavía no se puede prever fecha de publicación"</em>.</p>
             
@@ -444,11 +396,11 @@
         
         <!-- Section 3: Players -->
         <section id="jugadores">
-            <h1>3. Identificación de los Jugadores</h1>
+            <h2>3. Identificación de los Jugadores</h2>
             
             <p>En la teoría de juegos, un "jugador" es cualquier entidad capaz de tomar decisiones que afecten el resultado del juego. En el conflicto institucional entre el Opus Dei y la Santa Sede, podemos identificar varios jugadores con diferentes grados de influencia y capacidad de acción.</p>
             
-            <h2 id="principales">3.1 Jugadores Principales</h2>
+            <h3 id="principales">3.1 Jugadores Principales</h3>
             
             <p><strong>El Santo Padre (Papa León XIV):</strong> Como jefe supremo de la Iglesia Católica, el Papa tiene autoridad plena, suprema, inmediata y universal sobre toda la Iglesia (Canon 331). Es el jugador con mayor poder en este juego, ya que puede unilateralmente modificar la estructura canónica del Opus Dei, incluyendo la posibilidad de suprimir la prelatura personal. Su posición es la de un "dictador benevolente" en términos teóricos: tiene poder absoluto pero está limitado por consideraciones pastorales, históricas y de legitimidad.</p>
             
@@ -456,7 +408,7 @@
             
             <p><strong>El Dicasterio para el Clero:</strong> Como organismo de la Curia Romana responsable de la supervisión del Opus Dei tras el motu proprio, este dicasterio tiene un papel crucial en la implementación práctica de las reformas. Su agenda institucional puede diferir de la del Papa: puede tener interés en expandir su propia jurisdicción y control sobre el Opus Dei, o puede buscar una solución que minimice los costos administrativos de supervisión.</p>
             
-            <h2 id="secundarios">3.2 Jugadores Secundarios</h2>
+            <h3 id="secundarios">3.2 Jugadores Secundarios</h3>
             
             <ul>
                 <li><strong>Exmiembros y denunciantes:</strong> Aquellos que han dejado el Opus Dei y han denunciado supuestos abusos o prácticas problemáticas ejercen presión externa a través de medios de comunicación, redes sociales y posibles recursos legales. En Argentina, por ejemplo, se ha reactivado una causa judicial que podría tener implicaciones significativas.</li>
@@ -468,16 +420,16 @@
         
         <!-- Section 4: Strategies -->
         <section id="estrategias">
-            <h1>4. Análisis Estratégico: Conjuntos de Estrategias</h1>
+            <h2>4. Análisis Estratégico: Conjuntos de Estrategias</h2>
             
             <p>En la teoría de juegos, el "conjunto de estrategias" de un jugador es el repertorio completo de acciones que puede emprender. El análisis que sigue se centra en los dos jugadores principales: el Papa (representando a la Santa Sede) y el Prelado (representando al Opus Dei).</p>
             
-            <h2>4.1 Estrategias Disponibles para la Santa Sede</h2>
+            <h3>4.1 Estrategias Disponibles para la Santa Sede</h3>
             
             <div class="recommendation">
                 <div class="rec-number">S1</div>
                 <div class="rec-content">
-                    <h3>Reforma Profunda</h3>
+                    <h4>Reforma Profunda</h4>
                     <p>Imponer una reestructuración radical del Opus Dei, dividiéndolo en entidades separadas (clerical y laicales), con supervisión intensiva y limitaciones significativas a la autonomía. Esta estrategia maximiza el control vaticano pero arriesga alienar a los fieles y generar cismas o fragmentación.</p>
                 </div>
             </div>
@@ -485,7 +437,7 @@
             <div class="recommendation">
                 <div class="rec-number">S2</div>
                 <div class="rec-content">
-                    <h3>Reforma Moderada</h3>
+                    <h4>Reforma Moderada</h4>
                     <p>Mantener la estructura de prelatura personal con modificaciones menores: el Prelado no obispo, mayor transparencia, supervisión reforzada, pero preservando la unidad institucional. Busca un equilibrio entre control y autonomía.</p>
                 </div>
             </div>
@@ -493,7 +445,7 @@
             <div class="recommendation">
                 <div class="rec-number">S3</div>
                 <div class="rec-content">
-                    <h3>Diálogo Constructivo</h3>
+                    <h4>Diálogo Constructivo</h4>
                     <p>Establecer un proceso de negociación genuino con el Opus Dei, donde las reformas se diseñen colaborativamente. Esta estrategia requiere concesiones mutuas y puede tomar más tiempo, pero tiene mayor probabilidad de generar un resultado legítimo y estable.</p>
                 </div>
             </div>
@@ -501,17 +453,17 @@
             <div class="recommendation">
                 <div class="rec-number">S4</div>
                 <div class="rec-content">
-                    <h3>Status Quo Revisado</h3>
+                    <h4>Status Quo Revisado</h4>
                     <p>Revertir parcialmente las medidas de "Ad charisma tuendum", permitiendo que el Prelado sea obispo nuevamente y devolviendo la supervisión al Dicasterio para los Obispos. Esta estrategia sería una victoria para el Opus Dei pero podría dañar la credibilidad del papado.</p>
                 </div>
             </div>
             
-            <h2>4.2 Estrategias Disponibles para el Opus Dei</h2>
+            <h3>4.2 Estrategias Disponibles para el Opus Dei</h3>
             
             <div class="recommendation">
                 <div class="rec-number">O1</div>
                 <div class="rec-content">
-                    <h3>Resistencia Pasiva</h3>
+                    <h4>Resistencia Pasiva</h4>
                     <p>Aceptar formalmente las demandas vaticanas mientras implementa dilaciones tácticas y busca preservar la mayor autonomía posible en la práctica. Esta estrategia es de bajo riesgo pero puede resultar en una "muerte lenta" de la institución si las reformas se imponen gradualmente.</p>
                 </div>
             </div>
@@ -519,7 +471,7 @@
             <div class="recommendation">
                 <div class="rec-number">O2</div>
                 <div class="rec-content">
-                    <h3>Negociación Proactiva</h3>
+                    <h4>Negociación Proactiva</h4>
                     <p>Ofrecer concesiones significativas de manera anticipada a cambio de preservar los elementos esenciales de la estructura institucional. Esta estrategia requiere identificar qué elementos son "negociables" y cuáles son "líneas rojas".</p>
                 </div>
             </div>
@@ -527,7 +479,7 @@
             <div class="recommendation">
                 <div class="rec-number">O3</div>
                 <div class="rec-content">
-                    <h3>Movilización de Apoyos</h3>
+                    <h4>Movilización de Apoyos</h4>
                     <p>Activar redes de influencia dentro y fuera de la Iglesia para presionar por un resultado favorable. Esta estrategia incluye comunicación estratégica con medios, acercamiento a obispos simpatizantes, y movilización de los fieles.</p>
                 </div>
             </div>
@@ -535,7 +487,7 @@
             <div class="recommendation">
                 <div class="rec-number">O4</div>
                 <div class="rec-content">
-                    <h3>Aceptación Plena</h3>
+                    <h4>Aceptación Plena</h4>
                     <p>Aceptar sin reservas todas las demandas vaticanas, incluyendo la reestructuración propuesta, y posicionar la institución como modelo de obediencia eclesial. Esta estrategia maximiza la legitimidad dentro de la lógica católica pero minimiza la autonomía institucional.</p>
                 </div>
             </div>
@@ -543,11 +495,11 @@
         
         <!-- Section 5: Game Matrix -->
         <section id="matrices">
-            <h1>5. Matrices de Juego y Análisis de Pagos</h1>
+            <h2>5. Matrices de Juego y Análisis de Pagos</h2>
             
             <p>La matriz de pagos es la herramienta fundamental de la teoría de juegos para representar los resultados de diferentes combinaciones de estrategias. Los "pagos" (payoffs) representan la utilidad que cada jugador obtiene de cada resultado posible.</p>
             
-            <h2>5.1 Matriz de Pagos Simplificada (Escala 1-10)</h2>
+            <h3>5.1 Matriz de Pagos Simplificada (Escala 1-10)</h3>
             
             <div class="matrix-container">
                 <p class="matrix-label">Matriz de Pagos (Santa Sede, Opus Dei)</p>
@@ -568,45 +520,45 @@
                             <td><strong>Reforma Profunda</strong></td>
                             <td>
                                 <strong>(5, 3)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Conflicto abierto</em>
+                                <em class="cell-note">Conflicto abierto</em>
                             </td>
                             <td>
                                 <strong>(6, 4)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Negociación tensa</em>
+                                <em class="cell-note">Negociación tensa</em>
                             </td>
                             <td>
                                 <strong>(8, 2)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Victoria pírrica Vaticano</em>
+                                <em class="cell-note">Victoria pírrica Vaticano</em>
                             </td>
                         </tr>
                         <tr>
                             <td><strong>Reforma Moderada</strong></td>
                             <td>
                                 <strong>(6, 5)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Impase prolongado</em>
+                                <em class="cell-note">Impase prolongado</em>
                             </td>
                             <td>
-                                <strong style="color: var(--highlight);">(7, 7)</strong><br>
-                                <em style="color: var(--highlight); font-size: 0.9rem;">Equilibrio de Nash</em>
+                                <strong class="cell-note--best">(7, 7)</strong><br>
+                                <em class="cell-note cell-note--best">Equilibrio de Nash</em>
                             </td>
                             <td>
                                 <strong>(7, 5)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Concesión unilateral</em>
+                                <em class="cell-note">Concesión unilateral</em>
                             </td>
                         </tr>
                         <tr>
                             <td><strong>Diálogo Constructivo</strong></td>
                             <td>
                                 <strong>(4, 6)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Diálogo fallido</em>
+                                <em class="cell-note">Diálogo fallido</em>
                             </td>
                             <td>
-                                <strong style="color: var(--highlight);">(8, 8)</strong><br>
-                                <em style="color: var(--highlight); font-size: 0.9rem;">Óptimo de Pareto</em>
+                                <strong class="cell-note--best">(8, 8)</strong><br>
+                                <em class="cell-note cell-note--best">Óptimo de Pareto</em>
                             </td>
                             <td>
                                 <strong>(6, 6)</strong><br>
-                                <em style="color: var(--accent); font-size: 0.9rem;">Desaprovechado</em>
+                                <em class="cell-note">Desaprovechado</em>
                             </td>
                         </tr>
                     </tbody>
@@ -614,7 +566,7 @@
                 <p class="table-caption">Tabla 1: Matriz de pagos simplificada. Escala: 1=mínimo, 10=máximo utilidad.</p>
             </div>
             
-            <h2>5.2 Interpretación de la Matriz</h2>
+            <h3>5.2 Interpretación de la Matriz</h3>
             
             <div class="highlight-box">
                 <strong>Óptimo de Pareto (8,8):</strong> El resultado correspondiente a (Diálogo Constructivo, Negociación Proactiva) representa el óptimo de Pareto: ningún jugador puede mejorar su posición sin empeorar la del otro. Este resultado maximiza la utilidad conjunta y representa la solución cooperativa ideal del juego.
@@ -629,15 +581,15 @@
         
         <!-- Section 6: Equilibrium Analysis -->
         <section id="equilibrio">
-            <h1>6. Análisis del Equilibrio y Dinámica Temporal</h1>
+            <h2>6. Análisis del Equilibrio y Dinámica Temporal</h2>
             
-            <h2>6.1 El Juego como Dilema del Prisionero Iterado</h2>
+            <h3>6.1 El Juego como Dilema del Prisionero Iterado</h3>
             
             <p>El conflicto Opus Dei-Santa Sede puede modelarse como un <strong>dilema del prisionero iterado</strong>: un juego que se repite múltiples veces, donde la historia de interacciones anteriores influye en las estrategias actuales. En el dilema del prisionero clásico, la traición es la estrategia dominante en un juego de una sola ronda, pero la cooperación puede emerger como resultado estable en juegos repetidos si los jugadores valoran suficientemente el futuro.</p>
             
             <p>La teoría de juegos ha demostrado que en juegos repetidos, estrategias como <strong>"tit-for-tat"</strong> (ojo por ojo) pueden sostener la cooperación: cooperar inicialmente, y luego replicar la acción del oponente en la ronda anterior. Esta dinámica sugiere que si el Opus Dei y la Santa Sede han tenido interacciones históricas mayoritariamente cooperativas, existe un "capital de confianza" que facilita la cooperación presente.</p>
             
-            <h2>6.2 Información Asimétrica y Señalización</h2>
+            <h3>6.2 Información Asimétrica y Señalización</h3>
             
             <p>Un elemento crucial del juego es la <strong>información asimétrica</strong>: el Opus Dei posee información privilegiada sobre su funcionamiento interno, mientras que la Santa Sede tiene información sobre sus verdaderas intenciones y límites de tolerancia. Esta asimetría genera problemas de selección adversa y riesgo moral que complican la negociación.</p>
             
@@ -645,7 +597,7 @@
                 <strong>Mecanismos de señalización:</strong> El Opus Dei puede señalizar su disposición a cooperar mediante concesiones unilaterales costosas: por ejemplo, establecer mecanismos internos de transparencia que revelemos información previamente oculta. La Santa Sede puede señalizar su disposición a respetar la autonomía del Opus Dei mediante garantías institucionales que sean costosas de revertir.
             </div>
             
-            <h2>6.3 Análisis de la Situación Actual con León XIV</h2>
+            <h3>6.3 Análisis de la Situación Actual con León XIV</h3>
             
             <p>La declaración del Papa León XIV de que "el proceso de adecuación de los estatutos sigue en fase de estudio" puede interpretarse como una <strong>señal estratégica mixta</strong>. Por un lado, indica que no hay urgencia por imponer reformas profundas, lo cual reduce la presión sobre el Opus Dei. Por otro lado, mantiene la incertidumbre, que es una herramienta de negociación poderosa.</p>
             
@@ -654,11 +606,11 @@
         
         <!-- Section 7: Recommendations -->
         <section id="recomendaciones">
-            <h1>7. Recomendaciones Estratégicas para el Opus Dei</h1>
+            <h2>7. Recomendaciones Estratégicas para el Opus Dei</h2>
             
             <p>Sobre la base del análisis precedente, el Opus Dei puede adoptar una estrategia combinada que maximice sus probabilidades de preservar los elementos esenciales de su identidad institucional mientras mantiene la legitimidad dentro de la lógica eclesial católica.</p>
             
-            <h2>7.1 Primera Recomendación: Señalizar Cooperación con Concesiones Creíbles</h2>
+            <h3>7.1 Primera Recomendación: Señalizar Cooperación con Concesiones Creíbles</h3>
             
             <p>El Opus Dei debe distinguir entre elementos "negociables" y "líneas rojas" de su identidad institucional. Los elementos negociables pueden ofrecerse como concesiones anticipadas que señalicen buena fe: por ejemplo, mecanismos de transparencia financiera más robustos, protocolos de atención a exmiembros, o revisiones de prácticas internas que hayan generado críticas.</p>
             
@@ -666,11 +618,11 @@
                 <strong>Clave:</strong> Las concesiones deben ser lo suficientemente costosas para ser creíbles, pero no tan costosas que comprometan la esencia institucional.
             </div>
             
-            <h2>7.2 Segunda Recomendación: Construir Coaliciones de Apoyo</h2>
+            <h3>7.2 Segunda Recomendación: Construir Coaliciones de Apoyo</h3>
             
             <p>La teoría de juegos reconoce que en juegos con múltiples jugadores, las coaliciones pueden alterar fundamentalmente los equilibrios. El Opus Dei debe cultivar sistemáticamente relaciones con obispos simpatizantes, otros movimientos eclesiales, y figuras influyentes en la Curia. Estas coaliciones no son para confrontar a la Santa Sede, sino para demostrar que el Opus Dei es un activo valioso para la Iglesia.</p>
             
-            <h2>7.3 Tercera Recomendación: Ofrecer Soluciones Institucionales Creativas</h2>
+            <h3>7.3 Tercera Recomendación: Ofrecer Soluciones Institucionales Creativas</h3>
             
             <p>En lugar de simplemente resistir las reformas propuestas, el Opus Dei puede proponer alternativas que satisfagan las preocupaciones legítimas de la Santa Sede mientras preservan la estructura institucional. Por ejemplo:</p>
             
@@ -680,43 +632,47 @@
                 <li>Estatutos revisados que incorporen explícitamente las garantías de transparencia y rendición de cuentas que la Santa Sede busca</li>
             </ul>
             
-            <h2>7.4 Cuarta Recomendación: Aprovechar la Ventana de Oportunidad</h2>
+            <h3>7.4 Cuarta Recomendación: Aprovechar la Ventana de Oportunidad</h3>
             
             <p>La elección de un nuevo Papa representa una <strong>"ventana de oportunidad"</strong> en términos de teoría de juegos: un momento donde las reglas del juego pueden renegociarse. El Papa León XIV no tiene el mismo historial de conflicto con el Opus Dei que tenía el Papa Francisco, lo cual permite un "reinicio" de la relación.</p>
             
-            <h2>7.5 Quinta Recomendación: Gestionar la Narrativa Pública</h2>
+            <h3>7.5 Quinta Recomendación: Gestionar la Narrativa Pública</h3>
             
             <p>La batalla por la percepción pública es un componente crucial del juego estratégico. El Opus Dei debe desarrollar una estrategia de comunicación que lo presente como institución dispuesta a la reforma y el diálogo, mientras que sus críticos son presentados como actores con agendas que van más allá de la legitimidad eclesial.</p>
         </section>
         
         <!-- Section 8: Future Scenarios -->
         <section id="escenarios">
-            <h1>8. Escenarios Futuros y Probabilidades</h1>
+            <h2>8. Escenarios Futuros y Probabilidades</h2>
             
             <p>El análisis de teoría de juegos permite proyectar escenarios futuros basados en las combinaciones de estrategias más probables. Los siguientes escenarios representan los desenlaces más significativos del conflicto actual:</p>
             
             <div class="scenario-grid">
                 <div class="scenario-card high-prob">
-                    <h4>Reforma Moderada con Negociación</h4>
-                    <span class="probability-badge prob-high">40% Probabilidad</span>
+                    <h3>Reforma Moderada con Negociación</h3>
+                    <span class="probability-badge prob-high">40&#8201;% de probabilidad</span>
+                    <span class="prob-bar" aria-hidden="true"><span class="prob-bar__fill" style="width:40%"></span></span>
                     <p>Se preserva la estructura de prelatura con modificaciones. El Prelado no será obispo pero se mantiene la unidad clerical-laical. Mayor supervisión vaticana pero sin fragmentación institucional.</p>
                 </div>
                 
                 <div class="scenario-card med-prob">
-                    <h4>Status Quo Prolongado</h4>
-                    <span class="probability-badge prob-med">30% Probabilidad</span>
+                    <h3>Status Quo Prolongado</h3>
+                    <span class="probability-badge prob-med">30&#8201;% de probabilidad</span>
+                    <span class="prob-bar" aria-hidden="true"><span class="prob-bar__fill" style="width:30%"></span></span>
                     <p>La decisión se pospone indefinidamente. El Opus Dei opera bajo las normas de Ad charisma tuendum sin estatutos definitivos. Incertidumbre continua pero sin cambios estructurales.</p>
                 </div>
                 
                 <div class="scenario-card med-prob">
-                    <h4>División en Tres Entidades</h4>
-                    <span class="probability-badge prob-med">20% Probabilidad</span>
+                    <h3>División en Tres Entidades</h3>
+                    <span class="probability-badge prob-med">20&#8201;% de probabilidad</span>
+                    <span class="prob-bar" aria-hidden="true"><span class="prob-bar__fill" style="width:20%"></span></span>
                     <p>El Opus Dei se fragmenta en prelatura clerical y dos asociaciones laicales. Pérdida significativa de identidad institucional. Posible descenso de vocaciones y cohesión interna.</p>
                 </div>
                 
                 <div class="scenario-card low-prob">
-                    <h4>Restauración Parcial</h4>
-                    <span class="probability-badge prob-low">10% Probabilidad</span>
+                    <h3>Restauración Parcial</h3>
+                    <span class="probability-badge prob-low">10&#8201;% de probabilidad</span>
+                    <span class="prob-bar" aria-hidden="true"><span class="prob-bar__fill" style="width:10%"></span></span>
                     <p>El nuevo Papa revierte aspectos de Ad charisma tuendum. El Prelado puede ser obispo nuevamente. Vuelta al Dicasterio para los Obispos. Escenario favorable para el Opus Dei.</p>
                 </div>
             </div>
@@ -724,7 +680,7 @@
         
         <!-- Section 9: Conclusions -->
         <section id="conclusiones">
-            <h1>9. Conclusiones: ¿Cómo Puede el Opus Dei Salir del Atolladero?</h1>
+            <h2>9. Conclusiones: ¿Cómo Puede el Opus Dei Salir del Atolladero?</h2>
             
             <p>La aplicación de la teoría de juegos a la situación jurídica del Opus Dei frente a la Santa Sede revela que el "atolladero" actual no es inevitable, sino el resultado de interacciones estratégicas que pueden reconfigurarse. El análisis identifica la estrategia óptima para el Opus Dei como una combinación de señalización cooperativa, construcción de coaliciones, propuestas institucionales creativas, y aprovechamiento de la ventana de oportunidad que representa el nuevo pontificado.</p>
             
@@ -742,13 +698,14 @@
                 <strong>Estrategia óptima:</strong> La del "buen cooperador": hacer concesiones significativas pero recíprocas, mantener líneas de comunicación abiertas, y construir capital político que pueda canjearse por términos favorables en la negociación final.
             </div>
         </section>
+    </main>
     </div>
     
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" data-od-id="site-footer">
         <p>Análisis de Teoría de Juegos: Opus Dei y Santa Sede</p>
-        <p>Documento elaborado con fines analíticos y académicos</p>
-        <p>Marzo 2026</p>
+        <p>Documento elaborado con fines analíticos y académicos · Marzo 2026</p>
+        <p><a href="index.html">morispolanco.github.io</a></p>
     </footer>
 </body>
 </html>

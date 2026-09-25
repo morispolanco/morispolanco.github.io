@@ -1,0 +1,5 @@
+.vercel
+
+# Metadatos de trabajo de Open Design: nunca deben publicarse en GitHub Pages
+.od-skills/
+*.artifact.json

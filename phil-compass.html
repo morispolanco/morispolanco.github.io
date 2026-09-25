@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Brújula Filosófica: cuestionario para situar tu criterio ante la inteligencia artificial y la toma de decisiones. Resultado imprimible.">
+    <meta property="og:title" content="Brújula Filosófica">
+    <meta property="og:description" content="Un cuestionario para situar tu criterio ante la inteligencia artificial. Con resultado imprimible.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://morispolanco.github.io/phil-compass.html">
+    <meta property="og:locale" content="es_ES">
+
+    <link rel="stylesheet" href="editorial-system.css">
     <title>Brújula Filosófica</title>
     
     <!-- React & ReactDOM -->
@@ -14,16 +22,76 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        /* Paleta editorial: papel cálido + tinta + un solo acento (bronce).
+           Los tonos fríos (gris, azul) y los de alarma (rojo) se reasignan
+           a la escala monocroma cálida. La escala de respuesta 1–5 se lee
+           como un gradiente ordenado de tinta a acento. */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gray: { 50: '#faf6ef', 100: '#eee5d8', 200: '#e3dacd', 300: '#cfc3ae',
+                                400: '#8a8073', 500: '#6b6259', 600: '#5a5249', 700: '#413a32',
+                                800: '#2e2822', 900: '#241e18' },
+                        slate: { 50: '#faf6ef', 100: '#eee5d8', 200: '#e3dacd' },
+                        blue: { 50: '#f3ecdf', 100: '#e6d9c4', 200: '#c9b48f', 300: '#b5a48c',
+                                400: '#9c8563', 500: '#8c6239', 600: '#8c6239', 700: '#6e4b29',
+                                800: '#5a3e24', 900: '#241e18' },
+                        red: { 50: '#f3ecdf', 100: '#e6d9c4', 200: '#c9b48f', 300: '#b5a48c',
+                               400: '#9c8563', 500: '#7e5a33', 600: '#7e5a33', 700: '#6b4a2c',
+                               800: '#5a3e24', 900: '#241e18' },
+                        white: '#fffdf8',
+                        black: '#241e18'
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+                        serif: ['Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', 'serif']
+                    },
+                    fontWeight: { light: '400', normal: '400', medium: '500', semibold: '600', bold: '600' },
+                    borderRadius: { md: '3px', lg: '4px', xl: '6px', full: '999px' },
+                    boxShadow: {
+                        sm: '0 0 0 1px rgba(36, 30, 24, 0.06)',
+                        xl: '0 22px 44px -30px rgba(36, 30, 24, 0.45)'
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- Estilos de impresión y ajustes -->
     <style>
+        /* Tipografía editorial */
+        h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: var(--tracking-heading); }
+        h1 { letter-spacing: var(--tracking-display); }
+        body { font-family: var(--font-body); }
+
+        /* Anillo de foco visible en toda la aplicación */
+        button:focus-visible,
+        a:focus-visible,
+        [tabindex]:focus-visible {
+            outline: 2px solid var(--accent-strong);
+            outline-offset: 2px;
+        }
+
+        /* Los botones de la escala 1–5 mantienen su estado en hover y foco */
+        .scale-btn {
+            transition: background-color var(--motion-base) var(--ease-out),
+                        border-color var(--motion-base) var(--ease-out),
+                        transform var(--motion-fast) var(--ease-out);
+        }
+        .scale-btn:hover { transform: translateY(-2px); }
+
+        /* En papel el resultado debe leerse sin degradados ni sombras */
         @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: var(--paper); color: var(--ink); }
             .no-print { display: none !important; }
             .print-break-inside-avoid { break-inside: avoid; }
             .print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
             .print-container { max-width: 100%; width: 100%; padding: 0; }
+            h1, h2, h3 { break-after: avoid; }
         }
+
         /* Animaciones suaves */
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
@@ -297,10 +365,10 @@
                 <div className="w-full h-full flex justify-center items-center">
                 <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`} className="overflow-visible font-sans text-xs">
                     {/* Fondo */}
-                    <rect x={padding} y={padding} width={size - padding*2} height={size - padding*2} fill="#fafafa" rx="4" />
+                    <rect x={padding} y={padding} width={size - padding*2} height={size - padding*2} fill="#faf6ef" rx="4" />
                     
                     {/* Rejilla */}
-                    <g stroke="#e5e7eb" strokeDasharray="3,3">
+                    <g stroke="#e3dacd" strokeDasharray="3,3">
                         <line x1={toSvgX(-3)} y1={padding} x2={toSvgX(-3)} y2={size-padding} />
                         <line x1={toSvgX(3)} y1={padding} x2={toSvgX(3)} y2={size-padding} />
                         <line x1={padding} y1={toSvgY(3)} x2={size-padding} y2={toSvgY(3)} />
@@ -308,8 +376,8 @@
                     </g>
 
                     {/* Ejes Principales */}
-                    <line x1={center} y1={padding} x2={center} y2={size - padding} stroke="#374151" strokeWidth="1.5" />
-                    <line x1={padding} y1={center} x2={size - padding} y2={center} stroke="#374151" strokeWidth="1.5" />
+                    <line x1={center} y1={padding} x2={center} y2={size - padding} stroke="#413a32" strokeWidth="1.5" />
+                    <line x1={padding} y1={center} x2={size - padding} y2={center} stroke="#413a32" strokeWidth="1.5" />
 
                     {/* Etiquetas de Ejes (Extremos Interactivos) */}
                     {/* Y Max */}
@@ -336,19 +404,19 @@
                     />
 
                     {/* Títulos de Ejes (No interactivos) */}
-                    <text x={center} y={padding - 5} textAnchor="middle" fill="#9ca3af" fontSize="9" fontStyle="italic">{category.yAxis.label}</text>
-                    <text x={size - padding} y={size - 10} textAnchor="end" fill="#9ca3af" fontSize="9" fontStyle="italic">{category.xAxis.label}</text>
+                    <text x={center} y={padding - 5} textAnchor="middle" fill="#8a8073" fontSize="9" fontStyle="italic">{category.yAxis.label}</text>
+                    <text x={size - padding} y={size - 10} textAnchor="end" fill="#8a8073" fontSize="9" fontStyle="italic">{category.xAxis.label}</text>
 
                     {/* Nombres de Cuadrantes (Marca de agua) */}
-                    <text x={toSvgX(-3)} y={toSvgY(3)} textAnchor="middle" fill="#e5e7eb" fontSize="14" fontWeight="bold" opacity="0.8">{category.quadrants[1].label.split('–')[0]}</text>
-                    <text x={toSvgX(3)} y={toSvgY(3)} textAnchor="middle" fill="#e5e7eb" fontSize="14" fontWeight="bold" opacity="0.8">{category.quadrants[0].label.split('–')[0]}</text>
+                    <text x={toSvgX(-3)} y={toSvgY(3)} textAnchor="middle" fill="#e3dacd" fontSize="14" fontWeight="bold" opacity="0.8">{category.quadrants[1].label.split('–')[0]}</text>
+                    <text x={toSvgX(3)} y={toSvgY(3)} textAnchor="middle" fill="#e3dacd" fontSize="14" fontWeight="bold" opacity="0.8">{category.quadrants[0].label.split('–')[0]}</text>
                     
                     {/* Punto del Usuario */}
                     <circle 
                         cx={toSvgX(data.x)} 
                         cy={toSvgY(data.y)} 
                         r="6" 
-                        fill="#2563eb" 
+                        fill="#8c6239" 
                         stroke="white" 
                         strokeWidth="2" 
                         className="drop-shadow-md transition-all duration-500 ease-out"
@@ -356,7 +424,7 @@
                     
                     {/* Coordenadas (Tooltip estático) */}
                     <g transform={`translate(${toSvgX(data.x)}, ${toSvgY(data.y) - 15})`}>
-                        <rect x="-18" y="-14" width="36" height="14" rx="4" fill="#1e293b" opacity="0.8" />
+                        <rect x="-18" y="-14" width="36" height="14" rx="4" fill="#241e18" opacity="0.8" />
                         <text x="0" y="-4" textAnchor="middle" fill="white" fontSize="8">{Math.round(data.x*10)/10}, {Math.round(data.y*10)/10}</text>
                     </g>
                 </svg>
@@ -454,7 +522,7 @@
             // VISTA: INTRO
             if (currentStep === 'intro') {
                 return (
-                    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4 fade-in">
+                    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 fade-in">
                         <div className="max-w-2xl w-full">
                             <Card className="text-center py-12">
                                 <div className="flex justify-center mb-6">
@@ -524,7 +592,7 @@
                                                 key={val}
                                                 onClick={() => handleAnswer(val)}
                                                 className={`
-                                                    h-14 rounded-lg border-2 font-bold text-lg transition-all cursor-pointer
+                                                    h-14 rounded-lg border-2 font-bold text-lg transition-all cursor-pointer scale-btn
                                                     ${val === 1 ? 'border-red-200 hover:bg-red-50 text-red-700' : ''}
                                                     ${val === 2 ? 'border-red-100 hover:bg-red-50 text-red-600' : ''}
                                                     ${val === 3 ? 'border-gray-200 hover:bg-gray-50 text-gray-600' : ''}

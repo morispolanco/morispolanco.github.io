@@ -3,45 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Criterio &amp; IA: serie editorial sobre pensamiento crítico e inteligencia artificial. Tres volúmenes sobre criterio, decisión y prudencia.">
+    <meta property="og:title" content="Criterio &amp; IA | Serie Editorial">
+    <meta property="og:description" content="Cuando todo es artificial, la humanidad es el nuevo lujo. Serie de tres volúmenes sobre pensamiento crítico e inteligencia artificial.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://morispolanco.github.io/pcia.html">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image" content="https://morispolanco.github.io/assets/editorial/portada-hegemonia-del-criterio.jpg">
+
+    <link rel="stylesheet" href="editorial-system.css">
     <title>Criterio & IA | Serie Editorial</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        /* La paleta de Tailwind se reasigna al sistema editorial:
+           papel + tinta + un solo acento (bronce de marca). Invierte la escala de luminosidad,
+           de modo que las relaciones claro/oscuro del marcado pasan a tinta sobre papel. */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: { 100: '#241e18', 200: '#241e18', 300: '#241e18', 400: '#413a32',
+                                 500: '#6b6259', 600: '#9c8563', 700: '#e3dacd', 800: '#fffdf8',
+                                 900: '#faf6ef', 950: '#f2ebdd' },
+                        gray: { 100: '#241e18', 200: '#413a32', 300: '#6b6259', 400: '#6b6259',
+                                500: '#6b6259', 600: '#413a32', 700: '#9c8563', 800: '#e3dacd', 900: '#faf6ef' },
+                        amber: { 200: '#e8dcc9', 300: '#c9b48f', 400: '#6e4b29', 500: '#8c6239',
+                                 600: '#8c6239', 700: '#6e4b29', 800: '#5a3e24', 900: '#4a3420' },
+                        emerald: { 300: '#6e4b29', 400: '#8c6239', 500: '#8c6239' },
+                        cyan: { 300: '#6e4b29', 400: '#8c6239', 500: '#8c6239' },
+                        blue: { 600: '#f3ecdf' },
+                        white: '#241e18',
+                        black: '#241e18'
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'system-ui', 'sans-serif'],
+                        serif: ['Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', 'serif'],
+                        display: ['Iowan Old Style', 'Charter', 'Georgia', 'Times New Roman', 'serif']
+                    },
+                    /* Tres pesos, sin extremos */
+                    fontWeight: { light: '400', normal: '400', medium: '500', semibold: '600', bold: '600', extrabold: '700' },
+                    borderRadius: { sm: '2px', DEFAULT: '2px', md: '4px', lg: '4px', xl: '8px', '2xl': '8px' },
+                    boxShadow: {
+                        lg: '0 14px 28px -24px rgba(36, 30, 24, 0.38)',
+                        xl: '0 22px 44px -30px rgba(36, 30, 24, 0.44)',
+                        '2xl': '0 28px 56px -34px rgba(36, 30, 24, 0.48)'
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Inter:wght@300;400;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0f172a; /* Slate 900 */
-            color: #e2e8f0; /* Slate 200 */
+        /* --- Específico: serie Criterio & IA --- */
+
+        /* Tipografía editorial (las utilidades de Tailwind mandan donde existan) */
+        h1, h2, h3, h4, h5, h6, .serif-font, .display-font {
+            font-family: var(--font-display);
         }
-        h1, h2, h3, .serif-font {
-            font-family: 'Merriweather', serif;
+
+        h1 { letter-spacing: var(--tracking-display); text-wrap: balance; }
+        h2 { letter-spacing: var(--tracking-heading); text-wrap: balance; }
+        h3 { text-wrap: balance; }
+
+        p { text-wrap: pretty; }
+
+        .accent-text {
+            color: var(--accent-strong);
+            font-style: italic;
         }
-        .display-font {
-            font-family: 'Cinzel', serif;
+
+        main { display: block; }
+
+        /* Navegación */
+        .nav-link {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--ink-2);
+            text-decoration: none;
+            padding-block: 4px;
+            border-bottom: 1px solid transparent;
+            transition: color var(--motion-base) var(--ease-out), border-color var(--motion-base) var(--ease-out);
         }
-        .gradient-text {
-            background: linear-gradient(to right, #fbbf24, #d97706);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .nav-link:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+        /* El manifiesto */
+        .manifesto {
+            background: var(--paper-deep);
+            border-left: 2px solid var(--accent);
+            padding: var(--space-6) var(--space-7);
         }
-        /* Modal Animation */
-        .modal-open {
-            animation: fadeIn 0.3s ease-out forwards;
+
+        .manifesto p {
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            line-height: 1.66;
+            color: var(--ink-2);
+            max-width: var(--measure);
+            margin: 0;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+
+        .manifesto p + p { margin-top: var(--space-5); }
+
+        .manifesto strong { color: var(--ink); }
+
+        /* Cajas de la tesis central */
+        .thesis-box {
+            margin-bottom: var(--space-7);
+            padding: var(--space-5) var(--space-6);
+            background: var(--paper-deep);
+            border-left: 2px solid color-mix(in oklab, var(--c, var(--accent)) 70%, var(--paper));
         }
-        .book-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+        .thesis-box[data-cat="1"] { --c: var(--cat-1); }
+        .thesis-box[data-cat="2"] { --c: var(--cat-2); }
+        .thesis-box[data-cat="3"] { --c: var(--cat-3); }
+
+        .thesis-box p {
+            font-size: var(--text-sm);
+            line-height: 1.65;
+            color: var(--ink-2);
+            margin: 0;
+        }
+        .thesis-box strong { color: var(--ink); font-weight: 600; }
+
+        .box-label {
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            font-weight: 500;
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0 0 var(--space-3);
+        }
+
+        /* Portadas de los libros */
+        .book-cover {
+            display: block;
+            width: 100%;
+            height: auto;
+            padding: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        /* Banda de cita */
+        .quote-band {
+            font-family: var(--font-display);
+            font-size: clamp(1.35rem, 3.4vw, 2.35rem);
+            line-height: 1.32;
+            letter-spacing: var(--tracking-heading);
+            color: var(--ink);
+            text-wrap: balance;
+            text-align: center;
+            max-width: 34ch;
+            margin: 0 auto;
+            padding-top: var(--space-7);
+            border-top: 2px solid var(--accent);
+        }
+
+        /* Autor */
+        .author-card {
+            display: flex;
+            flex-wrap: wrap;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* Caja del capítulo gratuito */
+        .free-box {
+            max-width: 30rem;
+            margin-inline: auto;
+            padding: var(--space-6);
+            background: var(--surface-warm);
+            border: 1px solid var(--border);
+        }
+
+        .free-box h3 { font-size: var(--text-lg); margin-bottom: var(--space-2); }
+        .free-box p { font-size: var(--text-sm); color: var(--ink-2); margin: 0 0 var(--space-5); }
+
+        /* Modal del capítulo */
+        #chapterModal .modal-open {
+            background: var(--surface) !important;
+            border-color: var(--border) !important;
+        }
+
+        @media (max-width: 900px) {
+            .manifesto { padding: var(--space-5); }
+            .quote-band { text-align: left; }
         }
     </style>
 </head>
-<body class="antialiased selection:bg-amber-500 selection:text-white relative">
+<body class="antialiased relative">
+
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <nav class="fixed w-full z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800" data-od-id="site-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="window.scrollTo(0,0)">
@@ -49,33 +206,29 @@
                     <span class="display-font font-bold text-xl tracking-wider text-white">CRITERIO & IA</span>
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#manifiesto" class="text-sm font-medium text-slate-300 hover:text-amber-500 transition-colors">Manifiesto</a>
-                    <a href="#libros" class="text-sm font-medium text-slate-300 hover:text-amber-500 transition-colors">La Colección</a>
-                    <a href="#autor" class="text-sm font-medium text-slate-300 hover:text-amber-500 transition-colors">Autor</a>
+                    <a href="#manifiesto" class="nav-link">Manifiesto</a>
+                    <a href="#libros" class="nav-link">La colección</a>
+                    <a href="#autor" class="nav-link">Autor</a>
                 </div>
                 <div>
-                    <button onclick="openModal()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-sm text-sm font-semibold transition-all shadow-lg hover:shadow-amber-500/20">
-                        Leer Gratis
+                    <button type="button" onclick="openModal()" class="btn btn--secondary" style="min-height: 40px; padding: 8px 16px;">
+                        Leer gratis
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <!-- Background decorative elements -->
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 opacity-20">
-            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-600 rounded-full blur-[128px]"></div>
-            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-600 rounded-full blur-[128px]"></div>
-        </div>
+    <main id="contenido">
 
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden" data-od-id="hero">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <span class="inline-block py-1 px-3 rounded-full bg-slate-800 border border-slate-700 text-amber-500 text-xs font-bold tracking-widest uppercase mb-6">Nueva Serie Editorial</span>
+            <span class="eyebrow">Nueva serie editorial</span>
             
             <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
                 Cuando todo es <span class="italic text-slate-400">artificial</span>,<br>
-                la humanidad es el nuevo <span class="gradient-text display-font">lujo</span>.
+                la humanidad es el nuevo <span class="accent-text">lujo</span>.
             </h1>
             
             <p class="mt-6 max-w-2xl mx-auto text-lg sm:text-xl text-slate-400 font-light leading-relaxed">
@@ -83,27 +236,27 @@
             </p>
             
             <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#libros" class="px-8 py-4 bg-white text-slate-900 font-bold rounded-sm hover:bg-slate-200 transition-all flex items-center justify-center gap-2">
-                    Explorar los Libros
+                <a href="#libros" class="btn btn--primary">
+                    Explorar los libros
                     <i data-lucide="arrow-down" class="h-4 w-4"></i>
                 </a>
-                <a href="#manifiesto" class="px-8 py-4 bg-transparent border border-slate-600 text-white font-medium rounded-sm hover:border-amber-500 hover:text-amber-500 transition-all">
-                    Leer Manifiesto
+                <a href="#manifiesto" class="btn btn--secondary">
+                    Leer el manifiesto
                 </a>
             </div>
         </div>
     </header>
 
     <!-- Value Proposition -->
-    <section class="py-16 bg-slate-800/50 border-y border-slate-700/50">
+    <section class="py-16 bg-slate-800/50 border-y border-slate-700/50" data-od-id="propuesta">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                 <!-- Card 1 -->
                 <div class="group">
                     <div class="h-12 w-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-600 transition-colors">
-                        <i data-lucide="zap" class="h-6 w-6 text-white"></i>
+                        <i data-lucide="zap" class="h-6 w-6 text-amber-600"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Más allá del Hype</h3>
+                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Más allá del hype</h3>
                     <p class="text-slate-400 leading-relaxed">
                         No es otro libro técnico sobre cómo usar ChatGPT. Es sobre cómo <strong>superar</strong> a ChatGPT usando el criterio humano que la máquina no puede replicar.
                     </p>
@@ -111,9 +264,9 @@
                 <!-- Card 2 -->
                 <div class="group">
                     <div class="h-12 w-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-600 transition-colors">
-                        <i data-lucide="scale" class="h-6 w-6 text-white"></i>
+                        <i data-lucide="scale" class="h-6 w-6 text-amber-600"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Sabiduría Atemporal</h3>
+                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Sabiduría atemporal</h3>
                     <p class="text-slate-400 leading-relaxed">
                         Conectamos la filosofía clásica (Aristóteles, Vico, Gracián) con los problemas modernos. Porque la naturaleza humana no cambia con el software.
                     </p>
@@ -121,9 +274,9 @@
                 <!-- Card 3 -->
                 <div class="group">
                     <div class="h-12 w-12 bg-slate-700 rounded-lg flex items-center justify-center mb-6 group-hover:bg-amber-600 transition-colors">
-                        <i data-lucide="shield-check" class="h-6 w-6 text-white"></i>
+                        <i data-lucide="shield-check" class="h-6 w-6 text-amber-600"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Defensa Intelectual</h3>
+                    <h3 class="text-xl font-bold text-white mb-3 serif-font">Defensa intelectual</h3>
                     <p class="text-slate-400 leading-relaxed">
                         Protégete de las alucinaciones de la IA, los sesgos de los datos y la manipulación algorítmica. Recupera tu soberanía mental.
                     </p>
@@ -136,11 +289,11 @@
     <section id="manifiesto" class="py-24 relative">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
-                <span class="text-amber-500 font-bold tracking-wider text-sm uppercase">El Manifiesto</span>
+                <span class="eyebrow">El manifiesto</span>
                 <h2 class="text-3xl md:text-4xl font-bold text-white mt-2 serif-font">¿Por qué esta serie ahora?</h2>
             </div>
             
-            <div class="prose prose-lg prose-invert mx-auto border-l-4 border-amber-500 pl-6 italic bg-slate-800/30 p-8 rounded-r-lg">
+            <div class="manifesto">
                 <p>
                     La serie <strong>Pensamiento Crítico e Inteligencia Artificial</strong> nace de una convicción respaldada por investigaciones contemporáneas: la inteligencia artificial está transformando de raíz el mundo del trabajo, la toma de decisiones y nuestras prácticas cotidianas, tal como argumentan Erik Brynjolfsson y Andrew McAfee en <em>The Second Machine Age</em> (2014).
                 </p>
@@ -161,7 +314,7 @@
     <section id="libros" class="py-24 bg-slate-900 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-20">
-                <h2 class="text-4xl font-bold text-white serif-font mb-4">La Colección Completa</h2>
+                <h2 class="text-4xl font-bold text-white serif-font mb-4">La colección completa</h2>
                 <p class="text-slate-400 max-w-2xl mx-auto">Una progresión lógica desde los fundamentos del pensamiento hasta la maestría estratégica.</p>
             </div>
 
@@ -171,20 +324,17 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                     <div class="order-2 lg:order-1 relative group flex justify-center">
                         <!-- Portada Real -->
-                        <div class="relative w-64 md:w-72 transition-transform duration-500 book-hover">
-                            <div class="absolute inset-0 bg-emerald-400 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                            <img src="https://m.media-amazon.com/images/I/41VEaA-p9eL._SY445_SX342_ControlCacheEqualizer_.jpg" 
-                                 alt="Portada La Hegemonía del Criterio" 
-                                 class="relative z-10 rounded-lg shadow-2xl border border-slate-700 w-full">
+                        <div class="relative w-64 md:w-72">
+                                                        <img src="assets/editorial/portada-hegemonia-del-criterio.jpg" width="1006" height="1500" alt="Portada de La Hegemonía del Criterio, volumen 1" class="book-cover">
                         </div>
                     </div>
                     <div class="order-1 lg:order-2">
-                        <span class="text-amber-500 font-bold tracking-widest text-sm uppercase mb-2 block">Volumen 1</span>
+                        <span class="eyebrow">Volumen 1</span>
                         <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">La Hegemonía del Criterio</h3>
                         <p class="text-xl text-slate-300 font-light mb-6">Fundamentos para pensar en la era de la máquina.</p>
                         
-                        <div class="bg-slate-800/50 p-6 rounded-lg mb-8 border-l-2 border-emerald-400">
-                            <h4 class="text-white font-bold mb-2 text-sm uppercase">Tesis Central</h4>
+                        <div class="thesis-box" data-cat="1">
+                            <h4 class="box-label">Tesis central</h4>
                             <p class="text-slate-400 text-sm leading-relaxed">
                                 Este libro parte de una idea que encuentra fundamento en la advertencia de Giambattista Vico en <em>Principi di Scienza Nuova</em> (1744): el cálculo, por brillante que sea, no agota la comprensión humana. La tesis del volumen sostiene que la inteligencia artificial opera en el dominio de la predicción —el <em>certum</em>— mientras que el ser humano conserva la soberanía del criterio, esa facultad creativa y prudencial que Vico llamó <em>ingenium</em>. <strong class="text-emerald-400">La IA calcula; el ser humano decide.</strong>
                             </p>
@@ -192,28 +342,28 @@
 
                         <ul class="grid grid-cols-2 gap-4 mb-8">
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Lógica fundamental</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Detectar Falacias</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Pensamiento de Primer Principio</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-emerald-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Autonomía Intelectual</span>
                             </li>
                         </ul>
 
                         <div class="flex flex-wrap gap-4">
-                            <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-3 rounded-sm font-semibold transition-colors flex items-center gap-2">
+                            <a href="https://www.amazon.com/dp/B0G5NJ2THL" target="_blank" rel="noopener" class="btn btn--secondary">
                                 <i data-lucide="shopping-cart" class="h-4 w-4"></i> Ver en Amazon
                             </a>
-                            <button onclick="openModal()" class="text-slate-400 hover:text-white underline underline-offset-4 text-sm px-4 py-3">Leer Muestra</button>
+                            <button type="button" onclick="openModal()" class="btn btn--quiet">Leer muestra</button>
                         </div>
                     </div>
                 </div>
@@ -222,20 +372,17 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                     <div class="order-2 lg:order-2 relative group flex justify-center">
                         <!-- Portada Real -->
-                        <div class="relative w-64 md:w-72 transition-transform duration-500 book-hover">
-                            <div class="absolute inset-0 bg-cyan-400 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                            <img src="https://m.media-amazon.com/images/I/411W64gMLyL._SY445_SX342_ControlCacheEqualizer_.jpg" 
-                                 alt="Portada El Arquitecto de Decisiones" 
-                                 class="relative z-10 rounded-lg shadow-2xl border border-slate-700 w-full">
+                        <div class="relative w-64 md:w-72">
+                                                        <img src="assets/editorial/portada-arquitecto-de-decisiones.jpg" width="335" height="500" alt="Portada de El arquitecto de decisiones, volumen 2" class="book-cover">
                         </div>
                     </div>
                     <div class="order-1 lg:order-1">
-                        <span class="text-amber-500 font-bold tracking-widest text-sm uppercase mb-2 block">Volumen 2</span>
+                        <span class="eyebrow">Volumen 2</span>
                         <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">El Arquitecto de Decisiones</h3>
                         <p class="text-xl text-slate-300 font-light mb-6">Cómo filtrar el ruido algorítmico y validar la estrategia empresarial.</p>
                         
-                        <div class="bg-slate-800/50 p-6 rounded-lg mb-8 border-l-2 border-cyan-400">
-                            <h4 class="text-white font-bold mb-2 text-sm uppercase">Tesis Central</h4>
+                        <div class="thesis-box" data-cat="2">
+                            <h4 class="box-label">Tesis central</h4>
                             <p class="text-slate-400 text-sm leading-relaxed">
                                 En entornos saturados de datos, la ventaja estratégica no es procesar más información, sino filtrar mejor (Kahneman, Sibony, Sunstein). El libro sostiene que el directivo del siglo XXI debe convertirse en un <strong>arquitecto de decisiones</strong>, capaz de cribar razones, detectar supuestos invisibles y someter a escrutinio crítico cualquier conclusión —humana o algorítmica— antes de actuar.
                             </p>
@@ -243,28 +390,28 @@
 
                         <ul class="grid grid-cols-2 gap-4 mb-8">
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Gestión de Riesgos</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Validación de Datos</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Sesgos Algorítmicos</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-cyan-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Estrategia vs. Táctica</span>
                             </li>
                         </ul>
 
                         <div class="flex flex-wrap gap-4">
-                            <a href="https://www.amazon.com/dp/B0G5Q5JFDT" target="_blank" class="bg-white hover:bg-slate-200 text-slate-900 px-6 py-3 rounded-sm font-semibold transition-colors flex items-center gap-2">
+                            <a href="https://www.amazon.com/dp/B0G5Q5JFDT" target="_blank" rel="noopener" class="btn btn--secondary">
                                 <i data-lucide="shopping-cart" class="h-4 w-4"></i> Ver en Amazon
                             </a>
-                            <button onclick="openModal()" class="text-slate-400 hover:text-white underline underline-offset-4 text-sm px-4 py-3">Leer Muestra</button>
+                            <button type="button" onclick="openModal()" class="btn btn--quiet">Leer muestra</button>
                         </div>
                     </div>
                 </div>
@@ -273,23 +420,20 @@
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                     <div class="order-2 lg:order-1 relative group flex justify-center">
                         <!-- Portada Real -->
-                        <div class="relative w-64 md:w-72 transition-transform duration-500 book-hover">
-                            <div class="absolute inset-0 bg-amber-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                            <img src="https://m.media-amazon.com/images/I/41XHURHYRyL._SY445_SX342_ControlCacheEqualizer_.jpg" 
-                                 alt="Portada El Algoritmo de la Prudencia" 
-                                 class="relative z-10 rounded-lg shadow-2xl border border-slate-700 w-full">
+                        <div class="relative w-64 md:w-72">
+                                                        <img src="assets/editorial/portada-algoritmo-de-la-prudencia.jpg" width="335" height="500" alt="Portada de El algoritmo de la prudencia, volumen 3" class="book-cover">
                         </div>
                     </div>
                     <div class="order-1 lg:order-2">
                         <div class="flex items-center gap-3 mb-2">
-                            <span class="text-amber-500 font-bold tracking-widest text-sm uppercase block">Volumen 3</span>
-                            <span class="bg-amber-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded-sm">NOVEDAD</span>
+                            <span class="eyebrow">Volumen 3</span>
+                            <span class="badge">Novedad</span>
                         </div>
                         <h3 class="text-3xl md:text-4xl font-bold text-white mb-6 serif-font">El Algoritmo de la Prudencia</h3>
                         <p class="text-xl text-slate-300 font-light mb-6">Estrategia y liderazgo según Baltasar Gracián para la era de la IA.</p>
                         
-                        <div class="bg-slate-800/50 p-6 rounded-lg mb-8 border-l-2 border-amber-500">
-                            <h4 class="text-white font-bold mb-2 text-sm uppercase">Tesis Central</h4>
+                        <div class="thesis-box" data-cat="3">
+                            <h4 class="box-label">Tesis central</h4>
                             <p class="text-slate-400 text-sm leading-relaxed">
                                 Este libro defiende que la mayor limitación de la IA no es técnica, sino moral: ningún sistema puede reemplazar la virtud práctica que Aristóteles llamó <em>phronesis</em>. Integrando las ideas de <strong>Baltasar Gracián</strong> en <em>El oráculo manual</em>, el volumen enseña a navegar la ambigüedad moral. Gracián se revela como un aliado moderno: su defensa del juicio propio es el antídoto contra la "moral crumple zone" de la automatización.
                             </p>
@@ -297,28 +441,28 @@
 
                         <ul class="grid grid-cols-2 gap-4 mb-8">
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Gestión de Reputación</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Estrategia Graciana</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Carácter vs. Algoritmo</span>
                             </li>
                             <li class="flex items-center space-x-2 text-slate-300 text-sm">
-                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-500"></i>
+                                <i data-lucide="check-circle" class="h-4 w-4 text-amber-600"></i>
                                 <span>Antifragilidad</span>
                             </li>
                         </ul>
 
                         <div class="flex flex-wrap gap-4">
-                            <a href="https://www.amazon.com/dp/B0G641LCJF" target="_blank" class="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-sm font-semibold transition-colors flex items-center gap-2 shadow-lg shadow-amber-900/50">
-                                <i data-lucide="shopping-cart" class="h-4 w-4"></i> Comprar Ahora
+                            <a href="https://www.amazon.com/dp/B0G641LCJF" target="_blank" rel="noopener" class="btn btn--primary">
+                                <i data-lucide="shopping-cart" class="h-4 w-4"></i> Comprar ahora
                             </a>
-                            <button onclick="openModal()" class="text-slate-400 hover:text-white underline underline-offset-4 text-sm px-4 py-3">Leer Muestra</button>
+                            <button type="button" onclick="openModal()" class="btn btn--quiet">Leer muestra</button>
                         </div>
                     </div>
                 </div>
@@ -328,24 +472,21 @@
     </section>
 
     <!-- Quote Section -->
-    <section class="py-20 bg-amber-600 text-white text-center px-4">
-        <div class="max-w-4xl mx-auto">
-            <i data-lucide="quote" class="h-12 w-12 mx-auto text-amber-200 opacity-50 mb-6"></i>
-            <h2 class="text-2xl md:text-4xl font-serif font-bold leading-tight mb-8">
+    <section class="section section--deep" data-od-id="cita">
+        <div class="container">
+            <blockquote class="quote-band">
                 "La inteligencia artificial debe preparar el campo para ejercer el criterio, no para sustituirlo."
-            </h2>
-            <div class="w-24 h-1 bg-amber-200 opacity-50 mx-auto"></div>
+            </blockquote>
         </div>
     </section>
 
     <!-- Author Section -->
-    <section id="autor" class="py-24 bg-slate-900">
+    <section id="autor" class="section bg-slate-900" data-od-id="autor">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-slate-800 rounded-2xl overflow-hidden shadow-2xl flex flex-col md:flex-row border border-slate-700">
+            <div class="author-card">
                 <div class="md:w-2/5 relative min-h-[400px]">
                     <!-- Foto real del autor -->
-                    <img src="https://morispolanco.github.io/mpbn.jpg" alt="Moris Polanco" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-slate-900/40"></div>
+                    <img src="assets/editorial/moris-polanco.jpg" width="900" height="985" alt="Retrato de Moris Polanco" class="absolute inset-0 w-full h-full object-cover">
                 </div>
                 <div class="md:w-3/5 p-8 md:p-12 flex flex-col justify-center">
                     <h2 class="text-2xl font-bold text-white serif-font mb-4">Sobre el autor</h2>
@@ -364,7 +505,7 @@
                     </div>
 
                     <div class="mt-8 pt-6 border-t border-slate-700">
-                        <a href="https://morispolanco.github.io/etica/" target="_blank" class="text-amber-500 hover:text-amber-400 font-semibold flex items-center gap-2">
+                        <a href="https://morispolanco.github.io/etica/" target="_blank" rel="noopener" class="btn btn--quiet">
                             Ver sitio web del autor <i data-lucide="arrow-right" class="h-4 w-4"></i>
                         </a>
                     </div>
@@ -374,23 +515,25 @@
     </section>
 
     <!-- Final CTA -->
-    <section id="capitulo-gratis" class="py-24 relative overflow-hidden">
+    <section id="capitulo-gratis" class="section relative overflow-hidden" data-od-id="capitulo-gratis">
         <div class="max-w-4xl mx-auto text-center px-4 relative z-10">
             <h2 class="text-3xl md:text-5xl font-bold text-white mb-6 serif-font">No seas un administrador de algoritmos.</h2>
             <p class="text-xl text-slate-400 mb-10">Sé el arquitecto de tu propio destino. Empieza a leer el Volumen 1 hoy mismo.</p>
             
-            <div class="bg-slate-800/80 p-8 rounded-lg border border-slate-700 max-w-lg mx-auto backdrop-blur-sm">
-                <h3 class="text-white font-bold text-lg mb-2">Leer Cap. 1 Gratis</h3>
+            <div class="free-box">
+                <h3 class="text-white font-bold text-lg mb-2">Leer cap. 1 gratis</h3>
                 <p class="text-slate-400 text-sm mb-6">Lee el primer capítulo de "La Hegemonía del Criterio" ahora mismo. Sin registro.</p>
-                <button onclick="openModal()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 px-4 rounded-sm transition-colors flex justify-center items-center gap-2">
-                    <i data-lucide="book-open" class="h-5 w-5"></i> Leer Ahora
+                <button type="button" onclick="openModal()" class="btn btn--primary btn--block">
+                    <i data-lucide="book-open" class="h-5 w-5"></i> Leer ahora
                 </button>
             </div>
         </div>
     </section>
 
+    </main>
+
     <!-- Footer -->
-    <footer class="bg-slate-950 py-12 border-t border-slate-900 text-sm">
+    <footer class="bg-slate-950 py-12 border-t border-slate-900 text-sm" data-od-id="site-footer">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-2">
                 <i data-lucide="brain-circuit" class="h-5 w-5 text-slate-600"></i>
@@ -456,7 +599,7 @@
                                 <p class="font-bold text-white">Aquí radica la primera premisa de la sinergia cognitiva: necesitamos la claridad de la máquina para procesar la información, pero necesitamos la oscuridad fértil del ingenio humano para comprenderla.</p>
                             </div>
 
-                            <h3 class="text-2xl font-sans font-bold text-white mt-12 mb-4">Predicción versus Creación: El abismo ontológico</h3>
+                            <h3 class="text-2xl font-sans font-bold text-white mt-12 mb-4">Predicción versus creación: el abismo ontológico</h3>
                             <p>Para gestionar eficazmente en la era digital, debemos desmitificar la terminología antropomórfica. Decimos que la IA "aprende" o "decide", pero técnicamente, como señalan economistas como Ajay Agrawal, la IA actual es una tecnología de predicción. Reduce el coste de inferir información faltante basándose en datos históricos.</p>
                             <p>Sin embargo, predecir no es crear. Y aquí recuperamos el concepto central de la antropología de Vico: el <em>ingenium</em> (ingenio).</p>
                             <p>Para Vico, la civilización no comienza con el cálculo o la lógica formal, sino con la capacidad poética y metafórica del ser humano. El <em>ingenium</em> es la facultad de ver relaciones entre cosas dispares, de conectar realidades que la lógica deductiva mantendría separadas. Es la capacidad de "dar" sentido donde no lo hay.</p>
