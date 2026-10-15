@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moris Polanco | Español, lógica y ética para la evaluación de IA</title>
+
+    <meta name="description" content="Moris Polanco, doctor en Filosofía y académico de la Academia Guatemalteca de la Lengua: corrección y evaluación de respuestas de inteligencia artificial en español. Lengua, lógica y ética.">
+    <meta property="og:title" content="Moris Polanco | Español, lógica y ética para la evaluación de IA">
+    <meta property="og:description" content="Corrijo y evalúo lo que la inteligencia artificial escribe en español: lengua, lógica y ética.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://morispolanco.github.io/">
+    <meta property="og:locale" content="es_ES">
+    <meta property="og:image" content="https://morispolanco.github.io/assets/editorial/moris-polanco.jpg">
+
+    <link rel="stylesheet" href="editorial-system.css">
+
+    <style>
+        /* --- Específico de la portada --- */
+
+        .landing-nav__cta {
+            font-family: var(--font-body);
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-sm);
+            transition: border-color var(--motion-base) var(--ease-out),
+                        background-color var(--motion-base) var(--ease-out);
+        }
+        .landing-nav__cta:hover {
+            background: color-mix(in oklab, var(--ink) 6%, var(--paper));
+            border-color: var(--ink-2);
+            color: var(--ink);
+        }
+
+        /* Hero: asimetría 7/5, retrato recortado solo por abajo */
+        .hero {
+            padding-block: clamp(48px, 8vw, 96px) clamp(56px, 9vw, 112px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero__grid {
+            display: grid;
+            grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+            gap: clamp(32px, 6vw, 80px);
+            align-items: end;
+        }
+
+        .hero h1 {
+            max-width: 20ch;
+            margin-bottom: var(--space-5);
+        }
+
+        .hero__lead { margin-bottom: var(--space-7); }
+
+        .hero__figure {
+            margin: 0;
+            position: relative;
+        }
+
+        .hero__figure img {
+            width: 100%;
+            aspect-ratio: 9 / 9.4;
+            object-fit: cover;
+            object-position: 50% 8%;
+            border: 1px solid var(--border);
+            filter: saturate(0.94);
+        }
+
+        .hero__figure figcaption {
+            margin-top: var(--space-3);
+            font-family: var(--font-mono);
+            font-size: var(--text-xs);
+            color: var(--muted);
+            letter-spacing: 0.02em;
+        }
+
+        /* Comparación Software / Inteligencia */
+        .dichotomy {
+            margin-top: var(--space-9);
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dichotomy__col { padding: var(--space-5) 0; }
+        .dichotomy__col + .dichotomy__col {
+            border-left: 1px solid var(--border);
+            padding-left: var(--space-8);
+        }
+
+        .dichotomy__title {
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: var(--space-3);
+        }
+
+        .dichotomy__list {
+            font-family: var(--font-display);
+            font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+            line-height: 1.85;
+            color: var(--muted);
+        }
+
+        .dichotomy__list span {
+            display: block;
+            text-decoration: line-through;
+            text-decoration-color: color-mix(in oklab, var(--muted) 45%, var(--paper));
+            text-decoration-thickness: 1px;
+        }
+
+        .dichotomy__col--strong .dichotomy__list { color: var(--ink); font-weight: 500; }
+        .dichotomy__col--strong .dichotomy__list span { text-decoration: none; }
+
+        /* La tesis */
+        .thesis__pull { margin-top: var(--space-8); }
+
+        /* El método: tres actos sobre una guía vertical */
+        .acts { border-top: 1px solid var(--border); }
+
+        .act {
+            display: grid;
+            grid-template-columns: 120px minmax(0, 1fr);
+            gap: var(--space-6);
+            padding-block: var(--space-7);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .act__number {
+            font-family: var(--font-mono);
+            font-size: var(--text-sm);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--accent-strong);
+            padding-top: 0.35em;
+        }
+
+        .act__body h3 { margin-bottom: var(--space-4); }
+
+        .act__details { display: grid; gap: var(--space-3); }
+        .act__details p { margin: 0; max-width: var(--measure); }
+        .act__details strong {
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--muted);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        /* El laboratorio */
+        .lab { display: grid; gap: var(--space-6); }
+        .lab__feature { grid-column: 1 / -1; }
+        .lab__pair {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: var(--space-6);
+            align-items: start;
+        }
+
+        .artifact {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .artifact__meta {
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--muted);
+            display: block;
+            margin-bottom: var(--space-3);
+        }
+
+        .artifact h3 { margin-bottom: var(--space-5); }
+
+        .artifact__section + .artifact__section { margin-top: var(--space-5); }
+
+        .artifact__label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: var(--text-meta);
+            letter-spacing: var(--tracking-caps);
+            text-transform: uppercase;
+            color: var(--accent-strong);
+            margin-bottom: var(--space-2);
+        }
+
+        .artifact__section p { margin: 0; }
+
+        .artifact__cta { margin-top: auto; padding-top: var(--space-6); }
+
+        /* La conversación */
+        .contact-form {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: clamp(24px, 4vw, var(--space-8));
+        }
+
+        .contact-form .question {
+            font-family: var(--font-display);
+            font-size: var(--text-lg);
+            line-height: 1.4;
+            color: var(--ink-2);
+            margin-bottom: var(--space-3);
+            max-width: 52ch;
+        }
+
+        @media (max-width: 760px) {
+            /* La cabecera se apila: marca arriba, navegación debajo, con aire suficiente */
+            .site-header__inner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-3);
+                padding-block: var(--space-4) var(--space-5);
+            }
+            .site-nav ul { gap: var(--space-5); width: 100%; }
+            .site-nav a { padding-block: var(--space-3); }
+            .landing-nav__cta { padding-block: var(--space-3); }
+        }
+
+        @media (max-width: 900px) {
+            .hero__grid { grid-template-columns: minmax(0, 1fr); }
+            .hero__figure { max-width: 420px; }
+            .dichotomy { grid-template-columns: minmax(0, 1fr); }
+            .dichotomy__col + .dichotomy__col {
+                border-left: 0;
+                border-top: 1px solid var(--border);
+                padding-left: 0;
+            }
+            .act { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+            .lab__pair { grid-template-columns: minmax(0, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+<header class="site-header" data-od-id="site-header">
+    <div class="container site-header__inner">
+        <a class="wordmark" href="index.html">Moris Polanco</a>
+        <nav class="site-nav" aria-label="Secciones de la página">
+            <ul>
+                <li><a href="#tesis">La tesis</a></li>
+                <li><a href="#sobre-mi">Sobre mí</a></li>
+                <li><a href="#metodo">La evaluación</a></li>
+                <li><a href="#laboratorio">El laboratorio</a></li>
+                <li><a class="landing-nav__cta" href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main id="contenido">
+
+    <!-- SECCIÓN 1: EL DESAFÍO -->
+    <section class="hero" id="desafio" data-od-id="hero">
+        <div class="container hero__grid">
+            <div>
+                <span class="eyebrow">Lengua española · Lógica · Ética</span>
+                <h1>La IA que escribe en español necesita quien la juzgue con criterio</h1>
+                <p class="lead hero__lead">Los modelos generan texto a velocidad industrial. Yo reviso lo que dicen: corrección del español, coherencia del razonamiento y adecuación ética y cultural. Evaluación humana para inteligencia artificial, con criterios explícitos.</p>
+
+                <a href="#metodo" class="btn btn--primary">Cómo evalúo</a>
+
+                <div class="dichotomy">
+                    <div class="dichotomy__col">
+                        <p class="dichotomy__title">IA sin revisión</p>
+                        <div class="dichotomy__list">
+                            <span>Rápida</span>
+                            <span>Fluida</span>
+                            <span>Plausible</span>
+                            <span>Sin garantía</span>
+                        </div>
+                    </div>
+                    <div class="dichotomy__col dichotomy__col--strong">
+                        <p class="dichotomy__title">IA con evaluación humana</p>
+                        <div class="dichotomy__list">
+                            <span>Correcta</span>
+                            <span>Coherente</span>
+                            <span>Fundada</span>
+                            <span>Confiable</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <figure class="hero__figure">
+                <img src="assets/editorial/moris-polanco.jpg" width="900" height="985"
+                     alt="Retrato de Moris Polanco, doctor en Filosofía, editor y evaluador de IA en español">
+                <figcaption>Moris Polanco · Doctor en Filosofía · Editorial Arjé</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 2: LA TESIS -->
+    <section class="section" id="tesis" data-od-id="tesis">
+        <div class="container">
+            <div class="prose">
+                <span class="eyebrow">La tesis</span>
+                <h2 id="tesis-titulo">El criterio no se automatiza.</h2>
+
+                <p>Vivimos la peste del chatbot genérico. Una plaga de IA insípida que promete eficiencia pero solo entrega mediocridad. Estas herramientas no piensan; imitan. Son espejos que reflejan la vacuidad de internet, no la profundidad de su empresa.</p>
+
+                <p>El error es de categoría: confundir fluidez con corrección. Un modelo puede producir párrafos elegantes, pero eso no garantiza que lo que dice esté bien dicho, bien razonado o bien juzgado.</p>
+
+                <blockquote class="thesis__pull">
+                    <p>«La fluidez de un modelo no prueba su corrección: hace falta juicio humano para distinguir lo que suena bien de lo que está bien.»</p>
+                </blockquote>
+
+                <p>Ese juicio no sale de una API. Sale de décadas de lengua, lógica y ética aplicadas al texto: detectar el error de sentido que pasa desapercibido, la falacia elegante, el sesgo cultural que el modelo no ve.</p>
+
+                <p>Mi vida profesional ha sido un entrenamiento para esto. Como Doctor en Filosofía, disecciono sistemas de racionalidad. Como editor, estructuro el pensamiento. Como desarrollador, lo encarno en código. No soy un híbrido; soy la síntesis necesaria para esta nueva era.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN NUEVA: SOBRE MÍ -->
+    <section class="section" id="sobre-mi" data-od-id="sobre-mi">
+        <div class="container">
+            <div class="prose">
+                <span class="eyebrow">Sobre mí</span>
+                <h2 id="sobre-mi-titulo">Quién evalúa.</h2>
+
+                <p>Mi enfoque es el español, la lógica y la ética aplicados a la evaluación de respuestas de inteligencia artificial. Soy doctor en Filosofía por la Universidad de Navarra, profesor universitario, editor y académico de la Academia Guatemalteca de la Lengua. Dirijo Editorial Arjé. Reviso la corrección del español, la claridad de la redacción y la coherencia de los argumentos; detecto errores de sentido y razonamiento, y evalúo respuestas con criterios explícitos. Busco proyectos remotos de revisión, evaluación y anotación de contenido en español. Como actividad complementaria, ofrezco tutorías individuales de automatización con IA para pequeños negocios y emprendedores de Guatemala. He creado aproximadamente 1,800 aplicaciones con IA: esa práctica respalda mi conocimiento de las posibilidades y limitaciones de los modelos, pero mi perfil principal es la evaluación lingüística y del razonamiento.</p>
+
+                <p class="meta">Perfiles:
+                    <a href="https://agl.org.gt/academicos/moris-alberto-polanco-barrera/" target="_blank" rel="noopener">Academia Guatemalteca de la Lengua</a> ·
+                    <a href="https://ufm.academia.edu/MorisPolanco" target="_blank" rel="noopener">Academia.edu</a> ·
+                    <a href="https://linkedin.com/in/moris-polanco-barrera" target="_blank" rel="noopener">LinkedIn</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 3: LA EVALUACIÓN -->
+    <section class="section section--deep" id="metodo" data-od-id="metodo">
+        <div class="container">
+            <div class="section-head measure">
+                <span class="eyebrow">La evaluación</span>
+                <h2 id="metodo-titulo">Tres capas de juicio.</h2>
+                <p class="lead">Cada respuesta se revisa en tres niveles. Ninguno es opcional: un texto correcto puede ser ilógico, y un argumento sólido puede ser indebido.</p>
+            </div>
+
+            <div class="acts">
+                <article class="act" data-od-id="acto-i">
+                    <p class="act__number">Acto I</p>
+                    <div class="act__body">
+                        <h3>Corrección del español</h3>
+                        <div class="act__details">
+                            <p><strong>Objetivo</strong> Que el texto sea gramaticalmente impecable, claro y natural.</p>
+                            <p><strong>Qué reviso</strong> Gramática, ortografía, puntuación, estilo, registro y coherencia textual.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="act" data-od-id="acto-ii">
+                    <p class="act__number">Acto II</p>
+                    <div class="act__body">
+                        <h3>Coherencia del razonamiento</h3>
+                        <div class="act__details">
+                            <p><strong>Objetivo</strong> Que el argumento se sostenga.</p>
+                            <p><strong>Qué reviso</strong> Errores de lógica, falacias, contradicciones, afirmaciones sin fundamento y errores de sentido.</p>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="act" data-od-id="acto-iii">
+                    <p class="act__number">Acto III</p>
+                    <div class="act__body">
+                        <h3>Criterio ético y cultural</h3>
+                        <div class="act__details">
+                            <p><strong>Objetivo</strong> Que la respuesta sea adecuada para el mundo hispanohablante.</p>
+                            <p><strong>Qué reviso</strong> Sesgos, adecuación cultural y juicio de valor, con criterios explícitos.</p>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 4: EL LABORATORIO -->
+    <section class="section" id="laboratorio" data-od-id="laboratorio">
+        <div class="container">
+            <div class="section-head measure">
+                <span class="eyebrow">El laboratorio</span>
+                <h2 id="laboratorio-titulo">Demostraciones, no promesas.</h2>
+                <p class="lead">Conozco los modelos desde la práctica, no solo desde la teoría. Estas herramientas que construí con IA muestran cómo trabajo con ellas, y dónde fallan.</p>
+            </div>
+
+            <div class="lab">
+                <!-- Artefacto 1 -->
+                <article class="card artifact lab__feature" data-od-id="artefacto-oraculo">
+                    <span class="artifact__meta">Artefacto n.º 1</span>
+                    <h3>El Oráculo</h3>
+                    <div class="artifact__section">
+                        <span class="artifact__label">Descripción</span>
+                        <p>Un ejercicio de construcción de identidad. Se diseñó una Persona Digital ('El Oráculo Ni Magia Ni Método') basada en la filosofía de la racionalidad barroca y el pensamiento abductivo para actuar como un estratega intelectual. No es un asistente; es un pensador.</p>
+                    </div>
+                    <div class="artifact__cta">
+                        <a href="https://el-oraculo.lovable.app" target="_blank" rel="noopener" class="btn btn--secondary link-arrow">Interactúe con El Oráculo</a>
+                    </div>
+                </article>
+
+                <div class="lab__pair">
+                    <!-- Artefacto 2 -->
+                    <article class="card artifact" data-od-id="artefacto-portico">
+                        <span class="artifact__meta">Artefacto n.º 2</span>
+                        <h3>El Pórtico Lógico: un dojo para el juicio estratégico</h3>
+
+                        <div class="artifact__section">
+                            <span class="artifact__label">El problema que resuelve</span>
+                            <p>Las escuelas de negocios producen excelentes analistas y peores estrategas. Enseñan métodos, no mentalidades. El resultado son gerentes que pueden optimizar un sistema conocido, pero se paralizan ante lo desconocido. Son soldados de manual en una guerra de guerrillas.</p>
+                        </div>
+
+                        <div class="artifact__section">
+                            <span class="artifact__label">La solución</span>
+                            <p>El Pórtico Lógico no es un curso. Es un entorno de simulación para la mente, un dojo donde el juicio se forja a través del combate intelectual. Un 'sparring partner' digital diseñado bajo los principios de la Racionalidad Inventiva, que obliga al participante a abandonar los atajos mentales y a construir decisiones desde primeros principios.</p>
+                        </div>
+
+                        <div class="artifact__section">
+                            <span class="artifact__label">El resultado prometido</span>
+                            <p>No producimos mejores estudiantes. Forjamos estrategas anfibios: líderes que respiran tanto en el océano de los datos como en el aire de la ambigüedad. Graduados que una empresa no puede permitirse no contratar.</p>
+                        </div>
+
+                        <div class="artifact__cta">
+                            <a href="https://portico-logico.lovable.app" target="_blank" rel="noopener" class="btn btn--secondary link-arrow">Ingrese al Pórtico Lógico</a>
+                        </div>
+                    </article>
+
+                    <!-- Artefacto 3 -->
+                    <article class="card artifact" data-od-id="artefacto-cartografia">
+                        <span class="artifact__meta">Artefacto n.º 3</span>
+                        <h3>La Cartografía del Ingenio: el sistema operativo del estratega anfibio</h3>
+
+                        <div class="artifact__section">
+                            <span class="artifact__label">El problema que resuelve</span>
+                            <p>El liderazgo moderno está esquizofrénico. Se le exige ser 'data-driven' y al mismo tiempo 'visionario'. Se debate entre la rigidez del algoritmo y la nebulosa de la 'intuición'. La mayoría de los líderes se ahogan intentando nadar en uno de los dos extremos.</p>
+                        </div>
+
+                        <div class="artifact__section">
+                            <span class="artifact__label">La solución</span>
+                            <p>Esta no es una infografía. Es la arquitectura visual de un nuevo sistema operativo mental: la Racionalidad Inventiva. Un manifiesto gráfico que decodifica cómo la intuición profunda y el diseño consciente no son opuestos, sino dos fases del mismo ciclo de creación de valor. Es el mapa para el líder que debe operar entre el rigor matemático y el ingenio poético.</p>
+                        </div>
+
+                        <div class="artifact__section">
+                            <span class="artifact__label">La promesa</span>
+                            <p>Quien comprende esta cartografía deja de ser víctima de la complejidad. Empieza a utilizarla como arma. Esta pieza no 'explica' una mentalidad; la instala.</p>
+                        </div>
+
+                        <div class="artifact__cta">
+                            <a href="https://inventiva.lovable.app" target="_blank" rel="noopener" class="btn btn--secondary link-arrow">Explore la Cartografía</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN 5: LA CONVERSACIÓN -->
+    <section class="section section--deep section--ruled" id="contacto" data-od-id="contacto">
+        <div class="container container--narrow">
+            <div class="section-head">
+                <span class="eyebrow">Contacto</span>
+                <h2 id="contacto-titulo">Conversemos.</h2>
+                <p class="lead">Busco proyectos remotos de revisión, evaluación y anotación de contenido en español. Si su equipo trabaja en evaluación de IA y necesita un corrector de lengua con formación filosófica, escríbame.</p>
+            </div>
+
+            <p style="margin-top: var(--space-6);">
+                    <a class="btn btn--primary" href="mailto:mp@ufm.edu">mp@ufm.edu</a>
+                    <a class="btn btn--secondary link-arrow" href="https://linkedin.com/in/moris-polanco-barrera" target="_blank" rel="noopener">LinkedIn</a>
+                </p>
+
+            <p class="meta" style="margin-top: var(--space-6);">Correo de respaldo: morispolanco@gmail.com. Respondo personalmente.</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="site-footer" data-od-id="site-footer">
+    <div class="container site-header__inner">
+        <p style="margin: 0;">&copy; 2026 Moris Polanco. Todos los derechos reservados.</p>
+        <p class="meta" style="margin: 0;">Editorial Arjé · Guatemala</p>
+    </div>
+</footer>
+
+
+
+</body>
+</html>
